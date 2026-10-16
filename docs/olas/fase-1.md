@@ -72,7 +72,7 @@
 ## Handover
 
 - **Estado estable:** PR #12 mergeada (`a641f99`); nada en vuelo. Worktrees de grupo quitados.
-- **Hecho:** grupos 3 (#10), 1 (#11) y 2 (#12) mergeados en `ola/fase-1`; 13 de 19 casillas.
+- **Hecho:** grupos 3 (#10), 1 (#11) y 2 (#12) mergeados en `ola/fase-1`; 14 de 19 casillas (`openspec instructions apply`).
 - **Lo que queda en orden:** grupo 4 (cliente, `implementador-cliente`), rama `feat/fase-1-month-dashboard` desde `ola/fase-1`; luego el grupo 5 (`test/fase-1-main-flow`, `implementador-cliente`), que ya puede encargarse tras el 4 (la decisión 1 del usuario está cerrada); luego el cierre (PR `ola/fase-1` → `chore/fase-1-planning`, plantilla B).
 - **Avisos para los encargos:**
   - Grupo 4: el dominio exporta `parsearCsv`, `pideConfirmacion`, `CargaRechazada` (`motivo` con `codigo` `vacio` / `sin-filas` / `faltan-columnas` + `columnas` / `sin-filas-validas`) en `src/dominio/carga.ts`; los códigos de fila son `fila-mal-formada`, `fecha`, `monto`, `concepto-vacio`, `id-repetido`, `fuera-del-mes`, y **los seis** necesitan texto es-MX en `src/cliente/textos.ts` (registro exhaustivo). `metricas`, `GastoDeCategoria` en `src/dominio/metricas.ts`; `formatearMonto`, `formatearFecha`, `formatearProporcion` en `src/dominio/formato.ts`; `porCategoria` en `src/graficas/por-categoria.ts`.
