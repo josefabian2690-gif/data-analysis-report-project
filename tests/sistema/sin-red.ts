@@ -10,8 +10,9 @@ function sale(url: string): boolean {
 
 /**
  * Toda prueba de sistema falla si alguna petición sale de 127.0.0.1 (docs/STACK.md, «Sin red en
- * ejecución»). Se escucha `request` en el contexto, y no `response` en la página, porque una
- * petición que falla o se bloquea no recibe respuesta y pasaría sin ser vista.
+ * ejecución»); eslint.config.mjs obliga a importar `test` de este módulo. Se escucha `request`
+ * en el contexto, y no `response` en la página, porque una petición que falla o se bloquea no
+ * recibe respuesta y pasaría sin ser vista.
  */
 export const test = base.extend<{ sinRedExterna: void }>({
   sinRedExterna: [

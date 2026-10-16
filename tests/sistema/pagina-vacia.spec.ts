@@ -7,5 +7,5 @@ test('la página vacía muestra el título del tablero sin pedir nada fuera de 1
   await page.goto('/');
   await page.waitForLoadState('networkidle');
 
-  await expect(page.getByRole('heading', { name: textos.titulo })).toBeVisible();
+  await expect(page.getByRole('heading', { name: textos.titulo, exact: true })).toBeVisible();
 });
