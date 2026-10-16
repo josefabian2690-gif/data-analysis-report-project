@@ -1,0 +1,17 @@
+.claude/
+.github/
+openspec/
+docs/
+graft/
+generador/
+.venv/
+output/
+historial/
+dist/
+tests/fixtures/generador/
+test-results/
+playwright-report/
+CLAUDE.md
+package-lock.json
+skills-lock.json
+.mcp.json

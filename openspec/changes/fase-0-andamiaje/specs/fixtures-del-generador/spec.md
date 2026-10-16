@@ -40,11 +40,11 @@ Para cada fixture del generador, los patrones de su `*.esperado.json` SHALL ser 
 
 #### Scenario: Categoría dominante
 - **WHEN** se suma el monto por categoría del CSV
-- **THEN** la categoría con mayor gasto es la `categoria_dominante` del esperado y concentra al menos el 35 % del gasto
+- **THEN** la categoría con mayor gasto es la `categoriaDominante` del esperado y concentra al menos el 35 % del gasto
 
 #### Scenario: Zona favorita
 - **WHEN** se suma el monto de Comida y Entretenimiento por zona local (las de la ciudad principal)
-- **THEN** la zona con mayor gasto es la `zona_favorita` del esperado
+- **THEN** la zona con mayor gasto es la `zonaFavorita` del esperado
 
 #### Scenario: Viaje
 - **WHEN** se toman las transacciones cuya zona es el destino del esperado
