@@ -3,7 +3,7 @@
 Script en Python que usa [Faker](https://faker.readthedocs.io/) para generar un CSV con
 los gastos de **una persona durante un mes** (20,000 transacciones por defecto). Cada
 ejecución produce datos nuevos, pero siempre con patrones de gasto detectables, para
-alimentar un reporte en otro proyecto.
+alimentar el tablero de gastos de este repositorio (sus pruebas y su demostración).
 
 ## Uso
 

@@ -1,10 +1,9 @@
 # Tablero de gastos
 
-Página web local en Node que carga CSVs de transacciones del generador y los convierte en un
-dashboard con filtros, historial de meses y reporte exportable. Funciona sin red: el servidor
-escucha solo en `127.0.0.1` y todos los recursos van en el paquete.
-
-La documentación del proyecto está en [`docs/`](docs/).
+El objetivo del proyecto es una página web local en Node que cargue CSVs de transacciones del
+generador y los convierta en un dashboard con filtros, historial de meses y reporte exportable,
+sin red. Hoy el repositorio tiene el andamiaje: una página vacía con su gate de calidad, el
+generador de datos y sus fixtures; el tablero se construye por fases (ver [`docs/`](docs/)).
 
 ## Instalación
 
@@ -16,7 +15,7 @@ npm ci
 
 ## Scripts del gate
 
-Se lanzan desde la raíz del repositorio y el gate los corre en este orden:
+Se lanzan desde la raíz del repositorio; son los cuatro pasos del gate, en este orden:
 
 | Comando                | Qué comprueba                  |
 | ---------------------- | ------------------------------ |

@@ -164,7 +164,7 @@ describe('fixtures del generador: integridad', () => {
       expect(zona, `${fixture}: zona favorita observada`).toBe(leerEsperado(fixture).zonaFavorita);
     });
 
-    it('patrón viaje: el destino se concentra en 4 días consecutivos o menos, dentro del rango esperado', () => {
+    it('patrón viaje: el destino se concentra en 4 días consecutivos o menos, dentro de un rango esperado que también mide 4 días o menos', () => {
       const { viaje } = leerEsperado(fixture);
       const dias = leerFilas(fixture)
         .filter((fila) => fila.zona === viaje.destino)
@@ -180,6 +180,10 @@ describe('fixtures del generador: integridad', () => {
       expect(
         diasEntre(primero, ultimo) + 1,
         `${fixture}: días que abarca el viaje`,
+      ).toBeLessThanOrEqual(DIAS_MAXIMOS_VIAJE);
+      expect(
+        diasEntre(viaje.desde, viaje.hasta) + 1,
+        `${fixture}: días que abarca el rango del viaje en el esperado`,
       ).toBeLessThanOrEqual(DIAS_MAXIMOS_VIAJE);
       expect(
         primero >= viaje.desde,
