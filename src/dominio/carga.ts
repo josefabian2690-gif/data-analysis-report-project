@@ -22,7 +22,8 @@ export class CargaRechazada extends Error {
   }
 }
 
-export type MotivoInvalido = 'fecha' | 'monto' | 'concepto-vacio' | 'id-repetido' | 'fuera-del-mes';
+export type MotivoInvalido =
+  'fila-mal-formada' | 'fecha' | 'monto' | 'concepto-vacio' | 'id-repetido' | 'fuera-del-mes';
 
 export interface FilaInvalida {
   fila: number;
@@ -56,16 +57,24 @@ function celda(registro: Registro, columna: string): string {
 }
 
 function estaVacio(texto: string): boolean {
-  return texto.replace(/^\uFEFF/, '').trim() === '';
+  return texto.trim() === '';
 }
 
-function leerRegistros(texto: string): { columnas: string[]; registros: Registro[] } {
-  const { data, meta } = Papa.parse<Registro>(texto, {
+function leerRegistros(texto: string): {
+  columnas: string[];
+  registros: Registro[];
+  malFormadas: Set<number>;
+} {
+  const { data, meta, errors } = Papa.parse<Registro>(texto, {
     header: true,
     skipEmptyLines: true,
     transformHeader: (nombre) => nombre.trim(),
   });
-  return { columnas: meta.fields ?? [], registros: data };
+  const malFormadas = new Set<number>();
+  for (const error of errors) {
+    if (error.type === 'FieldMismatch' && error.row !== undefined) malFormadas.add(error.row);
+  }
+  return { columnas: meta.fields ?? [], registros: data, malFormadas };
 }
 
 function exigirColumnas(columnas: string[]): void {
@@ -182,7 +191,7 @@ function elegirMes(filas: FilaLeida[]): string {
 
 export function parsearCsv(texto: string): ResultadoCarga {
   if (estaVacio(texto)) throw new CargaRechazada({ codigo: 'vacio' });
-  const { columnas, registros } = leerRegistros(texto);
+  const { columnas, registros, malFormadas } = leerRegistros(texto);
   exigirColumnas(columnas);
   if (registros.length === 0) throw new CargaRechazada({ codigo: 'sin-filas' });
 
@@ -193,7 +202,7 @@ export function parsearCsv(texto: string): ResultadoCarga {
   const invalidas: FilaInvalida[] = [];
   registros.forEach((registro, indice) => {
     const fila = indice + 2;
-    const leida = leerFila(registro, fila);
+    const leida = malFormadas.has(indice) ? 'fila-mal-formada' : leerFila(registro, fila);
     if (typeof leida === 'string') invalidas.push({ fila, motivo: leida });
     else validas.push(leida);
   });

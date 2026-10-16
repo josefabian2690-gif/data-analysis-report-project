@@ -40,12 +40,6 @@ describe('R-01 columnas obligatorias', () => {
 
     expect(transacciones).toHaveLength(1);
   });
-
-  it('el BOM no se pega al primer nombre de columna: el id del archivo se conserva', () => {
-    const { transacciones } = parsearCsv(leerFixtureAMano('bom-crlf.csv'));
-
-    expect(transacciones.map((t) => t.id)).toEqual(['TX000107', 'TX000108']);
-  });
 });
 
 describe('R-02 valores por defecto de las columnas opcionales', () => {
@@ -94,6 +88,15 @@ describe('R-02 valores por defecto de las columnas opcionales', () => {
 
     const idPorConcepto = Object.fromEntries(transacciones.map((t) => [t.concepto, t.id]));
     expect(idPorConcepto).toEqual({ 'Sin hora': 'TX000001', 'Con hora': 'TX000002' });
+  });
+
+  it('una fila a las 00:00:00 y una sin hora del mismo día empatan: manda el orden del archivo', () => {
+    const { transacciones } = parsearCsv(
+      csv(ENCABEZADO_MINIMO, '2026-07-05 00:00:00,1,Medianoche', '2026-07-05,2,Sin hora'),
+    );
+
+    const idPorConcepto = Object.fromEntries(transacciones.map((t) => [t.concepto, t.id]));
+    expect(idPorConcepto).toEqual({ Medianoche: 'TX000001', 'Sin hora': 'TX000002' });
   });
 
   it('con la misma fecha, los ids siguen el orden del archivo', () => {

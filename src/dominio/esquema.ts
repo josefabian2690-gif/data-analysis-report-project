@@ -3,7 +3,10 @@
  * como JSON entre el cliente y el servidor; docs/ARQUITECTURA.md, «API del historial».
  */
 export interface Transaccion {
-  /** `TX` más seis dígitos, único dentro del mes. */
+  /**
+   * Único dentro del mes. El del archivo se conserva tal cual; si la fila no trae id, el generado
+   * es `TX` más seis dígitos (R-02).
+   */
   id: string;
   /** Día en `AAAA-MM-DD`. */
   dia: string;

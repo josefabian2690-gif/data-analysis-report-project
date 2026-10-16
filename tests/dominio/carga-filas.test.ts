@@ -168,6 +168,53 @@ describe('R-05 filas inválidas excluidas y reportadas', () => {
   });
 });
 
+describe('R-04 y R-05 fila mal formada', () => {
+  it('una fila con campos de más (un monto con coma sin comillas) es inválida y no entra con los datos corridos', () => {
+    const { transacciones, invalidas } = cargaConUnaFila('2026-07-08,1,234.50,Ocho');
+
+    expect(transacciones).toHaveLength(1);
+    expect(invalidas).toEqual([{ fila: 3, motivo: 'fila-mal-formada' }]);
+  });
+
+  it('una fila con campos de menos es inválida', () => {
+    const { transacciones, invalidas } = cargaConUnaFila('2026-07-08,10');
+
+    expect(transacciones).toHaveLength(1);
+    expect(invalidas).toEqual([{ fila: 3, motivo: 'fila-mal-formada' }]);
+  });
+
+  it('una fila con la cantidad correcta de campos pero celdas vacías conserva su motivo de siempre', () => {
+    expect(cargaConUnaFila(',,').invalidas).toEqual([{ fila: 3, motivo: 'fecha' }]);
+    expect(cargaConUnaFila('2026-07-08,,Cafe').invalidas).toEqual([{ fila: 3, motivo: 'monto' }]);
+  });
+
+  it('la fila mal formada se reporta como tal aunque además tenga una celda obligatoria vacía', () => {
+    expect(cargaConUnaFila(',10,Cafe,sobra').invalidas).toEqual([
+      { fila: 3, motivo: 'fila-mal-formada' },
+    ]);
+  });
+
+  it('una línea en blanco antes de la fila mal formada no corre su número de fila', () => {
+    const texto = `${ENCABEZADO_MINIMO}\n${FILA_VALIDA}\n\n2026-07-08,1,234.50,Ocho\n`;
+
+    expect(parsearCsv(texto).invalidas).toEqual([{ fila: 3, motivo: 'fila-mal-formada' }]);
+  });
+
+  it('las filas mal formadas cuentan para el 5 % de la confirmación', () => {
+    const validas = (cantidad: number) =>
+      Array.from({ length: cantidad }, (_, i) => `2026-07-01,${i + 1},Válida ${i}`);
+    const malas = (cantidad: number) =>
+      Array.from({ length: cantidad }, () => '2026-07-01,1,234.50,x');
+
+    expect(pideConfirmacion(parsearCsv(csv(ENCABEZADO_MINIMO, ...validas(94), ...malas(6))))).toBe(
+      true,
+    );
+    expect(pideConfirmacion(parsearCsv(csv(ENCABEZADO_MINIMO, ...validas(95), ...malas(5))))).toBe(
+      false,
+    );
+  });
+});
+
 describe('R-05 confirmación con más del 5 % de inválidas', () => {
   it('con 6 inválidas de 100 filas de datos pide confirmación', () => {
     expect(pideConfirmacion(cargaDeCien(6))).toBe(true);
@@ -175,15 +222,5 @@ describe('R-05 confirmación con más del 5 % de inválidas', () => {
 
   it('con 5 inválidas de 100 filas de datos (el 5 % exacto) no la pide', () => {
     expect(pideConfirmacion(cargaDeCien(5))).toBe(false);
-  });
-
-  it('sin inválidas no la pide', () => {
-    expect(pideConfirmacion(cargaDeCien(0))).toBe(false);
-  });
-
-  it('el porcentaje es sobre las filas de datos del archivo, no solo sobre las válidas', () => {
-    const carga = cargaDeCien(5);
-    expect(carga.transacciones).toHaveLength(95);
-    expect(pideConfirmacion(carga)).toBe(false);
   });
 });

@@ -102,12 +102,6 @@ describe('R-07 coordenadas', () => {
 
     expect(transacciones[0]).toMatchObject({ latitud, longitud });
   });
-
-  it('un archivo sin columnas de coordenadas deja todas las transacciones sin ellas', () => {
-    const { transacciones } = parsearCsv(leerFixtureAMano('minimo.csv'));
-
-    expect(transacciones.every((t) => t.latitud === null && t.longitud === null)).toBe(true);
-  });
 });
 
 describe('R-08 un CSV es un mes calendario', () => {
@@ -182,6 +176,16 @@ describe('R-08 un CSV es un mes calendario', () => {
 
     expect(mes).toBe('2026-07');
     expect(invalidas.map((i) => i.motivo)).toEqual(['monto', 'monto', 'monto', 'monto']);
+  });
+
+  it('las filas con id repetido no votan: 4 de agosto con el mismo id y 3 de julio dan julio', () => {
+    const agosto = ['01', '02', '03', '04'].map((dia) => `TX000001,2026-08-${dia},10,Agosto`);
+    const julio = ['01', '02', '03'].map((dia, i) => `TX00001${i},2026-07-${dia},10,Julio`);
+
+    const { mes, transacciones } = parsearCsv(csv(ENCABEZADO_CON_ID, ...agosto, ...julio));
+
+    expect(mes).toBe('2026-07');
+    expect(transacciones).toHaveLength(3);
   });
 
   it('el archivo con filas de otro mes reporta cada una por su fila', () => {

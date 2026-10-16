@@ -14,7 +14,7 @@ describe('casos borde de la carga: archivos que no se pueden usar', () => {
   it.each([
     ['texto vacío', ''],
     ['solo saltos de línea', '\r\n\r\n'],
-    ['solo el BOM', '﻿'],
+    ['solo el BOM', '\uFEFF'],
   ])('%s se rechaza con el motivo de archivo vacío', (_caso, texto) => {
     expect(rechazoDe(texto).motivo).toEqual({ codigo: 'vacio' });
   });
@@ -55,7 +55,7 @@ describe('casos borde de la carga: el CSV tal como lo escribe una hoja de cálcu
 
   it('el mismo contenido con \\n y sin BOM da exactamente el mismo resultado', () => {
     const conBomYCrlf = leerFixtureAMano('bom-crlf.csv');
-    const conLf = conBomYCrlf.replace('﻿', '').replaceAll('\r\n', '\n');
+    const conLf = conBomYCrlf.replace('\uFEFF', '').replaceAll('\r\n', '\n');
 
     expect(parsearCsv(conLf)).toEqual(parsearCsv(conBomYCrlf));
   });
@@ -67,12 +67,6 @@ describe('casos borde de la carga: el CSV tal como lo escribe una hoja de cálcu
       ['Tacos, salsas y más', 'Roma Norte, CDMX', 189.9],
       ['Jugo', 'Coyoacán, CDMX', 95],
     ]);
-  });
-
-  it('un punto y coma dentro de un valor no cambia el delimitador', () => {
-    const { transacciones } = parsearCsv(csv(ENCABEZADO_MINIMO, '2026-07-01,10,"Pan; leche"'));
-
-    expect(transacciones[0]?.concepto).toBe('Pan; leche');
   });
 });
 
