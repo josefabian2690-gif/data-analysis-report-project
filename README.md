@@ -1,63 +1,31 @@
-# Generador de transacciones financieras falsas
+# Tablero de gastos
 
-Script en Python que usa [Faker](https://faker.readthedocs.io/) para generar un CSV con
-los gastos de **una persona durante un mes** (20,000 transacciones por defecto). Cada
-ejecución produce datos nuevos, pero siempre con patrones de gasto detectables, para
-alimentar un reporte en otro proyecto.
+El objetivo del proyecto es una página web local en Node que cargue CSVs de transacciones del
+generador y los convierta en un dashboard con filtros, historial de meses y reporte exportable,
+sin red. Hoy el repositorio tiene el andamiaje: una página vacía con su gate de calidad, el
+generador de datos y sus fixtures; el tablero se construye por fases (ver [`docs/`](docs/)).
 
-## Uso
+## Instalación
+
+El usuario instala las dependencias, con las versiones exactas del `package-lock.json`:
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-python generar_transacciones.py
+npm ci
 ```
 
-Genera `output/transacciones_AAAA-MM.csv` sin imprimir nada, para no revelar los patrones.
-Con `-v` imprime el resumen con los patrones inyectados (la "respuesta").
+## Scripts del gate
 
-| Opción | Default | Descripción |
-|---|---|---|
-| `-n`, `--registros` | `20000` | Número de transacciones |
-| `--mes` | mes anterior | Mes a simular (`AAAA-MM`) |
-| `--semilla` | aleatoria | Reproduce exactamente un set anterior |
-| `--categoria-dominante` | aleatoria | `Comida`, `Transporte`, `Entretenimiento` o `Compras` |
-| `-o`, `--salida` | `output/transacciones_AAAA-MM.csv` | Ruta del CSV |
-| `-v`, `--verbose` | apagado | Imprime el resumen con los patrones inyectados |
+Se lanzan desde la raíz del repositorio; son los cuatro pasos del gate, en este orden:
 
-Ejemplo: `python generar_transacciones.py --mes 2026-09 --categoria-dominante Comida --semilla 42`
+| Comando                | Qué comprueba                  |
+| ---------------------- | ------------------------------ |
+| `npm run format:check` | El formato (Prettier)          |
+| `npm run lint`         | ESLint, incluidas las capas    |
+| `npm run typecheck`    | Los tipos de TypeScript        |
+| `npm test`             | Las pruebas unitarias (Vitest) |
 
-Para revisar la respuesta después: genera con `--semilla N` y luego corre el mismo comando
-con `-v` agregado; la misma semilla produce exactamente el mismo CSV.
+## Generador de datos
 
-## Columnas del CSV
-
-| Columna | Ejemplo | Notas |
-|---|---|---|
-| `id_transaccion` | `TX000123` | Consecutivo, ordenado por fecha |
-| `fecha` | `2026-09-15 14:32:07` | `AAAA-MM-DD HH:MM:SS` |
-| `monto` | `342.50` | MXN, siempre positivo (son gastos) |
-| `concepto` | `Taquería Cervantes` | Comercio o cargo |
-| `categoria` | `Comida` | Comida, Transporte, Supermercado, Entretenimiento, Compras, Salud, Servicios, Suscripciones, Vivienda, Viajes |
-| `cuenta` | `Tarjeta de Crédito ****8072` | Máximo 3 cuentas |
-| `zona` | `Roma Norte, CDMX` | 6 zonas de CDMX + 1 destino de viaje |
-| `latitud`, `longitud` | `19.419400`, `-99.161700` | Dentro de México |
-
-## Patrones que el reporte debería encontrar
-
-Se eligen al azar en cada ejecución y solo se imprimen con `-v`:
-
-1. **Categoría dominante**: una categoría concentra entre ~40 % y ~65 % del gasto.
-2. **Zona favorita**: una zona de CDMX concentra la mayor parte del gasto en comida y entretenimiento.
-3. **Quincena**: picos de gasto los días 15 y último del mes (y el día siguiente); bajón los 3 días previos.
-4. **Fin de semana**: más gasto viernes a domingo, sobre todo entretenimiento nocturno.
-5. **Viaje**: un fin de semana en otra ciudad (Guadalajara, Cancún, Oaxaca, etc.) con gasto elevado.
-
-Además: horarios realistas por categoría (comida al mediodía, transporte en hora pico), comercios
-favoritos que se repiten, cargos fijos (renta, luz, suscripciones) y ~0.3 % de compras atípicas.
-
-## Personalizar
-
-Zonas, comercios, rangos de montos, horarios y la intensidad de cada patrón están en
-[`configuracion.py`](configuracion.py). La lógica está en [`generar_transacciones.py`](generar_transacciones.py).
+Los CSV de ejemplo y los fixtures de las pruebas los produce un generador de Python que vive aparte
+en [`generador/`](generador/README.md); su README explica cómo usarlo y cómo regenerar los fixtures
+con `generador/fixtures.sh`.
