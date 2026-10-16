@@ -4,16 +4,28 @@ import { StrictMode } from 'react';
 import { describe, expect, it } from 'vitest';
 
 import { App } from '../../src/cliente/App';
+import { textos } from '../../src/cliente/textos';
+import semilla1 from '../fixtures/generador/2026-07-semilla-1.csv?raw';
 import { archivoCsv, csv, elegir, gastosDeJulio } from './ayudas';
 
-const DESCRIPCION_EN_ESPANOL = /^Este es un gráfico/;
+const DESCRIPCION = new RegExp(`^${textos.categorias.nombreGrafica}`);
 
 async function contenedorDeLaGrafica(): Promise<HTMLElement> {
-  return screen.findByRole('img', { name: DESCRIPCION_EN_ESPANOL });
+  return screen.findByRole('img', { name: DESCRIPCION });
 }
 
 describe('gráfica del gasto por categoría', () => {
-  it('se monta como una gráfica SVG en su contenedor, con su descripción accesible en español', async () => {
+  it('su descripción accesible recorre las categorías en orden con monto y porcentaje legibles', async () => {
+    render(<App />);
+
+    await elegir(archivoCsv(semilla1));
+
+    const nombre = (await contenedorDeLaGrafica()).getAttribute('aria-label') ?? '';
+    expect(nombre).toMatch(/Compras.*\$814,566\.30.*48\.2%.*Comida.*\$260,686\.59.*15\.4%/);
+    expect(nombre).not.toContain('814566');
+  });
+
+  it('se monta como una gráfica SVG en su contenedor, con su descripción accesible', async () => {
     render(<App />);
 
     await elegir(archivoCsv(csv('fecha,monto,concepto', gastosDeJulio(3))));
@@ -62,13 +74,11 @@ describe('gráfica del gasto por categoría', () => {
     );
 
     await waitFor(() =>
-      expect(
-        screen.getByRole('img', { name: DESCRIPCION_EN_ESPANOL }).getAttribute('aria-label'),
-      ).toContain('Viajes'),
+      expect(screen.getByRole('img', { name: DESCRIPCION }).getAttribute('aria-label')).toContain(
+        'Viajes',
+      ),
     );
-    expect(screen.getAllByRole('img', { name: DESCRIPCION_EN_ESPANOL })).toHaveLength(1);
-    expect(
-      screen.getByRole('img', { name: DESCRIPCION_EN_ESPANOL }).querySelectorAll('svg'),
-    ).toHaveLength(1);
+    expect(screen.getAllByRole('img', { name: DESCRIPCION })).toHaveLength(1);
+    expect(screen.getByRole('img', { name: DESCRIPCION }).querySelectorAll('svg')).toHaveLength(1);
   });
 });

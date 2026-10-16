@@ -1,10 +1,10 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 import { App } from '../../src/cliente/App';
 import { textos } from '../../src/cliente/textos';
 import type { MotivoRechazo } from '../../src/dominio/carga';
-import { archivoCsv, csv, elegir, gastosDeJulio, hayTablero } from './ayudas';
+import { archivoCsv, csv, elegir, gastosDeJulio, hayTablero, valorDe } from './ayudas';
 
 describe('página del tablero', () => {
   it('muestra al analista el título del tablero como encabezado', () => {
@@ -69,5 +69,41 @@ describe('rechazo de la carga', () => {
 
     expect(await screen.findByRole('group', { name: textos.kpis.gastoTotal })).toBeInTheDocument();
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+});
+
+describe('archivo que no se puede leer', () => {
+  it('avisa con una alerta y deja de mostrar el mes anterior, que ya no es el que eligió el analista', async () => {
+    render(<App />);
+    await elegir(archivoCsv(csv('fecha,monto,concepto', gastosDeJulio(3))));
+    await screen.findByRole('group', { name: textos.kpis.gastoTotal });
+    const sinDescargar = Object.assign(archivoCsv('x'), {
+      text: () => Promise.reject(new Error('el archivo no está descargado')),
+    });
+
+    await elegir(sinDescargar);
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(textos.lecturaFallida);
+    expect(hayTablero()).toBe(false);
+  });
+});
+
+describe('dos elecciones seguidas', () => {
+  it('cuenta solo la última aunque la primera termine de leerse después', async () => {
+    render(<App />);
+    let terminarLecturaLenta: (texto: string) => void = () => undefined;
+    const textoLento = csv('fecha,monto,concepto', ['2026-07-03 10:00:00,100,Café']);
+    const lento = Object.assign(archivoCsv(textoLento), {
+      text: () => new Promise<string>((resolver) => (terminarLecturaLenta = resolver)),
+    });
+    const rapido = archivoCsv(csv('fecha,monto,concepto', ['2026-07-03 10:00:00,900,Renta']));
+    await elegir(lento);
+    await elegir(rapido);
+    await screen.findByRole('group', { name: textos.kpis.gastoTotal });
+    expect(valorDe(textos.kpis.gastoTotal)).toBe('$900.00');
+
+    await act(async () => terminarLecturaLenta(textoLento));
+
+    expect(valorDe(textos.kpis.gastoTotal)).toBe('$900.00');
   });
 });

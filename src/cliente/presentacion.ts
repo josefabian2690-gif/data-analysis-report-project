@@ -2,7 +2,7 @@ import { textos } from './textos';
 
 const CONTEO = new Intl.NumberFormat('es-MX', { maximumFractionDigits: 0 });
 
-/** R-17 (docs/DOMINIO.md) fija montos, fechas y porcentajes, no conteos: este es el del cliente. */
+/** R-17 (docs/DOMINIO.md) fija montos y fechas, no conteos: este es el formato del conteo en el cliente. */
 export function formatearConteo(conteo: number): string {
   return CONTEO.format(conteo);
 }

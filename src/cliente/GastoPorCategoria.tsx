@@ -1,3 +1,4 @@
+import type { EChartsOption } from 'echarts';
 import { useId, useMemo } from 'react';
 
 import { porCategoria } from '../graficas/por-categoria';
@@ -6,9 +7,26 @@ import type { Metricas } from '../dominio/metricas';
 import { Grafica } from './Grafica';
 import { textos } from './textos';
 
+function conDescripcion(metricas: Metricas): EChartsOption {
+  const detalle = metricas.gastoPorCategoria
+    .map(({ categoria, monto, proporcion }) =>
+      textos.categorias.detalleDeCategoria(
+        categoria,
+        formatearMonto(monto),
+        formatearProporcion(proporcion),
+      ),
+    )
+    .join('; ');
+  const opcion = porCategoria(metricas);
+  return {
+    ...opcion,
+    aria: { ...opcion.aria, label: { description: textos.categorias.descripcionGrafica(detalle) } },
+  };
+}
+
 export function GastoPorCategoria({ metricas }: { metricas: Metricas }) {
   const id = useId();
-  const opcion = useMemo(() => porCategoria(metricas), [metricas]);
+  const opcion = useMemo(() => conDescripcion(metricas), [metricas]);
   return (
     <section aria-labelledby={id}>
       <h2 id={id}>{textos.categorias.titulo}</h2>

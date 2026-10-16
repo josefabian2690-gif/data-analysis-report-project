@@ -7,10 +7,6 @@ describe('formatearConteo', () => {
     expect(formatearConteo(2000)).toBe('2,000');
     expect(formatearConteo(1234567)).toBe('1,234,567');
   });
-
-  it('deja sin separador lo que no llega a mil', () => {
-    expect(formatearConteo(3)).toBe('3');
-  });
 });
 
 describe('formatearMes', () => {

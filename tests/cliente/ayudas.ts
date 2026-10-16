@@ -7,7 +7,7 @@ export function archivoCsv(texto: string, nombre = 'gastos.csv'): File {
   return new File([texto], nombre, { type: 'text/csv' });
 }
 
-/** Une el encabezado y las filas con saltos de línea, como en un CSV del generador. */
+/** Une el encabezado y las filas con saltos de línea `\n`. */
 export function csv(encabezado: string, filas: string[]): string {
   return [encabezado, ...filas].join('\n');
 }

@@ -40,9 +40,13 @@ const motivos: Record<MotivoInvalido, string> = {
   'fuera-del-mes': 'La fecha queda fuera del mes de la carga',
 };
 
+const nombreGrafica = 'Gráfico de barras del gasto por categoría, de mayor a menor';
+
 export const textos = {
   titulo: 'Tablero de gastos',
   elegirCsv: 'Elegir archivo CSV',
+  lecturaFallida:
+    'No se pudo leer el archivo. Revisa que siga en su lugar y que esté descargado, y elígelo de nuevo.',
   meses: MESES,
   rechazo,
   motivos,
@@ -77,5 +81,9 @@ export const textos = {
     columnaMonto: 'Monto',
     columnaPorcentaje: 'Porcentaje del gasto',
     dominante: 'Dominante',
+    nombreGrafica,
+    descripcionGrafica: (detalle: string) => `${nombreGrafica}. ${detalle}.`,
+    detalleDeCategoria: (categoria: string, monto: string, porcentaje: string) =>
+      `${categoria}, ${monto}, ${porcentaje}`,
   },
 } as const;
