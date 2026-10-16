@@ -1,0 +1,18 @@
+{
+  "semilla": 3,
+  "mes": "2026-09",
+  "registros": 2000,
+  "categoriaDominante": "Comida",
+  "zonaFavorita": "Coyoacán, CDMX",
+  "casa": "Roma Norte, CDMX",
+  "trabajo": "Polanco, CDMX",
+  "viaje": {
+    "destino": "Monterrey, N.L.",
+    "desde": "2026-09-04",
+    "hasta": "2026-09-06"
+  },
+  "quincenas": [
+    15,
+    30
+  ]
+}
