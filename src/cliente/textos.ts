@@ -74,6 +74,22 @@ export const textos = {
     mediana: 'Mediana',
     gastoPromedioPorDia: 'Gasto promedio por día',
   },
+  filtros: {
+    titulo: 'Filtros',
+    fechas: 'Fechas',
+    desde: 'Desde',
+    hasta: 'Hasta',
+    sinLimite: 'Sin límite',
+    categorias: 'Categorías',
+    cuentas: 'Cuentas',
+    zonas: 'Zonas',
+    monto: 'Monto',
+    montoMinimo: 'Monto mínimo',
+    montoMaximo: 'Monto máximo',
+    quitar: 'Quitar filtros',
+    sinResultados:
+      'Ningún gasto cumple los filtros. Cambia o quita los filtros para ver el tablero.',
+  },
   categorias: {
     titulo: 'Gasto por categoría',
     tabla: 'Gasto por categoría, de mayor a menor',
