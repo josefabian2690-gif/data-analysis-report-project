@@ -54,7 +54,7 @@ El gancho `worktree.preparar` (`npm ci`) falla mientras no exista `package-lock.
 
 1. El worktree del grupo 1 se crea con `git worktree add` sobre su rama (única excepción, la registra el PM).
 2. El usuario corre ahí el comando de D1: genera `package.json` (solo dependencias), `package-lock.json` y `node_modules/` dentro del worktree.
-3. El implementador completa `package.json` (nombre, `private`, `"type": "module"`, `engines.node >=22.12`, scripts) sin tocar las dependencias, y sigue con TDD.
+3. El implementador completa `package.json` (nombre, `private`, `engines.node >=22.12`, scripts) sin tocar las dependencias, y sigue con TDD. **Sin `"type": "module"`:** el lanzador de la mecánica `.claude/da/da` es un script CommonJS sin extensión, y con `"type": "module"` en el `package.json` de la raíz Node lo carga como ESM y falla (`require is not defined in ES module scope`), con lo que `verify`, `sistema`, `doctor` y `citas` dejan de correr (comprobado el 2026-10-15). Los archivos de configuración que sean ESM llevan extensión explícita (`eslint.config.mjs`, `vite.config.mts`); el código de `src/` y `tests/` lo resuelven Vite, Vitest y `tsc` con `moduleResolution: Bundler`, que no dependen de ese campo. Alternativa descartada: añadir `.claude/da/package.json` con `"type": "commonjs"` o renombrar el lanzador, porque la fase 0 no toca la mecánica del kit.
 4. A partir del grupo 2, los worktrees se montan con `.claude/da/da worktree montar`: que `npm ci` pase es la prueba de que el lockfile quedó coherente con `package.json`.
 
 ### D3. El gate cubre solo el proyecto Node
