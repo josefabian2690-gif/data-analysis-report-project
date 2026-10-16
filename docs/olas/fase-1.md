@@ -16,7 +16,7 @@
 
 | # | Grupo (change · tareas) | Rama | Estado |
 |---|---|---|---|
-| #11 | fase-1-cargar-y-ver-el-mes · 1.1–1.5 | `feat/fase-1-domain-csv-load` | en revisión |
+| #11 | fase-1-cargar-y-ver-el-mes · 1.1–1.5 | `feat/fase-1-domain-csv-load` | mergeada (`1ba3b23`) — 0 mecánicas · 0 rondas · 0 por corrección (pasada final con pasada corta del crítico) |
 | — | fase-1-cargar-y-ver-el-mes · 2.1–2.4 | `feat/fase-1-month-metrics` | pendiente |
 | #10 | fase-1-cargar-y-ver-el-mes · 3.1–3.5 | `feat/fase-1-local-server` | mergeada (`12245de`) — 0 mecánicas · 0 rondas · 0 por corrección (pasada final con pasada corta del crítico) |
 | — | fase-1-cargar-y-ver-el-mes · 4.1–4.4 | `feat/fase-1-month-dashboard` | pendiente |
@@ -38,8 +38,14 @@
 - **El NO BLOQUEA de la pasada corta de #10 va a deuda sin otra vuelta** (mismo criterio que la fase 0). Descartado: otra pasada por un hallazgo que sale de la propia pasada corta.
 - **`gh pr edit` falla con este `gh`** («Projects (classic) is being deprecated»): el cuerpo al mergear se edita con `gh api -X PATCH repos/<repo>/pulls/<n> -F body=@cuerpo.md`.
 
+- **«Fila mal formada» (PR #11):** una fila con más o menos campos que el encabezado es inválida con el código `fila-mal-formada`, comprobado antes que las obligatorias vacías. Lo destapó el crítico: un monto `1,234.50` sin comillas entraba válido como 1. `design.md` D4/D6 y la spec `carga-de-csv` (escenario en R-05) por `openspec-update-change`. Consecuencia aceptada: una fila que omite los separadores de las opcionales finales también es mal formada (ni el generador ni una hoja de cálculo lo hacen). Descartado: dejarlo a deuda (el analista vería montos falsos sin aviso).
+- **Numeración de filas con líneas vacías intermedias (PR #11):** se mantiene D6 literal, cada registro de datos suma 1 y las líneas vacías no cuentan. Descartado: contar las líneas vacías como en la hoja de cálculo (D6 dice también «sin líneas vacías»).
+- **Delimitador autodetectado por Papa (PR #11):** se queda; un CSV con `;` carga bien y uno ambiguo acaba en un rechazo visible. Descartado: fijar `,`.
+
 ## Deuda
 
+- #11, `src/dominio/carga.ts` (`leerRegistros`): las comillas mal puestas se tragan filas sin reportarlas. Una comilla de apertura sin cerrar (`2026-07-01,10,"Pan,X`) absorbe las filas siguientes hasta la próxima comilla, y un valor como `"Pan" rico` absorbe la línea siguiente en el concepto; esas filas no salen ni como transacciones ni como inválidas. Una hoja de cálculo no produce esos archivos. Arreglo posible: rechazar la carga, o marcar inválidas, ante errores `Quotes` de Papa (con su `row` en otra base, ver la línea siguiente).
+- #11, `src/dominio/carga.ts:75`: el filtro `error.type === 'FieldMismatch'` no tiene test; los errores de comillas de Papa traen `row` en otra base (cuenta encabezado y líneas vacías), así que sin el filtro una fila con comillas mal puestas marcaría como mal formada otra fila.
 - #10, `src/servidor/main.ts:10` y `:28`: el literal `'dist'` aparece dos veces (carpeta servida y archivo cuya fecha decide si se construye); cambiar solo una haría reconstruir en cada arranque sin que ningún test lo note. Arreglo: una constante. Las issues están deshabilitadas en el repositorio: queda aquí.
 - Mecánica (no producto): el implementador del grupo 1 corrió una vez `npx prettier --version` (binario local 3.9.10, sin descarga); en los encargos siguientes se prohíbe `npx` también para consultas.
 
