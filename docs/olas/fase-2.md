@@ -16,7 +16,7 @@
 
 | # | Grupo (change · tareas) | Rama | Estado |
 |---|---|---|---|
-| — | fase-2-dashboard-filtros-y-tabla · 1.1–1.5 | `feat/fase-2-domain-filters-series` | en curso |
+| #17 | fase-2-dashboard-filtros-y-tabla · 1.1–1.5 | `feat/fase-2-domain-filters-series` | mergeada (`a74e9df`) — 0 mecánicas · 0 rondas · 0 por corrección; LISTA en la pasada 1 con 4 NO BLOQUEA cerrados en la pasada final trivial |
 | — | fase-2-dashboard-filtros-y-tabla · 2.1–2.4 | `feat/fase-2-charts` | pendiente |
 | — | fase-2-dashboard-filtros-y-tabla · 3.1–3.3 | `feat/fase-2-client-filters` | pendiente |
 | — | fase-2-dashboard-filtros-y-tabla · 4.1–4.3 | `feat/fase-2-transactions-table` | pendiente |
@@ -30,6 +30,10 @@
 - **D-TM4 (Team Manager).** Decisión 4: (a), tabla paginada de 50 filas, sin virtualizar. Descartado: todas las filas en el DOM y `@tanstack/react-virtual`.
 - **D-TM5 (Team Manager).** Decisión 5: (a) y (a), fechas del filtro en listas con R-17 y gráfica por día de la semana con el promedio por día. Descartado: `<input type="date">` y el total por día de la semana.
 - Las cinco coinciden con lo escrito en `design.md`: no hace falta `openspec-update-change`.
+- **Nombres del dominio (PR #17):** `Periodo { desde, hasta }` vive en `src/dominio/calendario.ts`; un periodo de 0 días es uno con `desde > hasta` (no se normaliza), distinto de no pasar periodo. `DiaDeLaSemana` es 0 = lunes … 6 = domingo. Series: `gastoPorDia`, `gastoPorHora` + `transaccionesSinHora`, `gastoPorDiaDeLaSemana`, `gastoPorZona`, `gastoPorCuenta`. Descartado: periodo opcional con `null` para el vacío.
+- **Transacciones fuera del periodo (PR #17):** cuentan en `gastoTotal`, hora, zona y cuenta, pero no en las series por día y por día de la semana. Aceptado con el crítico: el cliente pasa el mismo filtro a `filtrar` y a `periodoDelFiltro`, así que lo filtrado siempre cae dentro del periodo. Descartado: recortar `tx` al periodo dentro de `metricas` (mezcla filtrar y medir, D2).
+- **Pasada final de #17 trivial, sin otra pasada del crítico:** solo tests unitarios y un comentario; se repitió `sistema` porque tocó un archivo de producto.
+- **El escenario «Las opciones no desaparecen al filtrar» se protege en el cliente (grupo 3):** en el dominio solo puede afirmarse que `opcionesDeFiltro` usa lo que recibe.
 
 ## Deuda
 
