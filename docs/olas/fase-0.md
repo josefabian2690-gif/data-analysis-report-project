@@ -4,6 +4,7 @@
 
 ## Arranque
 
+- Cierre (2026-10-16), sobre `ola/fase-0` @ `f747a28`: `verify` verde (166 tests, 5 archivos), `sistema` 1/1, `doctor` 41 OK · 0 FALLA · 1 AVISO, `openspec instructions apply`: 12/12, `all_done`.
 - `preflight`: 4/4 OK (`gh auth` con scopes `repo` y `workflow`, remoto y ramas `ola/*` sin otra ola activa, `openspec`, `graft`).
 - `verify` sobre la base (`chore/fase-0-planning` @ `7598242`): **rojo por diseño**, no heredado. No hay `package.json` hasta el grupo 1 (`npm ERR! enoent ... package.json`). Estado de partida, no fallo.
 - `sistema` sobre la base: no existe hasta el grupo 2. Sin specs heredados inestables.
@@ -22,7 +23,7 @@
 |---|---|---|---|
 | #5 | fase-0-andamiaje · 1.1–1.5 | `feat/fase-0-node-scaffold` | mergeada (`19e964b`) — 1 mecánica · 1 ronda · 1 por corrección (pasada final con pasada corta del crítico) |
 | #6 | fase-0-andamiaje · 2.1–2.2 | `test/fase-0-system-suite` | mergeada (`1e7a171`) — 0 mecánicas · 0 rondas · 0 por corrección (pasada final con pasada corta del crítico) |
-| — | fase-0-andamiaje · 3.1–3.5 | `chore/fase-0-generator-fixtures` | en revisión del PM (commit `e35135b`, por rebasar sobre #6) |
+| #7 | fase-0-andamiaje · 3.1–3.5 | `chore/fase-0-generator-fixtures` | mergeada (`f747a28`) — 0 mecánicas · 1 ronda · 1 por corrección |
 
 ## Decisiones del PM
 
@@ -39,10 +40,13 @@
 - **NB de #5 pasados a otros grupos**: `README.md` fuera de `.prettierignore` (grupo 3), `playwright.config.ts` dentro de `tsc` (grupo 2).
 - **Mutaciones de la suite de sistema** (PR #6): las aplica el implementador en su árbol y las corre el PM con `.claude/da/da sistema` (comando pesado). Descartado: que el PM edite código para mutar.
 - **NB de la pasada corta de #6 a deuda, sin otra vuelta** (import por defecto de `@playwright/test`, paquete `playwright/test`). Descartado: otra pasada final por NO BLOQUEA que salen de la propia pasada corta.
+- **El PM registra el modo ejecutable** de `generador/fixtures.sh` con `git update-index --chmod=+x` (PR #7): el repo tiene `core.fileMode=false` y los implementadores no tocan git. Descartado: dejarlo 100644 y documentar `bash generador/fixtures.sh`.
+- **El PM cierra la ola sin relevo pese a las 3 PRs internas mergeadas** (§6): no quedaba ningún grupo, solo el cierre, y el contexto estaba por debajo del umbral. Descartado: handover para que otro PM solo abra la PR de ola.
 - **Grupos 2 y 3 en paralelo tras mergear el 1**, con revisión y merge en serie (2 primero). El grafo los declara independientes y sus áreas son disjuntas (2: `playwright.config.ts`, `tests/sistema/`, script `test:sistema`; 3: `generador/`, `tests/fixtures/`, `README.md`, `.gitattributes`); el test de integridad entra por el `include` de Vitest del grupo 1 sin tocar su configuración. Si un encargo necesita tocar un archivo del otro, se para y se serializa. Descartado: en serie (más tiempo de reloj sin reducir riesgo).
 
 ## Deuda
 
+- Mecánica (no producto): `.claude/da/da medir` falla con esta versión de `gh` (`Unknown JSON field: "closingIssuesReferences"`); el bloque *Coste* de abajo sale en ceros y se completa a mano desde este registro.
 - #6, `eslint.config.mjs:87-95`: la regla que obliga a importar `test` de `tests/sistema/sin-red.ts` no ve `import pw from '@playwright/test'` (import por defecto) ni `import { test } from 'playwright/test'`; una spec así correría sin vigilancia de red. Arreglo: `importNames: ['test', 'default']` y una segunda entrada en `paths`, con sus casos en `tests/arquitectura/sistema.test.ts`. Mientras, el comentario de `sin-red.ts:13` se queda corto. Para la primera spec de sistema de la fase 1.
 - #6, `tests/sistema/sin-red.ts:20-22`: la vigilancia no ve WebSockets (no emiten `request` en el contexto), posiblemente tampoco `preconnect`/`dns-prefetch`, ni peticiones posteriores al cuerpo del test (telemetría diferida, `sendBeacon`). Hoy no son vía real; revisar cuando el `webServer` pase a `npm start` (fase 1).
 - #6, spec `sin-red` requisito 1: ningún test protege «escuchando **únicamente** en 127.0.0.1» (con `host: '0.0.0.0'` la suite pasa). El escenario se cumple. Lo decide el servidor propio de la fase 1.
@@ -50,20 +54,39 @@
 
 ## Se coló
 
-- —
+- Ninguno.
 
 ## Lo que queda fuera
 
-- —
+- Nada del change: 12/12 tareas. La corrección del `[PENDIENTE]` de fixtures en `docs/PLAN.md` va en la PR #4, aparte (D-TM4).
 
 ## Entorno vivo
 
-- Worktree del PM: `.claude/worktrees/pm-fase-0` (`ola/fase-0`).
-- (Worktree del grupo 1 quitado tras el merge de #5.)
+- Worktree del PM: `.claude/worktrees/pm-fase-0` (`ola/fase-0`). Se mantiene hasta que el usuario mergee la PR de ola (es la rama de ola; no se puede quitar sin perder el sitio desde el que el Team Manager rebasará).
+- Worktree de cierre: `/home/fabs/da-wt/tablero-gastos/cierre-fase-0` (lectura de `origin/ola/fase-0`), se quita al abrir la PR de ola.
+- Ningún servidor ni contenedor arriba.
 
 ## Coste
 
-- —
+Salida de `.claude/da/da medir fase-0` (falló al consultar `gh`; ver *Deuda*):
+
+```
+da medir: gh pr list falló -- Unknown JSON field: "closingIssuesReferences"
+| PRs a GitHub | 0 | · | Pasadas de crítico | 0 | · | BLOQUEA en veredictos | 0 |   (todas las filas en 0)
+```
+
+Completado desde este registro y los hilos de #5, #6 y #7:
+
+| Métrica | Valor |
+| --- | --- |
+| PRs internas | 3 (#5, #6, #7), todas mergeadas |
+| Pasadas de crítico | 7 (#5: 3 · #6: 2 · #7: 2) |
+| BLOQUEA en veredictos | 3 (#5: 2 · #7: 1) |
+| Rondas | 2 (#5: 1 · #7: 1) |
+| Devoluciones mecánicas | 1 (#5) |
+| Se coló | 0 |
+| BLOQUEA de código | 3 (reglas de pureza, zonas de capas, modo de `fixtures.sh`) |
+| `sistema` al cierre | 1/1 sobre `f747a28` |
 
 ## Handover
 
