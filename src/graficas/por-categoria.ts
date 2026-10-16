@@ -25,7 +25,7 @@ export function porCategoria({ gastoPorCategoria }: Metricas): EChartsOption {
   };
   return {
     aria: { enabled: true },
-    grid: { containLabel: true, right: '25%' },
+    grid: { right: '25%' },
     xAxis: { type: 'value', show: false },
     yAxis: { type: 'category', inverse: true, data: gastoPorCategoria.map((c) => c.categoria) },
     series: [serie],

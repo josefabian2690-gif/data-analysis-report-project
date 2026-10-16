@@ -74,13 +74,12 @@ describe('porCategoria', () => {
     expect(datos.map((d) => d.label?.position)).toEqual(['right', 'right', 'right']);
   });
 
-  it('deja margen a la derecha para que la etiqueta de la barra más larga no se corte', () => {
+  it('deja margen a la derecha para la etiqueta de la dominante', () => {
     const { opcion } = barras();
-    const grid = opcion.grid as { right?: number | string; containLabel?: boolean };
+    const grid = opcion.grid as { right?: number | string };
 
     expect(grid.right).toBeDefined();
     expect(grid.right).not.toBe(0);
-    expect(grid.containLabel).toBe(true);
   });
 
   it('oculta el eje de valores: cada barra ya trae su monto formateado y el eje mostraría números sin formato', () => {
