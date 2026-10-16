@@ -24,10 +24,10 @@ Reglas de la fase:
 
 Depende del grupo 1 (usa `Transaccion`). Área: `src/dominio/`, `tests/dominio/`, `src/graficas/`, `tests/graficas/`. Specs `metricas-del-mes` y `presentacion-es-mx`; `design.md` D7, D8 y D9.
 
-- [ ] 2.1 Tests primero de R-11 (los cinco KPIs, mediana par e impar, promedio por día natural del mes con julio y con febrero bisiesto, lista vacía sin `NaN` ni infinitos); luego `metricas`; verificar con mutaciones del divisor de días y de la mediana
-- [ ] 2.2 Tests primero de R-12 (proporción sobre el monto y no sobre el conteo, orden por monto y por nombre con empate, Compras primero en `2026-07-semilla-1` según su `*.esperado.json`); luego el gasto por categoría en `Metricas`; verificar que contar en lugar de sumar hace fallar el test
-- [ ] 2.3 Tests primero de R-17 (`$12,345.67`, `$900.00`, `$10.13`, `15/09/2026`, `01/07/2026`, `48.2%`); luego los formateadores del dominio sin `Date`; verificar que pasan con otra zona horaria en el entorno del test
-- [ ] 2.4 Tests primero en `tests/graficas/` de `porCategoria` (una barra por categoría en el orden de `Metricas`, la primera con el color de énfasis, etiquetas con R-17, `aria` activado); luego `src/graficas/`; verificar que `npm run lint` no marca imports fuera de `dominio` ni I/O
+- [x] 2.1 Tests primero de R-11 (los cinco KPIs, mediana par e impar, promedio por día natural del mes con julio y con febrero bisiesto, lista vacía sin `NaN` ni infinitos); luego `metricas`; verificar con mutaciones del divisor de días y de la mediana
+- [x] 2.2 Tests primero de R-12 (proporción sobre el monto y no sobre el conteo, orden por monto y por nombre con empate, Compras primero en `2026-07-semilla-1` según su `*.esperado.json`); luego el gasto por categoría en `Metricas`; verificar que contar en lugar de sumar hace fallar el test
+- [x] 2.3 Tests primero de R-17 (`$12,345.67`, `$900.00`, `$10.13`, `15/09/2026`, `01/07/2026`, `48.2%`); luego los formateadores del dominio sin `Date`; verificar que pasan con otra zona horaria en el entorno del test
+- [x] 2.4 Tests primero en `tests/graficas/` de `porCategoria` (una barra por categoría en el orden de `Metricas`, la primera con el color de énfasis, etiquetas con R-17, `aria` activado); luego `src/graficas/`; verificar que `npm run lint` no marca imports fuera de `dominio` ni I/O
 
 ## 3. Servidor y `npm start`
 

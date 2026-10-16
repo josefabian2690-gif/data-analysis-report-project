@@ -10,7 +10,7 @@ function esBisiesto(anio: number): boolean {
   return (anio % 4 === 0 && anio % 100 !== 0) || anio % 400 === 0;
 }
 
-function diasDelMes(anio: number, mes: number): number {
+export function diasDelMes(anio: number, mes: number): number {
   if (mes === 2) return esBisiesto(anio) ? 29 : 28;
   return MESES_DE_30_DIAS.includes(mes) ? 30 : 31;
 }
