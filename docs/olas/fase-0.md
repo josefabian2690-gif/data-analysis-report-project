@@ -20,7 +20,7 @@
 
 | # | Grupo (change · tareas) | Rama | Estado |
 |---|---|---|---|
-| — | fase-0-andamiaje · 1.1–1.5 | `feat/fase-0-node-scaffold` | en espera de la instalación del usuario |
+| #5 | fase-0-andamiaje · 1.1–1.5 | `feat/fase-0-node-scaffold` | mergeada (`19e964b`) — 1 mecánica · 1 ronda · 1 por corrección (pasada final con pasada corta del crítico) |
 | — | fase-0-andamiaje · 2.1–2.2 | `test/fase-0-system-suite` | pendiente |
 | — | fase-0-andamiaje · 3.1–3.5 | `chore/fase-0-generator-fixtures` | pendiente |
 
@@ -32,11 +32,16 @@
 - **D-TM4 (Team Manager).** La corrección del `[PENDIENTE]` de fixtures de `docs/PLAN.md` va en la PR #4, aparte; la ola trata el fixture como decidido según el brief.
 - **Excepción de montaje (D2).** El worktree del PM (`ola/fase-0`) y el del grupo 1 se crean con `git worktree add`, no con `.claude/da/da worktree montar`: su gancho `preparar` (`npm ci`) falla sin `package-lock.json`. La comprobación L0 del grupo 1 se hace a mano tras la instalación. Descartado: montar con la mecánica (falla).
 - **El grupo 3 no arranca antes de mergear el 1.** El Team Manager sugirió adelantarlo si el grafo lo permitía; `tasks.md` declara que depende del 1 (su test corre en Vitest). Descartado: encargar 3.1, 3.2 y 3.4 antes y rebasar luego (paralelismo que el grafo no declara).
+- **El proyecto no lleva `"type": "module"`** (PR #5). Con él, Node carga como ESM el lanzador CommonJS sin extensión `.claude/da/da` y toda la mecánica cae (`require is not defined in ES module scope`). Configuraciones ESM con `.mjs`/`.mts`. `tasks.md` 1.1 y `design.md` D2 revisados por `openspec-update-change` (`798152e`). Descartado: `.claude/da/package.json` con `"type": "commonjs"` o renombrar el lanzador (tocan la mecánica, D-TM1). Para el usuario entre olas.
+- **Worktrees de implementación fuera de OneDrive**, en `/home/fabs/da-wt/tablero-gastos/<grupo>` (PR #5). Los ganchos `worktree.preparar` y `worktree.comprobar` del perfil sustituyen `{wt}` sin comillas y la ruta del repo tiene un espacio (`Claudios Room`): `verify` daba `enlaces del worktree: FUERA` con todos los pasos en verde. Fuera de `/mnt/c` además los tests bajan de ~27 s a ~1 s. El worktree del grupo 1 se desmontó y se volvió a montar con `.claude/da/da worktree montar` (su `npm ci` desde el lockfile del usuario pasó). Descartado: entrecomillar `{wt}` en `.claude/desarrollo-autonomo.json` (mecánica, D-TM1). Para el usuario entre olas.
+- **En esos worktrees el lanzador se invoca con `node ./.claude/da/da`**: git guarda `.claude/da/da` como 100644 y fuera de NTFS no es ejecutable (lo encontró el crítico de #5).
+- **NB «`<title>` vacío» de #5 aceptado sin acción**: el título sale del catálogo `textos.ts` por `document.title`; `index.html` no lleva texto visible propio. Descartado: duplicar el texto en el HTML.
+- **NB de #5 pasados a otros grupos**: `README.md` fuera de `.prettierignore` (grupo 3), `playwright.config.ts` dentro de `tsc` (grupo 2).
 - **Grupos 2 y 3 en paralelo tras mergear el 1**, con revisión y merge en serie (2 primero). El grafo los declara independientes y sus áreas son disjuntas (2: `playwright.config.ts`, `tests/sistema/`, script `test:sistema`; 3: `generador/`, `tests/fixtures/`, `README.md`, `.gitattributes`); el test de integridad entra por el `include` de Vitest del grupo 1 sin tocar su configuración. Si un encargo necesita tocar un archivo del otro, se para y se serializa. Descartado: en serie (más tiempo de reloj sin reducir riesgo).
 
 ## Deuda
 
-- —
+- Mecánica (no producto), para entre olas, sin issue (issues deshabilitadas en el repo): (1) lanzador `.claude/da/da` CommonJS sin extensión, incompatible con `"type": "module"` en la raíz; (2) ganchos del perfil con `{wt}` sin comillas; (3) `.claude/da/da` con modo 100644 en git.
 
 ## Se coló
 
@@ -49,7 +54,7 @@
 ## Entorno vivo
 
 - Worktree del PM: `.claude/worktrees/pm-fase-0` (`ola/fase-0`).
-- Worktree del grupo 1: `.claude/worktrees/g1-node-scaffold` (`feat/fase-0-node-scaffold`), esperando la instalación del usuario.
+- (Worktree del grupo 1 quitado tras el merge de #5.)
 
 ## Coste
 
