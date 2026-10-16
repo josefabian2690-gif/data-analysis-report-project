@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:sistema": "playwright test",
     "build": "vite build",
     "dev": "vite"
   },

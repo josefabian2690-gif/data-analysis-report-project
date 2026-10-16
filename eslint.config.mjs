@@ -78,4 +78,23 @@ export default defineConfig(
       ],
     },
   },
+  {
+    files: [`tests/sistema/**/*.{${extensionesDeCodigo}}`],
+    ignores: ['tests/sistema/sin-red.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '@playwright/test',
+              importNames: ['test'],
+              message:
+                'Importa test de ./sin-red: así toda prueba de sistema vigila que ninguna petición salga de 127.0.0.1 (docs/STACK.md, «Sin red en ejecución»).',
+            },
+          ],
+        },
+      ],
+    },
+  },
 );

@@ -16,8 +16,8 @@ Arranca con la instalación del usuario de `design.md` D1 dentro del worktree de
 
 Depende del grupo 1. Área: `tests/sistema/` y `playwright.config.ts`.
 
-- [ ] 2.1 Configurar Playwright (`playwright.config.ts`) con `webServer` = `vite preview` del bundle construido en 127.0.0.1 y el script `test:sistema`; verificar que `.claude/da/da sistema` construye, levanta el servidor y lo baja al terminar
-- [ ] 2.2 Prueba de sistema `tests/sistema/`: abre la página, encuentra el encabezado por su nombre accesible y falla nombrando cualquier petición cuyo host no sea 127.0.0.1 (spec `sin-red`); verificar que pasa sobre la página vacía y que falla si se añade temporalmente un `<link>` a una fuente web externa en `index.html` (mutación que no se commitea)
+- [x] 2.1 Configurar Playwright (`playwright.config.ts`) con `webServer` = `vite preview` del bundle construido en 127.0.0.1 y el script `test:sistema`; verificar que `.claude/da/da sistema` construye, levanta el servidor y lo baja al terminar
+- [x] 2.2 Prueba de sistema `tests/sistema/`: abre la página, encuentra el encabezado por su nombre accesible y falla nombrando cualquier petición cuyo host no sea 127.0.0.1 (spec `sin-red`); verificar que pasa sobre la página vacía y que falla si se añade temporalmente un `<link>` a una fuente web externa en `index.html` (mutación que no se commitea)
 
 ## 3. Generador en `generador/` y fixtures con semilla
 

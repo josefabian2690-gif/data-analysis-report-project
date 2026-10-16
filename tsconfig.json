@@ -16,5 +16,5 @@
     "noEmit": true,
     "types": ["node", "vite/client"]
   },
-  "include": ["src", "tests", "*.config.mts", "*.config.mjs"]
+  "include": ["src", "tests", "*.config.ts", "*.config.mts", "*.config.mjs"]
 }
