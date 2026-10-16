@@ -25,6 +25,9 @@ const zonasDeCapas = Object.entries(puedeImportar).map(([capa, permitidas]) => (
     'Una capa solo importa de sí misma y de las que su fila de docs/ARQUITECTURA.md permite; de ningún otro archivo del proyecto.',
 }));
 
+const sinVigilancia =
+  'Importa test de ./sin-red: así toda prueba de sistema vigila que ninguna petición salga de 127.0.0.1 (docs/STACK.md, «Sin red en ejecución»).';
+
 const sinIo = 'Las capas puras no hacen I/O (docs/STACK.md, regla innegociable 1).';
 const sinAliasGlobal = `${sinIo} Tampoco por un alias del objeto global.`;
 
@@ -49,6 +52,7 @@ export default defineConfig(
       'output/',
       'historial/',
       'dist/',
+      'dist-server/',
       'tests/fixtures/generador/',
       'test-results/',
       'playwright-report/',
@@ -85,15 +89,22 @@ export default defineConfig(
       'no-restricted-imports': [
         'error',
         {
-          paths: [
-            {
-              name: '@playwright/test',
-              importNames: ['test'],
-              message:
-                'Importa test de ./sin-red: así toda prueba de sistema vigila que ninguna petición salga de 127.0.0.1 (docs/STACK.md, «Sin red en ejecución»).',
-            },
-          ],
+          paths: ['@playwright/test', 'playwright/test'].map((name) => ({
+            name,
+            importNames: ['test', '_baseTest', 'default'],
+            message: sinVigilancia,
+          })),
         },
+      ],
+      'no-restricted-syntax': [
+        'error',
+        ...['@playwright/test', 'playwright/test'].flatMap((name) => [
+          { selector: `ImportExpression[source.value='${name}']`, message: sinVigilancia },
+          {
+            selector: `ImportExpression[source.quasis.0.value.cooked='${name}']`,
+            message: sinVigilancia,
+          },
+        ]),
       ],
     },
   },

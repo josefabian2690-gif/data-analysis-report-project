@@ -8,6 +8,7 @@ generador/
 output/
 historial/
 dist/
+dist-server/
 tests/fixtures/generador/
 test-results/
 playwright-report/

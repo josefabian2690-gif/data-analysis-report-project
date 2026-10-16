@@ -71,7 +71,7 @@ Alternativa descartada: construir siempre los dos bundles. Es más simple, pero 
 
 - **`CargaRechazada`**, un error que exporta el dominio y que `parsearCsv` lanza cuando el archivo no se puede usar. Lleva un motivo de un catálogo cerrado (vacío, sin filas, faltan columnas con su lista, sin filas válidas).
 - **`pideConfirmacion(r: ResultadoCarga): boolean`**: R-05, más del 5 % de las filas de datos (válidas + inválidas) es inválido.
-- **`FilaInvalida.motivo`** es un código de un catálogo cerrado (fecha, monto, concepto vacío, id repetido, fuera del mes), no un texto. El texto es-MX de cada código vive en `src/cliente/textos.ts`, en un registro exhaustivo por código, para que un motivo nuevo sin texto no compile.
+- **`FilaInvalida.motivo`** es un código de un catálogo cerrado (fila mal formada, fecha, monto, concepto vacío, id repetido, fuera del mes), no un texto. «Fila mal formada» es la fila cuyo número de campos no coincide con el del encabezado (por ejemplo, un monto `1,234.50` sin comillas): no se puede leer (R-04) y se reporta como inválida (R-05) en vez de entrar con los datos desplazados. El texto es-MX de cada código vive en `src/cliente/textos.ts`, en un registro exhaustivo por código, para que un motivo nuevo sin texto no compile.
 
 Alternativa descartada: un resultado unión `{ ok: true … } | { ok: false … }`. Cambia la firma escrita en `docs/ARQUITECTURA.md`, y ese documento solo se toca en una PR del usuario.
 
@@ -87,6 +87,7 @@ El esquema de `src/dominio/esquema.ts` usa solo cadenas, números y `null`, sin 
 
 1. Encabezado. Papa Parse sobre el string, con `header`, sin líneas vacías y sin BOM. Los nombres de columna se recortan. Sin las obligatorias, `CargaRechazada` con todas las que faltan (R-01).
 2. Por fila, por separado:
+   - Número de campos distinto al del encabezado: «fila mal formada».
    - Obligatorias vacías.
    - Fecha (R-03): forma exacta y día que existe en el calendario. Se calcula sin `Date` con zona horaria.
    - Monto (R-04): `^\d+(\.\d+)?$` y mayor que 0.
