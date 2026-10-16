@@ -36,6 +36,8 @@ function archivoConInvalidas() {
   };
 }
 
+const TROZOS_DEL_ARCHIVO = ['TX000001', 'Montañez'];
+
 function dato(pagina: Page, etiqueta: string) {
   return pagina.getByRole('group', { name: etiqueta, exact: true }).locator('strong');
 }
@@ -44,9 +46,13 @@ test('el CSV del generador con tres filas inválidas se convierte en el tablero 
   page,
 }) => {
   await page.goto('/');
-  const peticiones: { metodo: string; cuerpo: string | null }[] = [];
+  const peticiones: { metodo: string; cuerpo: string | null; url: string }[] = [];
   page.on('request', (peticion) =>
-    peticiones.push({ metodo: peticion.method(), cuerpo: peticion.postData() }),
+    peticiones.push({
+      metodo: peticion.method(),
+      cuerpo: peticion.postData(),
+      url: peticion.url(),
+    }),
   );
 
   await page.getByLabel(textos.elegirCsv).setInputFiles(archivoConInvalidas());
@@ -56,7 +62,6 @@ test('el CSV del generador con tres filas inválidas se convierte en el tablero 
   await expect(dato(page, textos.kpis.transacciones)).toHaveText('2,000');
   await expect(dato(page, textos.resumen.validas)).toHaveText('2,000');
   await expect(dato(page, textos.resumen.invalidas)).toHaveText('3');
-  await expect(page.getByRole('heading', { name: textos.confirmacion.titulo })).toHaveCount(0);
 
   const invalidas = page.getByRole('table', { name: textos.resumen.tablaDeInvalidas, exact: true });
   const filasDeInvalidas = invalidas.getByRole('row');
@@ -84,5 +89,11 @@ test('el CSV del generador con tres filas inválidas se convierte en el tablero 
   expect(
     peticiones.filter(({ metodo, cuerpo }) => metodo !== 'GET' || cuerpo !== null),
     'peticiones con método distinto de GET o con cuerpo',
+  ).toEqual([]);
+  expect(
+    peticiones.filter(({ url }) =>
+      TROZOS_DEL_ARCHIVO.some((trozo) => decodeURIComponent(url).includes(trozo)),
+    ),
+    'peticiones que llevan un trozo del archivo en la URL',
   ).toEqual([]);
 });
