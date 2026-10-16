@@ -14,9 +14,12 @@ export interface Metricas {
   numeroDeTransacciones: number;
   ticketPromedio: number;
   mediana: number;
-  /** Gasto total entre los días naturales del mes de las transacciones (R-11). */
+  /**
+   * Gasto total entre los días naturales del mes de las transacciones. R-11 pide el periodo
+   * filtrado; mientras no haya filtros, el periodo es ese mes, que es el mismo para todas por R-08.
+   */
   gastoPromedioPorDia: number;
-  /** De mayor a menor monto y, con empate, por nombre (R-12). */
+  /** De mayor a menor monto y, con empate, por nombre, para que la dominante vaya primera. */
   gastoPorCategoria: GastoDeCategoria[];
 }
 

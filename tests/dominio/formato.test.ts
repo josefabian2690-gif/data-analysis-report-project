@@ -45,6 +45,7 @@ describe('R-17 no depende de la zona horaria de la máquina', () => {
     'con TZ=%s las fechas, montos y porcentajes salen igual',
     (zona) => {
       process.env['TZ'] = zona;
+      expect(Intl.DateTimeFormat().resolvedOptions().timeZone).toBe(zona);
 
       expect(formatearFecha('2026-07-01')).toBe('01/07/2026');
       expect(formatearFecha('2026-09-15')).toBe('15/09/2026');

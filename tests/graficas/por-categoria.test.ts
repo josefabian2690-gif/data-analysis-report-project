@@ -23,7 +23,7 @@ function barras() {
   const datos = (serie?.data ?? []) as {
     value: number;
     itemStyle?: { color?: string };
-    label?: { formatter?: string };
+    label?: { formatter?: string; position?: string };
   }[];
   return { opcion, serie, datos };
 }
@@ -66,6 +66,27 @@ describe('porCategoria', () => {
       '$900.00 · 30.0%',
       '$10.13 · 1.2%',
     ]);
+  });
+
+  it('pone la etiqueta de cada barra a su derecha, fuera de ella, para que las barras cortas no la tapen', () => {
+    const { datos } = barras();
+
+    expect(datos.map((d) => d.label?.position)).toEqual(['right', 'right', 'right']);
+  });
+
+  it('deja margen a la derecha para que la etiqueta de la barra más larga no se corte', () => {
+    const { opcion } = barras();
+    const grid = opcion.grid as { right?: number | string; containLabel?: boolean };
+
+    expect(grid.right).toBeDefined();
+    expect(grid.right).not.toBe(0);
+    expect(grid.containLabel).toBe(true);
+  });
+
+  it('oculta el eje de valores: cada barra ya trae su monto formateado y el eje mostraría números sin formato', () => {
+    const { opcion } = barras();
+
+    expect((opcion.xAxis as { show?: boolean }).show).toBe(false);
   });
 
   it('activa aria para lectores de pantalla', () => {
