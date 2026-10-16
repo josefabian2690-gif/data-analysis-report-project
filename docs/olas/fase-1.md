@@ -17,7 +17,7 @@
 | # | Grupo (change · tareas) | Rama | Estado |
 |---|---|---|---|
 | #11 | fase-1-cargar-y-ver-el-mes · 1.1–1.5 | `feat/fase-1-domain-csv-load` | mergeada (`1ba3b23`) — 0 mecánicas · 0 rondas · 0 por corrección (pasada final con pasada corta del crítico) |
-| — | fase-1-cargar-y-ver-el-mes · 2.1–2.4 | `feat/fase-1-month-metrics` | pendiente |
+| #12 | fase-1-cargar-y-ver-el-mes · 2.1–2.4 | `feat/fase-1-month-metrics` | mergeada (`a641f99`) — 0 mecánicas · 1 ronda · 0 por corrección (pasada final con pasada corta del crítico) |
 | #10 | fase-1-cargar-y-ver-el-mes · 3.1–3.5 | `feat/fase-1-local-server` | mergeada (`12245de`) — 0 mecánicas · 0 rondas · 0 por corrección (pasada final con pasada corta del crítico) |
 | — | fase-1-cargar-y-ver-el-mes · 4.1–4.4 | `feat/fase-1-month-dashboard` | pendiente |
 | — | fase-1-cargar-y-ver-el-mes · 5.1 | `test/fase-1-main-flow` | pendiente |
@@ -42,8 +42,12 @@
 - **Numeración de filas con líneas vacías intermedias (PR #11):** se mantiene D6 literal, cada registro de datos suma 1 y las líneas vacías no cuentan. Descartado: contar las líneas vacías como en la hoja de cálculo (D6 dice también «sin líneas vacías»).
 - **Delimitador autodetectado por Papa (PR #11):** se queda; un CSV con `;` carga bien y uno ambiguo acaba en un rechazo visible. Descartado: fijar `,`.
 
+- **Ronda de #12 (clase: juicio del crítico):** BLOQUEA por etiquetas de la gráfica centradas dentro de la barra (default `inside` de ECharts, `node_modules/echarts/lib/label/labelStyle.js:201`), ilegibles en las barras cortas. Corregido con etiquetas a la derecha y margen; verificado por el PM en el instalado antes de devolver.
+- **Gráfica de categoría (PR #12):** eje de valores oculto (cada barra trae su monto con R-17), gris base `#64748b` (3:1 sobre blanco), sin `grid.containLabel` (obsoleto en ECharts 6). Descartado: formatear el eje con R-17 (duplica la información de las etiquetas).
+
 ## Deuda
 
+- #12 (anterior a la ola), `eslint.config.mjs:23`: las zonas de capas llevan `./node_modules` en `except`, así que un import de valor de `echarts` o `papaparse` en `src/graficas/` no lo marca el lint; ni el «solo `import type`» de `design.md` D9 ni la fila `graficas → dominio` se hacen cumplir para paquetes. El código de la ola cumple. Fuera del área de los grupos; para un change de mecánica de lint.
 - #11, `src/dominio/carga.ts` (`leerRegistros`): las comillas mal puestas se tragan filas sin reportarlas. Una comilla de apertura sin cerrar (`2026-07-01,10,"Pan,X`) absorbe las filas siguientes hasta la próxima comilla, y un valor como `"Pan" rico` absorbe la línea siguiente en el concepto; esas filas no salen ni como transacciones ni como inválidas. Una hoja de cálculo no produce esos archivos. Arreglo posible: rechazar la carga, o marcar inválidas, ante errores `Quotes` de Papa (con su `row` en otra base, ver la línea siguiente).
 - #11, `src/dominio/carga.ts:75`: el filtro `error.type === 'FieldMismatch'` no tiene test; los errores de comillas de Papa traen `row` en otra base (cuenta encabezado y líneas vacías), así que sin el filtro una fila con comillas mal puestas marcaría como mal formada otra fila.
 - #10, `src/servidor/main.ts:10` y `:28`: el literal `'dist'` aparece dos veces (carpeta servida y archivo cuya fecha decide si se construye); cambiar solo una haría reconstruir en cada arranque sin que ningún test lo note. Arreglo: una constante. Las issues están deshabilitadas en el repositorio: queda aquí.
@@ -67,4 +71,15 @@
 
 ## Handover
 
-- —
+- **Estado estable:** PR #12 mergeada (`a641f99`); nada en vuelo. Worktrees de grupo quitados.
+- **Hecho:** grupos 3 (#10), 1 (#11) y 2 (#12) mergeados en `ola/fase-1`; 13 de 19 casillas.
+- **Lo que queda en orden:** grupo 4 (cliente, `implementador-cliente`), rama `feat/fase-1-month-dashboard` desde `ola/fase-1`; luego el grupo 5 (`test/fase-1-main-flow`, `implementador-cliente`), que ya puede encargarse tras el 4 (la decisión 1 del usuario está cerrada); luego el cierre (PR `ola/fase-1` → `chore/fase-1-planning`, plantilla B).
+- **Avisos para los encargos:**
+  - Grupo 4: el dominio exporta `parsearCsv`, `pideConfirmacion`, `CargaRechazada` (`motivo` con `codigo` `vacio` / `sin-filas` / `faltan-columnas` + `columnas` / `sin-filas-validas`) en `src/dominio/carga.ts`; los códigos de fila son `fila-mal-formada`, `fecha`, `monto`, `concepto-vacio`, `id-repetido`, `fuera-del-mes`, y **los seis** necesitan texto es-MX en `src/cliente/textos.ts` (registro exhaustivo). `metricas`, `GastoDeCategoria` en `src/dominio/metricas.ts`; `formatearMonto`, `formatearFecha`, `formatearProporcion` en `src/dominio/formato.ts`; `porCategoria` en `src/graficas/por-categoria.ts`.
+  - Grupo 4, del crítico de #12: ECharts solo trae los locales EN y ZH; con `aria.enabled` el lector de pantalla diría «This is a chart…» salvo que se registre el ES instalado (`echarts/i18n/langES-obj.js`) y se pase `locale: 'ES'` a `init`. Y `grid.right: '25%'` es relativo: por debajo de unos 400 px se corta el `%` de la etiqueta de la dominante; la captura del tablero debe ser al ancho real de la tarjeta y la tarjeta no debe bajar de ese ancho en el viewport de escritorio.
+  - Captura del grupo 4: el PM levanta `npm start` en el worktree del grupo con `TABLERO_SIN_NAVEGADOR=1` y un `TABLERO_PUERTO` libre (por ejemplo 4311), como comando pesado desacoplado (`setsid nohup … &`), y lo baja por PID (no con `pkill -f`, que mata la propia shell). El PM no corre nada pesado mientras el implementador captura.
+  - Worktrees en `/home/fabs/da-wt/tablero-gastos/<grupo>`, montados con `--desde ola/fase-1 --sistema`; dentro, `node ./.claude/da/da` (modo 644).
+  - `gh pr edit` falla con este `gh` (Projects classic): editar el cuerpo con `gh api -X PATCH repos/josefabian2690-gif/data-analysis-report-project/pulls/<n> -F body=@cuerpo.md`.
+  - Implementadores: prohibir `npx` también para consultas.
+- **Pendiente con el Team Manager o el usuario:** nada abierto.
+- **Por qué paro:** 3 PRs internas mergeadas (§6).
