@@ -12,18 +12,30 @@ const puedeImportar = {
   cliente: ['dominio', 'graficas', 'reporte'],
   servidor: ['dominio'],
 };
-const capas = Object.keys(puedeImportar);
 const capasPuras = ['dominio', 'graficas', 'reporte'];
+const extensionesDeCodigo = 'js,jsx,mjs,cjs,ts,tsx,mts,cts';
 /** @param {string} capa */
 const rutaDeCapa = (capa) => `./src/${capa}`;
 
 const zonasDeCapas = Object.entries(puedeImportar).map(([capa, permitidas]) => ({
   target: rutaDeCapa(capa),
-  from: capas.filter((otra) => otra !== capa && !permitidas.includes(otra)).map(rutaDeCapa),
-  message: 'Una capa solo importa de las que su fila de docs/ARQUITECTURA.md permite.',
+  from: '.',
+  except: [...[capa, ...permitidas].map(rutaDeCapa), './node_modules'],
+  message:
+    'Una capa solo importa de sí misma y de las que su fila de docs/ARQUITECTURA.md permite; de ningún otro archivo del proyecto.',
 }));
 
 const sinIo = 'Las capas puras no hacen I/O (docs/STACK.md, regla innegociable 1).';
+const sinAliasGlobal = `${sinIo} Tampoco por un alias del objeto global.`;
+
+const globalesProhibidos = [
+  ...['fetch', 'window', 'document', 'localStorage', 'sessionStorage', 'indexedDB'],
+  ...['XMLHttpRequest', 'WebSocket', 'location', 'navigator', 'performance'],
+].map((name) => ({ name, message: sinIo }));
+const aliasesDelGlobal = ['globalThis', 'self', 'global'].map((name) => ({
+  name,
+  message: sinAliasGlobal,
+}));
 
 export default defineConfig(
   {
@@ -45,7 +57,7 @@ export default defineConfig(
   js.configs.recommended,
   tseslint.configs.recommended,
   {
-    files: ['src/**/*.{ts,tsx}'],
+    files: [`src/**/*.{${extensionesDeCodigo}}`],
     plugins: { import: importPlugin },
     settings: { 'import/resolver': { typescript: { alwaysTryTypes: true } } },
     rules: {
@@ -53,16 +65,10 @@ export default defineConfig(
     },
   },
   {
-    files: capasPuras.map((capa) => `src/${capa}/**/*.{ts,tsx}`),
+    files: capasPuras.map((capa) => `src/${capa}/**/*.{${extensionesDeCodigo}}`),
     rules: {
       'import/no-nodejs-modules': 'error',
-      'no-restricted-globals': [
-        'error',
-        ...['fetch', 'window', 'document', 'localStorage'].map((name) => ({
-          name,
-          message: sinIo,
-        })),
-      ],
+      'no-restricted-globals': ['error', ...globalesProhibidos, ...aliasesDelGlobal],
       'no-restricted-properties': [
         'error',
         { object: 'process', property: 'env', message: sinIo },
@@ -70,8 +76,10 @@ export default defineConfig(
       ],
       'no-restricted-syntax': [
         'error',
+        { selector: "NewExpression[callee.name='Date'][arguments.length=0]", message: sinIo },
+        { selector: "CallExpression[callee.name='Date']", message: sinIo },
         {
-          selector: "NewExpression[callee.name='Date'][arguments.length=0]",
+          selector: "MemberExpression[object.type='MetaProperty'][property.name='env']",
           message: sinIo,
         },
       ],

@@ -2,7 +2,7 @@
   "name": "tablero-gastos",
   "private": true,
   "engines": {
-    "node": ">=22.12"
+    "node": ">=22.13"
   },
   "scripts": {
     "format:check": "prettier --check .",
