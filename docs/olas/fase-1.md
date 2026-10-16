@@ -19,7 +19,7 @@
 | #11 | fase-1-cargar-y-ver-el-mes · 1.1–1.5 | `feat/fase-1-domain-csv-load` | mergeada (`1ba3b23`) — 0 mecánicas · 0 rondas · 0 por corrección (pasada final con pasada corta del crítico) |
 | #12 | fase-1-cargar-y-ver-el-mes · 2.1–2.4 | `feat/fase-1-month-metrics` | mergeada (`a641f99`) — 0 mecánicas · 1 ronda · 0 por corrección (pasada final con pasada corta del crítico) |
 | #10 | fase-1-cargar-y-ver-el-mes · 3.1–3.5 | `feat/fase-1-local-server` | mergeada (`12245de`) — 0 mecánicas · 0 rondas · 0 por corrección (pasada final con pasada corta del crítico) |
-| — | fase-1-cargar-y-ver-el-mes · 4.1–4.4 | `feat/fase-1-month-dashboard` | pendiente |
+| #13 | fase-1-cargar-y-ver-el-mes · 4.1–4.4 | `feat/fase-1-month-dashboard` | mergeada (`d22b5cc`) — 1 mecánica · 0 rondas · 0 por corrección (pasada final con pasada corta del crítico) |
 | — | fase-1-cargar-y-ver-el-mes · 5.1 | `test/fase-1-main-flow` | pendiente |
 
 ## Decisiones del PM
@@ -45,12 +45,24 @@
 - **Ronda de #12 (clase: juicio del crítico):** BLOQUEA por etiquetas de la gráfica centradas dentro de la barra (default `inside` de ECharts, `node_modules/echarts/lib/label/labelStyle.js:201`), ilegibles en las barras cortas. Corregido con etiquetas a la derecha y margen; verificado por el PM en el instalado antes de devolver.
 - **Gráfica de categoría (PR #12):** eje de valores oculto (cada barra trae su monto con R-17), gris base `#64748b` (3:1 sobre blanco), sin `grid.containLabel` (obsoleto en ECharts 6). Descartado: formatear el eje con R-17 (duplica la información de las etiquetas).
 
+- **Relevo de PM (2026-10-16).** El PM entrante tomó el worktree `pm-fase-1` del saliente y siguió por el grupo 4.
+- **Devolución mecánica de #13 (clase: captura revisada por el PM):** la columna «Motivo» de la tabla de inválidas salía alineada a la derecha en las filas cortas (regla de celda suelta en `src/cliente/estilos.css`) y la confirmación quedaba pegada al control. Corregido y recapturado antes del commit.
+- **Mes y conteo en el cliente (PR #13):** el mes se muestra como «julio de 2026» con los nombres en `src/cliente/textos.ts`, y el número de transacciones con separador de miles es-MX, con su formateador en `src/cliente/presentacion.ts`. R-17 no cubre conteos y el dominio estaba fuera del área del grupo. Descartado: un formateador de conteo en el dominio (cuando el reporte lo necesite, se mueve).
+- **#13 sin partir:** el diff ronda 1 050 líneas (la mitad, tests) frente a las ~600 orientativas. Partirlo suponía una sexta PR, por encima del tope de la ola. Descartado: escalar para partir.
+- **Descripción accesible de la gráfica (PR #13):** la arma el cliente con `aria.label.description`, textos del catálogo y los formateadores de R-17; `porCategoria` no cambia. Con eso el locale ES de ECharts dejó de observarse y se borró (y con él el import por ruta relativa a `node_modules`). Descartado: armarla en `graficas` (sus palabras son texto visible y viven en `src/cliente/textos.ts`, que `graficas` no puede importar) y dejarla a deuda.
+- **Archivo ilegible y carrera de lecturas (PR #13):** un archivo que no se puede leer vuelve al estado inicial con un aviso del catálogo; si dos lecturas terminan en desorden, solo cuenta la última elección. Descartado: a deuda (el analista vería el mes anterior creyendo que es el nuevo).
+- **«El archivo no sale del navegador» va a la 5.1 (PR #13):** el escenario de la spec `tablero-del-mes` no tenía prueba (la vigilancia de `sin-red.ts` solo mira el host). La spec de sistema del grupo 5 comprobará además que, tras elegir el archivo, ninguna petición distinta de `GET` sale de la página. Descartado: dejarlo sin prueba.
+- **Los NO BLOQUEA de la pasada corta de #13 van a deuda sin otra vuelta** (mismo criterio que en #10).
+
 ## Deuda
 
 - #12 (anterior a la ola), `eslint.config.mjs:23`: las zonas de capas llevan `./node_modules` en `except`, así que un import de valor de `echarts` o `papaparse` en `src/graficas/` no lo marca el lint; ni el «solo `import type`» de `design.md` D9 ni la fila `graficas → dominio` se hacen cumplir para paquetes. El código de la ola cumple. Fuera del área de los grupos; para un change de mecánica de lint.
 - #11, `src/dominio/carga.ts` (`leerRegistros`): las comillas mal puestas se tragan filas sin reportarlas. Una comilla de apertura sin cerrar (`2026-07-01,10,"Pan,X`) absorbe las filas siguientes hasta la próxima comilla, y un valor como `"Pan" rico` absorbe la línea siguiente en el concepto; esas filas no salen ni como transacciones ni como inválidas. Una hoja de cálculo no produce esos archivos. Arreglo posible: rechazar la carga, o marcar inválidas, ante errores `Quotes` de Papa (con su `row` en otra base, ver la línea siguiente).
 - #11, `src/dominio/carga.ts:75`: el filtro `error.type === 'FieldMismatch'` no tiene test; los errores de comillas de Papa traen `row` en otra base (cuenta encabezado y líneas vacías), así que sin el filtro una fila con comillas mal puestas marcaría como mal formada otra fila.
 - #10, `src/servidor/main.ts:10` y `:28`: el literal `'dist'` aparece dos veces (carpeta servida y archivo cuya fecha decide si se construye); cambiar solo una haría reconstruir en cada arranque sin que ningún test lo note. Arreglo: una constante. Las issues están deshabilitadas en el repositorio: queda aquí.
+- #13, `src/cliente/App.tsx` (`alElegir`): el aviso de archivo ilegible (`textos.lecturaFallida`) se muestra para cualquier error que no sea `CargaRechazada`, también uno del dominio, y afirma una causa («revisa que siga en su lugar y que esté descargado») que puede no ser la real; el error no queda en la consola. Arreglo: registrar el error y un texto que no afirme la causa.
+- #13: el estado de archivo ilegible no tiene captura (usa el mismo estilo que el rechazo, que sí la tiene).
+- #13, detalles visuales: con una sola categoría la barra de la gráfica sale muy alta; «Sin categoría» se parte en dos líneas junto a la marca «Dominante»; tras cargar, el control dice «No file chosen» y la página no muestra el nombre del archivo cargado. La spec no lo pide.
 - Mecánica (no producto): el implementador del grupo 1 corrió una vez `npx prettier --version` (binario local 3.9.10, sin descarga); en los encargos siguientes se prohíbe `npx` también para consultas.
 
 ## Se coló
