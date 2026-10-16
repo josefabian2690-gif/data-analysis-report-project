@@ -30,7 +30,7 @@ const sinAliasGlobal = `${sinIo} Tampoco por un alias del objeto global.`;
 
 const globalesProhibidos = [
   ...['fetch', 'window', 'document', 'localStorage', 'sessionStorage', 'indexedDB'],
-  ...['XMLHttpRequest', 'WebSocket', 'location', 'navigator', 'performance'],
+  ...['XMLHttpRequest', 'WebSocket', 'location', 'navigator', 'performance', 'process'],
 ].map((name) => ({ name, message: sinIo }));
 const aliasesDelGlobal = ['globalThis', 'self', 'global'].map((name) => ({
   name,
@@ -69,19 +69,12 @@ export default defineConfig(
     rules: {
       'import/no-nodejs-modules': 'error',
       'no-restricted-globals': ['error', ...globalesProhibidos, ...aliasesDelGlobal],
-      'no-restricted-properties': [
-        'error',
-        { object: 'process', property: 'env', message: sinIo },
-        { object: 'Date', property: 'now', message: sinIo },
-      ],
+      'no-restricted-properties': ['error', { object: 'Date', property: 'now', message: sinIo }],
       'no-restricted-syntax': [
         'error',
         { selector: "NewExpression[callee.name='Date'][arguments.length=0]", message: sinIo },
         { selector: "CallExpression[callee.name='Date']", message: sinIo },
-        {
-          selector: "MemberExpression[object.type='MetaProperty'][property.name='env']",
-          message: sinIo,
-        },
+        { selector: "MetaProperty[meta.name='import']", message: sinIo },
       ],
     },
   },

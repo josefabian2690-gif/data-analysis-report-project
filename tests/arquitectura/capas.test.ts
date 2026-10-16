@@ -166,8 +166,14 @@ describe('capas puras: sin I/O', () => {
     ['usar localStorage', 'no-restricted-globals', `export const l = localStorage.length;\n`],
     [
       'leer process.env',
-      'no-restricted-properties',
+      'no-restricted-globals',
       `export const e = process.env.TABLERO_HISTORIAL;\n`,
+    ],
+    ['llamar process.hrtime()', 'no-restricted-globals', `export const t = process.hrtime();\n`],
+    [
+      'leer el entorno por un alias de process',
+      'no-restricted-globals',
+      `const p = process;\nexport const e = p.env;\n`,
     ],
     ['llamar Date.now()', 'no-restricted-properties', `export const t = Date.now();\n`],
     [
@@ -177,6 +183,12 @@ describe('capas puras: sin I/O', () => {
     ],
     ['llamar Date()', 'no-restricted-syntax', `export const t = Date();\n`],
     ['leer import.meta.env', 'no-restricted-syntax', `export const e = import.meta.env;\n`],
+    [
+      'desestructurar import.meta',
+      'no-restricted-syntax',
+      `const { env } = import.meta;\nexport const e = env;\n`,
+    ],
+    ['leer import.meta["env"]', 'no-restricted-syntax', `export const e = import.meta['env'];\n`],
     ['llamar performance.now()', 'no-restricted-globals', `export const t = performance.now();\n`],
     [
       'llamar globalThis.fetch',
