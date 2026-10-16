@@ -21,8 +21,8 @@
 | # | Grupo (change · tareas) | Rama | Estado |
 |---|---|---|---|
 | #5 | fase-0-andamiaje · 1.1–1.5 | `feat/fase-0-node-scaffold` | mergeada (`19e964b`) — 1 mecánica · 1 ronda · 1 por corrección (pasada final con pasada corta del crítico) |
-| — | fase-0-andamiaje · 2.1–2.2 | `test/fase-0-system-suite` | pendiente |
-| — | fase-0-andamiaje · 3.1–3.5 | `chore/fase-0-generator-fixtures` | pendiente |
+| #6 | fase-0-andamiaje · 2.1–2.2 | `test/fase-0-system-suite` | mergeada (`1e7a171`) — 0 mecánicas · 0 rondas · 0 por corrección (pasada final con pasada corta del crítico) |
+| — | fase-0-andamiaje · 3.1–3.5 | `chore/fase-0-generator-fixtures` | en revisión del PM (commit `e35135b`, por rebasar sobre #6) |
 
 ## Decisiones del PM
 
@@ -37,10 +37,15 @@
 - **En esos worktrees el lanzador se invoca con `node ./.claude/da/da`**: git guarda `.claude/da/da` como 100644 y fuera de NTFS no es ejecutable (lo encontró el crítico de #5).
 - **NB «`<title>` vacío» de #5 aceptado sin acción**: el título sale del catálogo `textos.ts` por `document.title`; `index.html` no lleva texto visible propio. Descartado: duplicar el texto en el HTML.
 - **NB de #5 pasados a otros grupos**: `README.md` fuera de `.prettierignore` (grupo 3), `playwright.config.ts` dentro de `tsc` (grupo 2).
+- **Mutaciones de la suite de sistema** (PR #6): las aplica el implementador en su árbol y las corre el PM con `.claude/da/da sistema` (comando pesado). Descartado: que el PM edite código para mutar.
+- **NB de la pasada corta de #6 a deuda, sin otra vuelta** (import por defecto de `@playwright/test`, paquete `playwright/test`). Descartado: otra pasada final por NO BLOQUEA que salen de la propia pasada corta.
 - **Grupos 2 y 3 en paralelo tras mergear el 1**, con revisión y merge en serie (2 primero). El grafo los declara independientes y sus áreas son disjuntas (2: `playwright.config.ts`, `tests/sistema/`, script `test:sistema`; 3: `generador/`, `tests/fixtures/`, `README.md`, `.gitattributes`); el test de integridad entra por el `include` de Vitest del grupo 1 sin tocar su configuración. Si un encargo necesita tocar un archivo del otro, se para y se serializa. Descartado: en serie (más tiempo de reloj sin reducir riesgo).
 
 ## Deuda
 
+- #6, `eslint.config.mjs:87-95`: la regla que obliga a importar `test` de `tests/sistema/sin-red.ts` no ve `import pw from '@playwright/test'` (import por defecto) ni `import { test } from 'playwright/test'`; una spec así correría sin vigilancia de red. Arreglo: `importNames: ['test', 'default']` y una segunda entrada en `paths`, con sus casos en `tests/arquitectura/sistema.test.ts`. Mientras, el comentario de `sin-red.ts:13` se queda corto. Para la primera spec de sistema de la fase 1.
+- #6, `tests/sistema/sin-red.ts:20-22`: la vigilancia no ve WebSockets (no emiten `request` en el contexto), posiblemente tampoco `preconnect`/`dns-prefetch`, ni peticiones posteriores al cuerpo del test (telemetría diferida, `sendBeacon`). Hoy no son vía real; revisar cuando el `webServer` pase a `npm start` (fase 1).
+- #6, spec `sin-red` requisito 1: ningún test protege «escuchando **únicamente** en 127.0.0.1» (con `host: '0.0.0.0'` la suite pasa). El escenario se cumple. Lo decide el servidor propio de la fase 1.
 - Mecánica (no producto), para entre olas, sin issue (issues deshabilitadas en el repo): (1) lanzador `.claude/da/da` CommonJS sin extensión, incompatible con `"type": "module"` en la raíz; (2) ganchos del perfil con `{wt}` sin comillas; (3) `.claude/da/da` con modo 100644 en git.
 
 ## Se coló
