@@ -50,6 +50,56 @@ describe('suite de sistema: toda spec lleva la vigilancia de peticiones', () => 
     expect(reglas).toContain(REGLA_DE_IMPORTS);
   });
 
+  it('una spec no puede importar el default de @playwright/test, que trae test', async () => {
+    const reglas = await reglasQueFallan(
+      'tests/sistema/flujo.spec.ts',
+      `import pw from '@playwright/test';\nexport const probar = pw.test;\n`,
+    );
+
+    expect(reglas).toContain(REGLA_DE_IMPORTS);
+  });
+
+  it('una spec no puede importar @playwright/test como espacio de nombres', async () => {
+    const reglas = await reglasQueFallan(
+      'tests/sistema/flujo.spec.ts',
+      `import * as pw from '@playwright/test';\nexport const probar = pw.test;\n`,
+    );
+
+    expect(reglas).toContain(REGLA_DE_IMPORTS);
+  });
+
+  it('una spec no puede importar test del paquete playwright/test', async () => {
+    const reglas = await reglasQueFallan(
+      'tests/sistema/flujo.spec.ts',
+      `import { test } from 'playwright/test';\ntest('x', async () => {});\n`,
+    );
+
+    expect(reglas).toContain(REGLA_DE_IMPORTS);
+  });
+
+  it('una spec no puede importar el default ni el espacio de nombres de playwright/test', async () => {
+    const porDefecto = await reglasQueFallan(
+      'tests/sistema/flujo.spec.ts',
+      `import pw from 'playwright/test';\nexport const probar = pw.test;\n`,
+    );
+    const espacio = await reglasQueFallan(
+      'tests/sistema/flujo.spec.ts',
+      `import * as pw from 'playwright/test';\nexport const probar = pw.test;\n`,
+    );
+
+    expect(porDefecto).toContain(REGLA_DE_IMPORTS);
+    expect(espacio).toContain(REGLA_DE_IMPORTS);
+  });
+
+  it('una spec puede importar solo tipos de @playwright/test', async () => {
+    const reglas = await reglasQueFallan(
+      'tests/sistema/flujo.spec.ts',
+      `import type { Page } from '@playwright/test';\nexport type Pagina = Page;\n`,
+    );
+
+    expect(reglas).toEqual([]);
+  });
+
   it('una spec puede importar test de ./sin-red', async () => {
     const reglas = await reglasQueFallan(
       'tests/sistema/flujo.spec.ts',

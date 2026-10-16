@@ -49,6 +49,7 @@ export default defineConfig(
       'output/',
       'historial/',
       'dist/',
+      'dist-server/',
       'tests/fixtures/generador/',
       'test-results/',
       'playwright-report/',
@@ -85,14 +86,12 @@ export default defineConfig(
       'no-restricted-imports': [
         'error',
         {
-          paths: [
-            {
-              name: '@playwright/test',
-              importNames: ['test'],
-              message:
-                'Importa test de ./sin-red: así toda prueba de sistema vigila que ninguna petición salga de 127.0.0.1 (docs/STACK.md, «Sin red en ejecución»).',
-            },
-          ],
+          paths: ['@playwright/test', 'playwright/test'].map((name) => ({
+            name,
+            importNames: ['test', 'default'],
+            message:
+              'Importa test de ./sin-red: así toda prueba de sistema vigila que ninguna petición salga de 127.0.0.1 (docs/STACK.md, «Sin red en ejecución»).',
+          })),
         },
       ],
     },
