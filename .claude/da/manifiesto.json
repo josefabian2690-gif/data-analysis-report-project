@@ -1,0 +1,190 @@
+{
+  "kit": "0.1.0-dev",
+  "archivos": {
+    ".claude/agents/archivador.md": {
+      "tipo": "generado",
+      "hash": "c1683177302468c1901956b6d7822efdc94d01ff70590802dfe8957ae9bfe7d6"
+    },
+    ".claude/agents/critico.md": {
+      "tipo": "generado",
+      "hash": "3ae2fa9a3373f9f0b92cb467e3c532792282d8da9649dd30479876528d299496"
+    },
+    ".claude/agents/implementador-cliente.md": {
+      "tipo": "generado",
+      "hash": "8c74c529f1b6aedda61dcf708467d195f8d10544487d29a7898a31d7abb129a3"
+    },
+    ".claude/agents/implementador-generador.md": {
+      "tipo": "generado",
+      "hash": "ba489946e81c882306089eaaf7d376030ee918ee1cdba76f2f94f81d15aa1646"
+    },
+    ".claude/agents/implementador-graficas.md": {
+      "tipo": "generado",
+      "hash": "836a1f32c2a61d9b2e79f323e47e99bd834ff4b968113f784b852db57b2357ff"
+    },
+    ".claude/agents/implementador-reporte.md": {
+      "tipo": "generado",
+      "hash": "1ba7d5d7d455da7c6aed771da7e403b223673608756f1fc0b316dc44b4cbbce6"
+    },
+    ".claude/agents/implementador-servidor.md": {
+      "tipo": "generado",
+      "hash": "0c6769115cd3f38209641e6e491eeae1fde40d0f965a42ac7c52c3a119cff3e4"
+    },
+    ".claude/agents/implementador.md": {
+      "tipo": "generado",
+      "hash": "cfc1a33aa303225192bbe10aefc32f15fb4c8f1cc5d0edf8befc9262bfec3de3"
+    },
+    ".claude/agents/lector.md": {
+      "tipo": "generado",
+      "hash": "4efe44be385ee92d183ea615475bbb40289ef869a85fec396f79e900600db8ca"
+    },
+    ".claude/agents/planeador.md": {
+      "tipo": "generado",
+      "hash": "a0699423acc1211bae779538b8d00f63a681a8fc40451847d32b6951a68a3f82"
+    },
+    ".claude/agents/pm.md": {
+      "tipo": "generado",
+      "hash": "2f05ef9b9c1fd0d8039dab84c370181d284454c87ca9d616f154f8dc5c720090"
+    },
+    ".claude/agents/team-manager.md": {
+      "tipo": "generado",
+      "hash": "4461772dac8bd4b58e31ebeae2bcb9bc41aeed527e28ac7765f95f797f15bc36"
+    },
+    ".claude/da/guardia.json": {
+      "tipo": "generado",
+      "hash": "c51dab765a652f3df8b694055b41b60f61deb4d1fdc31db676093a1acf0fa428"
+    },
+    ".claude/settings.json": {
+      "tipo": "settings",
+      "hash": "0c75a741e68efced4ae35b8049ba81a8ddc69dcbc11f41df254c8aac2aca350e"
+    },
+    ".claude/skills/desarrollo-autonomo-archivador/SKILL.md": {
+      "tipo": "generado",
+      "hash": "dbc5c6c7113c14aab14a7f56ed949eea5df954dc26538d24e8af7c7f13401596"
+    },
+    ".claude/skills/desarrollo-autonomo-critico/SKILL.md": {
+      "tipo": "generado",
+      "hash": "c62c995ab134779f23dc14af86c285fad45b417a6623619ff65665bdbb679e77"
+    },
+    ".claude/skills/desarrollo-autonomo-implementador/SKILL.md": {
+      "tipo": "generado",
+      "hash": "80d7ee5a91a6a6f80859704bb15bbafbe0d348398e2f260cac747e730de1803d"
+    },
+    ".claude/skills/desarrollo-autonomo-implementador/trampas-de-capturas.md": {
+      "tipo": "sembrado",
+      "hashSemilla": "ff92bee38b84558293aba3ac52fc1b33741c264482383ff3476692f8bd5e5dd7"
+    },
+    ".claude/skills/desarrollo-autonomo-planeador/brief-de-pm.md": {
+      "tipo": "generado",
+      "hash": "52e0a07c849602bebfc9d975eaa0fcaa90acf75c067c25dee45b5dda439cdf0c"
+    },
+    ".claude/skills/desarrollo-autonomo-planeador/casos-del-pre-vuelo.md": {
+      "tipo": "sembrado",
+      "hashSemilla": "510ab082af6d93a2c131dce06cdac94cde83bd1760ae771c7d6e68c21a614be0"
+    },
+    ".claude/skills/desarrollo-autonomo-planeador/ejemplo-de-issue.md": {
+      "tipo": "sembrado",
+      "hashSemilla": "c14133774b2ee7d97c14f7439aa818be99d834f3e326181bcdb42128455361f3"
+    },
+    ".claude/skills/desarrollo-autonomo-planeador/formato-de-ola.md": {
+      "tipo": "generado",
+      "hash": "5fb6453a58977effd16e984eb4921ba5e1b577072744b050d90a28ae438a4246"
+    },
+    ".claude/skills/desarrollo-autonomo-planeador/lista-de-comprobacion.md": {
+      "tipo": "generado",
+      "hash": "c534930ac83bffdc4730e6956a1703a00267731f96b33691932ec3e6a25cac08"
+    },
+    ".claude/skills/desarrollo-autonomo-planeador/SKILL.md": {
+      "tipo": "generado",
+      "hash": "0bd77c304e7710fddcd571e7baaba663e7766611fef4c5c11082f9a9859620ae"
+    },
+    ".claude/skills/desarrollo-autonomo-pm/arranque.md": {
+      "tipo": "generado",
+      "hash": "24d64af46cee41213b20ab43e35444397211aafda982dd5206a66e18a3df29cb"
+    },
+    ".claude/skills/desarrollo-autonomo-pm/arreglo.md": {
+      "tipo": "generado",
+      "hash": "7a40478f81a5a94ae845ad88328fc393799dadb73cb8bf44ea77302da3178a11"
+    },
+    ".claude/skills/desarrollo-autonomo-pm/bucle-por-grupo.md": {
+      "tipo": "generado",
+      "hash": "ec331db838d15d8fcdf904fa08f48359bac1429e781161cc865f8b4998aee213"
+    },
+    ".claude/skills/desarrollo-autonomo-pm/cierre.md": {
+      "tipo": "generado",
+      "hash": "9e4a3821c6ee296b89a563a9737d5bfef66b1bc760def74f73fd7ec277db6bf4"
+    },
+    ".claude/skills/desarrollo-autonomo-pm/encargo-critico.md": {
+      "tipo": "generado",
+      "hash": "6d36639e29baf73c579f9c2877be8f77969d212ec6ddac90e6c5bebcbecccd42"
+    },
+    ".claude/skills/desarrollo-autonomo-pm/encargo-implementador.md": {
+      "tipo": "generado",
+      "hash": "5ad6ce9802bbb8c0ffcdebac27290d77fa4fc068fb4ff56957e58e7e5fba8f16"
+    },
+    ".claude/skills/desarrollo-autonomo-pm/formato-de-pr.md": {
+      "tipo": "generado",
+      "hash": "e339eac877f3f7fbf0242f1f71200259812fab21636da0d41716750ef7539feb"
+    },
+    ".claude/skills/desarrollo-autonomo-pm/registro-de-ola.md": {
+      "tipo": "generado",
+      "hash": "6d61c9aaa07a5565ee6139f9137e80db21100824bf55ca7539e8e35294832511"
+    },
+    ".claude/skills/desarrollo-autonomo-pm/retoma.md": {
+      "tipo": "generado",
+      "hash": "c465f0850c8c00e80c45fa89e2bb4d38fb4c7537ca7458f998bcb120364c6c61"
+    },
+    ".claude/skills/desarrollo-autonomo-pm/SKILL.md": {
+      "tipo": "generado",
+      "hash": "5b12eb171d5d5a759eb4d72fdd4d95e3fc02163400f6765260cba4dd146b36bf"
+    },
+    ".claude/skills/desarrollo-autonomo-pm/trampas-de-entorno.md": {
+      "tipo": "sembrado",
+      "hashSemilla": "749c7dfc1f08db513b3dfa32a2813f9531d9e92cd63e8316122fec44b488f59e"
+    },
+    ".claude/skills/desarrollo-autonomo-team-manager/brief-de-relevo.md": {
+      "tipo": "generado",
+      "hash": "03ce011aab9bea9fbfe664a2755812d47a279e567802949cbaebb734dbecaa8c"
+    },
+    ".claude/skills/desarrollo-autonomo-team-manager/SKILL.md": {
+      "tipo": "generado",
+      "hash": "719d527305b33ce34360ea9d8a22f8e157c8e2175a6a6b25e0d08928649a0986"
+    },
+    ".github/ISSUE_TEMPLATE/hallazgo.md": {
+      "tipo": "generado",
+      "hash": "071094ff1c726afbb9ff5f79c99fc11ef44c14ca997a801db940be959c8c22c3"
+    },
+    ".github/workflows/citas.yml": {
+      "tipo": "generado",
+      "hash": "eda43dbffdc8f56f2aefd28757834b911f51d9435ddd51ba6911cb408cfa4591"
+    },
+    ".gitignore": {
+      "tipo": "gitignore",
+      "hash": "4a11fe66882a1db6898d1bc2e238b0c337754e212216e0406a2e5f9181259c7d"
+    },
+    "CLAUDE.md": {
+      "tipo": "claude-md",
+      "hash": "f20208b43a6edb3d89e8921618305f7fbceeafb56f8c457fd54c442bdada4b2b"
+    },
+    "docs/ARQUITECTURA.md": {
+      "tipo": "sembrado",
+      "hashSemilla": "57fafda7f578db3064860fc24c9c8ad2029e081bda314d92179fc0f925080e43"
+    },
+    "docs/DESARROLLO-AUTONOMO.md": {
+      "tipo": "generado",
+      "hash": "e3f3671d07355113b3afea89e428957f3b6731db51286e363c508850ec94592c"
+    },
+    "docs/olas/.gitkeep": {
+      "tipo": "sembrado",
+      "hashSemilla": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/PLAN.md": {
+      "tipo": "sembrado",
+      "hashSemilla": "5bacbe47e1a25971f40320e159465039a63e87b64ee36b0dbb4528dbb225d8d1"
+    },
+    "docs/STACK.md": {
+      "tipo": "sembrado",
+      "hashSemilla": "7f6dc4ac8acdaba8ae51ec5cef043e9d38917a1d4b75dd8de2dc115e87b23380"
+    }
+  },
+  "expulsados": []
+}

@@ -53,7 +53,7 @@ Los ocho flujos son MVP; el orden lo fija la tabla de fases.
 
 | Fase | Objetivo | Entregable demostrable | Fuera de alcance | Decisiones cerradas |
 |---|---|---|---|---|
-| 0 | Andamiaje y mecánica | Generador movido a `generador/` sin cambios de lógica, con el README actualizado, `generador/fixtures.sh` y fixtures con semilla commiteados. Proyecto Node/TS/Vite/React con una página vacía. Gate verde. `/da-init` hecho. | Cualquier funcionalidad | Stack, capas, gate, fixtures |
+| 0 | Andamiaje y mecánica | Generador movido a `generador/` sin cambios de lógica, con el README actualizado, `generador/fixtures.sh` y fixtures con semilla commiteados. Proyecto Node/TS/Vite/React con una página vacía. Gate verde: `.claude/da/da verify` y `.claude/da/da doctor`. `/da-init` hecho. | Cualquier funcionalidad | Stack, capas, gate, fixtures |
 | 1 | Cargar y ver el mes | `npm start` abre el navegador. Al subir el fixture de semilla se ven la validación con las filas inválidas, los KPIs y el gasto por categoría (la dominante salta a la vista). | Filtros, historial, el resto de las gráficas | DOMINIO R-01 a R-08, R-11, R-12, R-17 |
 | 2 | Dashboard completo, filtros y tabla | Gráficas por día, hora, día de la semana, zona y cuenta. Filtros (R-10). Tabla ordenable. En la demo se ven la quincena y el fin de semana. | Historial, mapa, hallazgos | R-10, R-13, R-14 |
 | 3 | Historial y comparación | Se guardan 2 o 3 meses (semillas distintas), se reinicia y siguen ahí. Comparación por categoría y totales. Reemplazar un mes pide confirmación (409). | Mapa, hallazgos, exportar | R-09, R-15, API y almacenamiento |
