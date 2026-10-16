@@ -15,6 +15,12 @@ const METRICAS: Metricas = {
     { categoria: 'Comida', monto: 900, transacciones: 9, proporcion: 0.3 },
     { categoria: 'Salud', monto: 10.126, transacciones: 2, proporcion: 0.0123 },
   ],
+  gastoPorZona: [],
+  gastoPorCuenta: [],
+  gastoPorDia: [],
+  gastoPorHora: [],
+  transaccionesSinHora: 0,
+  gastoPorDiaDeLaSemana: [],
 };
 
 function barras() {
