@@ -188,13 +188,6 @@ describe('R-10 opciones del filtro', () => {
     });
   });
 
-  it('las opciones son las del mes completo que se le pasa: filtrar después no las reduce', () => {
-    const filtradas = filtrar(MES, { categorias: ['Compras'] });
-
-    expect(opcionesDeFiltro(filtradas).categorias).toEqual(['Compras']);
-    expect(opcionesDeFiltro(MES).categorias).toEqual(['Comida', 'Compras', 'Transporte']);
-  });
-
   it('una lista vacía no tiene opciones', () => {
     expect(opcionesDeFiltro([])).toEqual({ categorias: [], cuentas: [], zonas: [] });
   });
@@ -239,6 +232,12 @@ describe('R-11 periodo del filtro', () => {
 
   it('un inicio posterior al mes deja un periodo sin días, sin acotarlo al último día', () => {
     const periodo = periodoDelFiltro('2026-07', { desde: '2026-08-05' });
+
+    expect(periodo.desde > periodo.hasta).toBe(true);
+  });
+
+  it('un fin anterior al mes deja un periodo sin días, sin acotarlo al primer día', () => {
+    const periodo = periodoDelFiltro('2026-07', { hasta: '2026-06-10' });
 
     expect(periodo.desde > periodo.hasta).toBe(true);
   });

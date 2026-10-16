@@ -16,7 +16,7 @@ export interface GastoDeCategoria {
   categoria: string;
   monto: number;
   transacciones: number;
-  /** Del gasto total del mes, de 0 a 1 (R-12). */
+  /** Del gasto total, de 0 a 1 (R-12). */
   proporcion: number;
 }
 
