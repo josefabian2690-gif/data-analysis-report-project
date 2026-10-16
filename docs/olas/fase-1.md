@@ -20,7 +20,7 @@
 | #12 | fase-1-cargar-y-ver-el-mes · 2.1–2.4 | `feat/fase-1-month-metrics` | mergeada (`a641f99`) — 0 mecánicas · 1 ronda · 0 por corrección (pasada final con pasada corta del crítico) |
 | #10 | fase-1-cargar-y-ver-el-mes · 3.1–3.5 | `feat/fase-1-local-server` | mergeada (`12245de`) — 0 mecánicas · 0 rondas · 0 por corrección (pasada final con pasada corta del crítico) |
 | #13 | fase-1-cargar-y-ver-el-mes · 4.1–4.4 | `feat/fase-1-month-dashboard` | mergeada (`d22b5cc`) — 1 mecánica · 0 rondas · 0 por corrección (pasada final con pasada corta del crítico) |
-| — | fase-1-cargar-y-ver-el-mes · 5.1 | `test/fase-1-main-flow` | pendiente |
+| #14 | fase-1-cargar-y-ver-el-mes · 5.1 | `test/fase-1-main-flow` | mergeada (`7f28c93`) — 1 mecánica · 0 rondas · 0 por corrección (pasada final trivial, sin crítico) |
 
 ## Decisiones del PM
 
@@ -54,6 +54,10 @@
 - **«El archivo no sale del navegador» va a la 5.1 (PR #13):** el escenario de la spec `tablero-del-mes` no tenía prueba (la vigilancia de `sin-red.ts` solo mira el host). La spec de sistema del grupo 5 comprobará además que, tras elegir el archivo, ninguna petición distinta de `GET` sale de la página. Descartado: dejarlo sin prueba.
 - **Los NO BLOQUEA de la pasada corta de #13 van a deuda sin otra vuelta** (mismo criterio que en #10).
 
+- **Devolución mecánica de #14 (clase: cita falsa):** el comentario de la spec citaba R-06 como umbral de confirmación; es R-05. Corregido antes del commit.
+- **Mutaciones de la 5.1 (PR #14):** las cuatro de `tasks.md` (M1 sin tabla de inválidas, M2 orden inverso, M3 `<link>` a Google Fonts) más M4 (POST del archivo) y M5 (el archivo en la URL de un `GET`), para el escenario «El archivo no sale del navegador». Las aplicó el implementador en su árbol, una a una; el PM corrió `sistema` con cada una; todas fallan en la aserción que protegen y ninguna se commitea.
+- **Pasada final de #14 trivial, sin otra pasada del crítico:** solo tocó la spec de sistema; se repitió `sistema` porque esa spec solo corre ahí. Descartado: pasada corta del crítico.
+
 ## Deuda
 
 - #12 (anterior a la ola), `eslint.config.mjs:23`: las zonas de capas llevan `./node_modules` en `except`, así que un import de valor de `echarts` o `papaparse` en `src/graficas/` no lo marca el lint; ni el «solo `import type`» de `design.md` D9 ni la fila `graficas → dominio` se hacen cumplir para paquetes. El código de la ola cumple. Fuera del área de los grupos; para un change de mecánica de lint.
@@ -63,6 +67,7 @@
 - #13, `src/cliente/App.tsx` (`alElegir`): el aviso de archivo ilegible (`textos.lecturaFallida`) se muestra para cualquier error que no sea `CargaRechazada`, también uno del dominio, y afirma una causa («revisa que siga en su lugar y que esté descargado») que puede no ser la real; el error no queda en la consola. Arreglo: registrar el error y un texto que no afirme la causa.
 - #13: el estado de archivo ilegible no tiene captura (usa el mismo estilo que el rechazo, que sí la tiene).
 - #13, detalles visuales: con una sola categoría la barra de la gráfica sale muy alta; «Sin categoría» se parte en dos líneas junto a la marca «Dominante»; tras cargar, el control dice «No file chosen» y la página no muestra el nombre del archivo cargado. La spec no lo pide.
+- Mecánica (no producto): en la retoma, el implementador del grupo 5 corrió una vez `npx prettier --version` y el crítico de #14 una vez `npx --no-install eslint`; binarios locales, sin descarga. Pese a la prohibición en el encargo, se repite: candidato a guardia automática.
 - Mecánica (no producto): el implementador del grupo 1 corrió una vez `npx prettier --version` (binario local 3.9.10, sin descarga); en los encargos siguientes se prohíbe `npx` también para consultas.
 
 ## Se coló
@@ -71,27 +76,35 @@
 
 ## Lo que queda fuera
 
-- —
+- Vigilar WebSockets y peticiones posteriores al cuerpo de la prueba en la suite de sistema (D-TM1): fase 3, con la primera llamada a la API.
+- Filtros, historial y su API, las demás gráficas, tabla de transacciones, mapa, hallazgos y exportar (`docs/PLAN.md`, fases siguientes).
 
 ## Entorno vivo
 
-- Worktree del PM: `/home/fabs/da-wt/tablero-gastos/pm-fase-1` (`ola/fase-1`).
+- Nada: worktrees de grupo quitados; el del PM (`/home/fabs/da-wt/tablero-gastos/pm-fase-1`) se quita tras abrir la PR de ola. Sin servidores levantados.
 
 ## Coste
 
-- —
+Salida de `.claude/da/da medir fase-1` (falla igual que en la fase 0; ver *Deuda* de `docs/olas/fase-0.md`):
+
+```
+da medir: gh pr list falló -- Unknown JSON field: "closingIssuesReferences"
+```
+
+A mano, desde este registro y los veredictos pegados en cada PR:
+
+| PR | Mecánicas | Rondas | Pasadas de crítico |
+|---|---|---|---|
+| #10 | 0 | 0 | 2 (con pasada corta) |
+| #11 | 0 | 0 | 2 (con pasada corta) |
+| #12 | 0 | 1 | 3 (con pasada corta) |
+| #13 | 1 | 0 | 2 (con pasada corta) |
+| #14 | 1 | 0 | 1 |
+
+- Se coló: 0.
+- BLOQUEA de código: 1 (#12, etiquetas de la gráfica).
+- `sistema` al cierre: 2/2 sobre `7f28c93`.
 
 ## Handover
 
-- **Estado estable:** PR #12 mergeada (`a641f99`); nada en vuelo. Worktrees de grupo quitados.
-- **Hecho:** grupos 3 (#10), 1 (#11) y 2 (#12) mergeados en `ola/fase-1`; 14 de 19 casillas (`openspec instructions apply`).
-- **Lo que queda en orden:** grupo 4 (cliente, `implementador-cliente`), rama `feat/fase-1-month-dashboard` desde `ola/fase-1`; luego el grupo 5 (`test/fase-1-main-flow`, `implementador-cliente`), que ya puede encargarse tras el 4 (la decisión 1 del usuario está cerrada); luego el cierre (PR `ola/fase-1` → `chore/fase-1-planning`, plantilla B).
-- **Avisos para los encargos:**
-  - Grupo 4: el dominio exporta `parsearCsv`, `pideConfirmacion`, `CargaRechazada` (`motivo` con `codigo` `vacio` / `sin-filas` / `faltan-columnas` + `columnas` / `sin-filas-validas`) en `src/dominio/carga.ts`; los códigos de fila son `fila-mal-formada`, `fecha`, `monto`, `concepto-vacio`, `id-repetido`, `fuera-del-mes`, y **los seis** necesitan texto es-MX en `src/cliente/textos.ts` (registro exhaustivo). `metricas`, `GastoDeCategoria` en `src/dominio/metricas.ts`; `formatearMonto`, `formatearFecha`, `formatearProporcion` en `src/dominio/formato.ts`; `porCategoria` en `src/graficas/por-categoria.ts`.
-  - Grupo 4, del crítico de #12: ECharts solo trae los locales EN y ZH; con `aria.enabled` el lector de pantalla diría «This is a chart…» salvo que se registre el ES instalado (`echarts/i18n/langES-obj.js`) y se pase `locale: 'ES'` a `init`. Y `grid.right: '25%'` es relativo: por debajo de unos 400 px se corta el `%` de la etiqueta de la dominante; la captura del tablero debe ser al ancho real de la tarjeta y la tarjeta no debe bajar de ese ancho en el viewport de escritorio.
-  - Captura del grupo 4: el PM levanta `npm start` en el worktree del grupo con `TABLERO_SIN_NAVEGADOR=1` y un `TABLERO_PUERTO` libre (por ejemplo 4311), como comando pesado desacoplado (`setsid nohup … &`), y lo baja por PID (no con `pkill -f`, que mata la propia shell). El PM no corre nada pesado mientras el implementador captura.
-  - Worktrees en `/home/fabs/da-wt/tablero-gastos/<grupo>`, montados con `--desde ola/fase-1 --sistema`; dentro, `node ./.claude/da/da` (modo 644).
-  - `gh pr edit` falla con este `gh` (Projects classic): editar el cuerpo con `gh api -X PATCH repos/josefabian2690-gif/data-analysis-report-project/pulls/<n> -F body=@cuerpo.md`.
-  - Implementadores: prohibir `npx` también para consultas.
-- **Pendiente con el Team Manager o el usuario:** nada abierto.
-- **Por qué paro:** 3 PRs internas mergeadas (§6).
+- Sin handover pendiente: ola cerrada. Las 5 PRs internas mergeadas (19/19 casillas); `verify` (402 tests) y `sistema` (2/2) en verde sobre `ola/fase-1` @ `7f28c93`. PR de ola abierta para el usuario contra `chore/fase-1-planning`.
