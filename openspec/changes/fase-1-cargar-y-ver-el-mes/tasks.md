@@ -14,11 +14,11 @@ Reglas de la fase:
 
 Área: `src/dominio/`, `tests/dominio/`, `tests/fixtures/a-mano/`, `.gitattributes`. Spec `carga-de-csv`; `design.md` D4, D5, D6 y D12. Cada test nombra su regla (`R-0x`).
 
-- [ ] 1.1 Fixtures hechos a mano en `tests/fixtures/a-mano/` (con BOM y `\r\n`, sin columnas opcionales, con filas inválidas, con filas de otro mes, con comas entre comillas) y `-text` para ellos en `.gitattributes`; verificar con `git check-attr text` que quedan sin normalizar y que el test de integridad de `tests/fixtures/` sigue en verde
-- [ ] 1.2 Tests primero de R-01 y R-02 por `parsearCsv`; luego `src/dominio/esquema.ts` (D5) y la carga del encabezado, los valores por defecto y los ids generados; verificar que cada test falla sin su regla y pasa con ella
-- [ ] 1.3 Tests primero de R-03, R-04 y R-05 (número de fila con el encabezado como fila 1, motivo como código cerrado, `pideConfirmacion` con 6 % y con 5 % exacto); luego su implementación; verificar la mutación de cada umbral y de cada formato
-- [ ] 1.4 Tests primero de R-06 (primera aparición válida), R-07 (fuera de rango, ilegible, solo una coordenada) y R-08 (mayoría, empate al más antiguo, «fuera del mes»); luego su implementación; verificar con una mutación por regla
-- [ ] 1.5 Tests primero de los casos borde de carga de `docs/DOMINIO.md` (vacío, solo encabezado, sin filas válidas → `CargaRechazada` con su motivo; BOM y acentos; comas entre comillas; monto con más de dos decimales sin redondear) y de `tests/fixtures/generador/2026-07-semilla-1.csv` (2 000 transacciones de `2026-07`, 0 inválidas); verificar que pasan y que `npm run lint` no marca I/O en `src/dominio/`
+- [x] 1.1 Fixtures hechos a mano en `tests/fixtures/a-mano/` (con BOM y `\r\n`, sin columnas opcionales, con filas inválidas, con filas de otro mes, con comas entre comillas) y `-text` para ellos en `.gitattributes`; verificar con `git check-attr text` que quedan sin normalizar y que el test de integridad de `tests/fixtures/` sigue en verde
+- [x] 1.2 Tests primero de R-01 y R-02 por `parsearCsv`; luego `src/dominio/esquema.ts` (D5) y la carga del encabezado, los valores por defecto y los ids generados; verificar que cada test falla sin su regla y pasa con ella
+- [x] 1.3 Tests primero de R-03, R-04 y R-05 (número de fila con el encabezado como fila 1, motivo como código cerrado, `pideConfirmacion` con 6 % y con 5 % exacto); luego su implementación; verificar la mutación de cada umbral y de cada formato
+- [x] 1.4 Tests primero de R-06 (primera aparición válida), R-07 (fuera de rango, ilegible, solo una coordenada) y R-08 (mayoría, empate al más antiguo, «fuera del mes»); luego su implementación; verificar con una mutación por regla
+- [x] 1.5 Tests primero de los casos borde de carga de `docs/DOMINIO.md` (vacío, solo encabezado, sin filas válidas → `CargaRechazada` con su motivo; BOM y acentos; comas entre comillas; monto con más de dos decimales sin redondear) y de `tests/fixtures/generador/2026-07-semilla-1.csv` (2 000 transacciones de `2026-07`, 0 inválidas); verificar que pasan y que `npm run lint` no marca I/O en `src/dominio/`
 
 ## 2. Dominio y gráficas: métricas, formato y gasto por categoría
 
