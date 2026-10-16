@@ -1,0 +1,247 @@
+{
+  "comandos": {
+    "verify": [
+      {
+        "paso": "format:check",
+        "cmd": "npm run format:check"
+      },
+      {
+        "paso": "lint",
+        "cmd": "npm run lint"
+      },
+      {
+        "paso": "typecheck",
+        "cmd": "npm run typecheck"
+      },
+      {
+        "paso": "test",
+        "cmd": "npm test",
+        "resumen": "^\\s*(Test Files|Tests|Duration)\\s"
+      }
+    ],
+    "ligeros": {
+      "test": "npm test -- {rutas}",
+      "typecheck": "npm run typecheck",
+      "typecheckTodos": "npm run typecheck",
+      "lint": "npm run lint",
+      "formato": "npm run format:check"
+    },
+    "pesados": [
+      "npm run verify",
+      "npm run test:sistema",
+      "npm run build",
+      "npm start",
+      "npm run dev",
+      "npm run format",
+      "docker compose up",
+      "docker compose build",
+      "docker build",
+      "docker run"
+    ],
+    "pesadosSinRuta": [],
+    "instalacion": [
+      "npx",
+      "npm install",
+      "npm i",
+      "pnpm add",
+      "pnpm dlx",
+      "yarn add",
+      "bun add",
+      "bun install",
+      "bunx",
+      "pip install",
+      "pipx install",
+      "uv add",
+      "uv pip install",
+      "go get",
+      "go install",
+      "cargo add",
+      "cargo install",
+      "brew install",
+      "apt install",
+      "apt-get install"
+    ]
+  },
+  "worktree": {
+    "preparar": "npm ci --prefix {wt}",
+    "comprobar": "ls -d {wt}/node_modules && realpath {wt}/node_modules/.bin"
+  },
+  "version": 1,
+  "proyecto": {
+    "nombre": "tablero-gastos",
+    "descripcion": "Página web local en Node que carga CSVs de transacciones del generador y los convierte en un dashboard con filtros, historial de meses y reporte exportable, sin red.",
+    "usuarioFinal": "el analista",
+    "idiomaCommits": "en",
+    "idiomaRamas": "en",
+    "invariantes": [
+      "`dominio`, `graficas` y `reporte` no hacen I/O: nada de fs, fetch, reloj, DOM ni variables de entorno.",
+      "Cero URLs externas en ejecución: ni CDN, ni Google Fonts, ni teselas, ni telemetría o analítica. Todo asset va en el bundle, y el servidor escucha solo en 127.0.0.1.",
+      "Los imports respetan la tabla de capas de `ARQUITECTURA.md`, y ESLint lo hace cumplir. `cliente` y `servidor` no se importan entre sí; solo comparten `dominio`.",
+      "El esquema de `Transaccion` vive únicamente en `src/dominio/esquema.ts`.",
+      "Cada regla R-xx de `DOMINIO.md` tiene al menos un test que la nombra.",
+      "Los datos reales y el historial nunca se commitean (`historial/` y `output/` van en `.gitignore`). Los fixtures sintéticos sí se commitean.",
+      "El generador de Python es independiente: la app Node nunca lo ejecuta, y solo `generador/fixtures.sh` lo usa."
+    ],
+    "textosVisibles": "src/cliente/textos.ts (es-MX; el formato MXN y dd/mm/aaaa de R-17 vive en el dominio)"
+  },
+  "rutas": {
+    "documentos": [
+      {
+        "ruta": "docs/DOMINIO.md",
+        "antesDe": "tocar reglas R-xx, métricas, filtros o hallazgos"
+      },
+      {
+        "ruta": "docs/ARQUITECTURA.md",
+        "antesDe": "añadir un import entre capas, cambiar un contrato o la API del historial"
+      },
+      {
+        "ruta": "docs/STACK.md",
+        "antesDe": "añadir una dependencia o cambiar el gate"
+      }
+    ]
+  },
+  "areas": [
+    {
+      "id": "dominio",
+      "principal": true,
+      "nombre": "el dominio",
+      "descripcion": "Código puro: esquema de Transaccion, parseo del CSV, validación, filtros, métricas, hallazgos y comparación",
+      "rutas": [
+        "src/dominio/**",
+        "tests/dominio/**"
+      ],
+      "contrato": true,
+      "lecturas": [
+        "docs/ARQUITECTURA.md",
+        "docs/DOMINIO.md"
+      ],
+      "skills": [
+        "typescript-advanced-types",
+        "vitest",
+        "javascript-testing-patterns"
+      ]
+    },
+    {
+      "id": "graficas",
+      "nombre": "las gráficas",
+      "descripcion": "Opciones de ECharts a partir de Metricas o Comparacion. Puro",
+      "rutas": [
+        "src/graficas/**",
+        "tests/graficas/**"
+      ],
+      "lecturas": [
+        "docs/ARQUITECTURA.md",
+        "docs/DOMINIO.md"
+      ],
+      "skills": [
+        "typescript-advanced-types",
+        "vitest"
+      ]
+    },
+    {
+      "id": "reporte",
+      "nombre": "el reporte",
+      "descripcion": "HTML autocontenido del reporte como string. Puro, sin URLs externas",
+      "rutas": [
+        "src/reporte/**",
+        "tests/reporte/**"
+      ],
+      "lecturas": [
+        "docs/ARQUITECTURA.md"
+      ],
+      "skills": [
+        "typescript-advanced-types",
+        "vitest"
+      ]
+    },
+    {
+      "id": "cliente",
+      "nombre": "el cliente",
+      "descripcion": "UI en React: carga, filtros, pestañas, tabla, mapa, hallazgos, comparación y exportar; más la suite de sistema",
+      "rutas": [
+        "src/cliente/**",
+        "tests/cliente/**",
+        "tests/sistema/**"
+      ],
+      "visual": true,
+      "lecturas": [
+        "docs/ARQUITECTURA.md",
+        "docs/DOMINIO.md"
+      ],
+      "skills": [
+        "typescript-advanced-types",
+        "vitest",
+        "vercel-react-best-practices",
+        {
+          "nombre": "javascript-testing-patterns",
+          "cuando": "si toca tests de componentes o de sistema"
+        }
+      ]
+    },
+    {
+      "id": "servidor",
+      "nombre": "el servidor",
+      "descripcion": "node:http en 127.0.0.1: sirve el bundle, API del historial y escritura atómica de meses",
+      "rutas": [
+        "src/servidor/**",
+        "tests/servidor/**"
+      ],
+      "contrato": true,
+      "lecturas": [
+        "docs/ARQUITECTURA.md (sección Contratos: API del historial y Almacenamiento)"
+      ],
+      "skills": [
+        "typescript-advanced-types",
+        "vitest",
+        {
+          "nombre": "nodejs-backend-patterns",
+          "cuando": "para patrones de API y errores; el servidor es node:http sin framework (STACK.md)"
+        }
+      ]
+    },
+    {
+      "id": "generador",
+      "nombre": "el generador",
+      "descripcion": "Generador de Python existente (sin cambios de lógica) y fixtures con semilla",
+      "rutas": [
+        "generador/**",
+        "tests/fixtures/**"
+      ],
+      "lecturas": [
+        "docs/ARQUITECTURA.md"
+      ]
+    }
+  ],
+  "skills": {
+    "precargados": [
+      "tdd",
+      "codebase-design",
+      "gh",
+      "solid"
+    ]
+  },
+  "modulos": {
+    "graft": true,
+    "citas": true,
+    "medicion": true,
+    "ci": {
+      "workflowDocs": "citas.yml"
+    },
+    "evidenciaVisual": {
+      "herramienta": "playwright"
+    },
+    "despliegue": false,
+    "avisos": false,
+    "suiteDeSistema": {
+      "nombre": "sistema",
+      "cmd": "npm run test:sistema",
+      "preparar": "npm run build",
+      "rutas": [
+        "tests/sistema/**"
+      ]
+    }
+  },
+  "git": {
+    "merge": "squash"
+  }
+}
