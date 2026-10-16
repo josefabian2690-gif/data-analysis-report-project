@@ -7,6 +7,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 const configuracionReal = join(dirname(fileURLToPath(import.meta.url)), '../../eslint.config.mjs');
 const REGLA_DE_IMPORTS = 'no-restricted-imports';
+const REGLA_DE_SINTAXIS = 'no-restricted-syntax';
 
 let raizAnterior: string;
 let arbol: string;
@@ -95,6 +96,54 @@ describe('suite de sistema: toda spec lleva la vigilancia de peticiones', () => 
     const reglas = await reglasQueFallan(
       'tests/sistema/flujo.spec.ts',
       `import type { Page } from '@playwright/test';\nexport type Pagina = Page;\n`,
+    );
+
+    expect(reglas).toEqual([]);
+  });
+
+  it('una spec no puede importar _baseTest de @playwright/test, el test sin vigilancia', async () => {
+    const reglas = await reglasQueFallan(
+      'tests/sistema/flujo.spec.ts',
+      `import { _baseTest } from '@playwright/test';\nexport const probar = _baseTest;\n`,
+    );
+
+    expect(reglas).toContain(REGLA_DE_IMPORTS);
+  });
+
+  it('una spec no puede importar _baseTest de playwright/test', async () => {
+    const reglas = await reglasQueFallan(
+      'tests/sistema/flujo.spec.ts',
+      `import { _baseTest } from 'playwright/test';\nexport const probar = _baseTest;\n`,
+    );
+
+    expect(reglas).toContain(REGLA_DE_IMPORTS);
+  });
+
+  it.each(['@playwright/test', 'playwright/test'])(
+    'una spec no puede obtener test con import() dinámico de %s',
+    async (paquete) => {
+      const reglas = await reglasQueFallan(
+        'tests/sistema/flujo.spec.ts',
+        `export const cargar = async () => { const { test } = await import('${paquete}'); return test; };\n`,
+      );
+
+      expect(reglas).toContain(REGLA_DE_SINTAXIS);
+    },
+  );
+
+  it('una spec no puede obtener test con import() dinámico de una plantilla sin sustituciones', async () => {
+    const reglas = await reglasQueFallan(
+      'tests/sistema/flujo.spec.ts',
+      'export const cargar = async () => (await import(`@playwright/test`)).test;\n',
+    );
+
+    expect(reglas).toContain(REGLA_DE_SINTAXIS);
+  });
+
+  it('una spec puede usar import() dinámico de ./sin-red', async () => {
+    const reglas = await reglasQueFallan(
+      'tests/sistema/flujo.spec.ts',
+      `export const cargar = async () => (await import('./sin-red')).test;\n`,
     );
 
     expect(reglas).toEqual([]);

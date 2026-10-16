@@ -191,17 +191,25 @@ describe('arranque: navegador', () => {
     expect(respuestas).toEqual([200]);
   });
 
-  it('si el navegador no se puede abrir, el servidor sigue y se avisa con la dirección', async () => {
-    const mensajes: string[] = [];
+  it('si el navegador no se puede abrir, el servidor sigue y se avisa además del mensaje de arranque', async () => {
+    const mensajesSinFallo: string[] = [];
+    const mensajesConFallo: string[] = [];
+    await arrancar({
+      env: { TABLERO_PUERTO: '0' },
+      openBrowser: () => Promise.resolve(),
+      log: (mensaje) => mensajesSinFallo.push(mensaje),
+    });
 
     const servidor = await arrancar({
       env: { TABLERO_PUERTO: '0' },
       openBrowser: () => Promise.reject(new Error('sin navegador')),
-      log: (mensaje) => mensajes.push(mensaje),
+      log: (mensaje) => mensajesConFallo.push(mensaje),
     });
 
     const url = `http://127.0.0.1:${puertoDe(servidor)}/`;
     expect((await pedir(servidor, 'GET', '/')).estado).toBe(200);
-    expect(mensajes.some((mensaje) => mensaje.includes(url))).toBe(true);
+    const avisos = mensajesConFallo.slice(mensajesSinFallo.length);
+    expect(avisos).not.toHaveLength(0);
+    expect(avisos.every((aviso) => aviso.includes(url))).toBe(true);
   });
 });
