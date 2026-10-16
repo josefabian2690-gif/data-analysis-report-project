@@ -43,10 +43,10 @@ Independiente de los grupos 1, 2 y 4. Área: `src/servidor/`, `tests/servidor/`,
 
 Depende de los grupos 1 y 2. Área: `src/cliente/`, `tests/cliente/`. Spec `tablero-del-mes`, salvo el requisito de la suite de sistema; `design.md` D10. Los textos visibles van todos en `src/cliente/textos.ts`.
 
-- [ ] 4.1 Tests de componente primero: el estado inicial muestra el título y el control para elegir un CSV; un CSV sin `monto` muestra el rechazo que nombra `monto` y no muestra KPIs; luego la carga con `File.text()` y `parsearCsv`; verificar que los tests encuentran todo por rol y nombre accesible del catálogo
-- [ ] 4.2 Tests primero del resumen de validación (mes, válidas, inválidas, lista con fila y motivo en es-MX para cada código de D4) y de la confirmación de R-05 (confirmar muestra el tablero, cancelar vuelve al inicio); luego los componentes; verificar que quitar la confirmación hace fallar su test
-- [ ] 4.3 Tests primero de los KPIs con R-17 (nombre accesible de cada KPI y su valor formateado); luego el componente; verificar con un CSV pequeño de valores conocidos
-- [ ] 4.4 Tests primero de la lista por categoría (orden, monto, porcentaje, la primera con la marca de dominante) y de que la gráfica se monta con el renderizador SVG; luego los componentes con `porCategoria`; verificar que invertir el orden hace fallar el test y dejar captura del tablero con el fixture `2026-07-semilla-1`
+- [x] 4.1 Tests de componente primero: el estado inicial muestra el título y el control para elegir un CSV; un CSV sin `monto` muestra el rechazo que nombra `monto` y no muestra KPIs; luego la carga con `File.text()` y `parsearCsv`; verificar que los tests encuentran todo por rol y nombre accesible del catálogo
+- [x] 4.2 Tests primero del resumen de validación (mes, válidas, inválidas, lista con fila y motivo en es-MX para cada código de D4) y de la confirmación de R-05 (confirmar muestra el tablero, cancelar vuelve al inicio); luego los componentes; verificar que quitar la confirmación hace fallar su test
+- [x] 4.3 Tests primero de los KPIs con R-17 (nombre accesible de cada KPI y su valor formateado); luego el componente; verificar con un CSV pequeño de valores conocidos
+- [x] 4.4 Tests primero de la lista por categoría (orden, monto, porcentaje, la primera con la marca de dominante) y de que la gráfica se monta con el renderizador SVG; luego los componentes con `porCategoria`; verificar que invertir el orden hace fallar el test y dejar captura del tablero con el fixture `2026-07-semilla-1`
 
 ## 5. Suite de sistema: el flujo principal
 
