@@ -98,6 +98,16 @@ describe('porCategoria', () => {
     expect(barras().opcion.aria).toMatchObject({ enabled: true });
   });
 
+  it('acota el grosor de la barra, para que una sola categoría no llene el alto', () => {
+    const unaSola = porCategoria({
+      ...METRICAS,
+      gastoPorCategoria: [{ categoria: 'Viajes', monto: 100, transacciones: 1, proporcion: 1 }],
+    });
+    const [serie] = unaSola.series as BarSeriesOption[];
+
+    expect(serie?.barMaxWidth).toBeGreaterThan(0);
+  });
+
   it('sin categorías devuelve una gráfica vacía y no falla', () => {
     const vacia = porCategoria({ ...METRICAS, gastoPorCategoria: [] });
     const [serie] = vacia.series as BarSeriesOption[];

@@ -27,10 +27,10 @@ Reglas de la fase:
 
 Depende del grupo 1. Área: `src/graficas/`, `tests/graficas/`, `eslint.config.mjs`, `tests/arquitectura/capas.test.ts`. Specs `tablero-del-mes` (las gráficas y «Una sola barra no ocupa la gráfica»); `design.md` D5.
 
-- [ ] 2.1 Tests primero en `tests/arquitectura/capas.test.ts`: un import de valor de `echarts` y de `echarts/core` en `src/graficas/` da error; `import type` de `echarts` no; `src/cliente/` sigue pudiendo importar valores de `echarts`; luego la regla en `eslint.config.mjs`; verificar que cada caso nuevo falla con la configuración anterior
-- [ ] 2.2 Tests primero de por zona y por cuenta (una barra por entrada en el orden de `Metricas`, etiquetas con R-17, `aria` activado) y de `barMaxWidth` en todas las barras, incluida `porCategoria`; luego las funciones; verificar que quitar el grosor máximo hace fallar el test
-- [ ] 2.3 Tests primero de por día (una barra por día del periodo, color y marca por tipo de día de R-13, eje con días en R-17) y por hora (24 barras); luego las funciones, con los rótulos visibles recibidos por argumento; verificar que cambiar el color de quincena por el normal hace fallar un test
-- [ ] 2.4 Tests primero de por día de la semana (7 barras de lunes a domingo con el `promedio`, viernes a domingo marcados por R-14, nombres de los días por argumento); luego la función; verificar que usar el `monto` total en lugar del promedio hace fallar el test y que `npm run lint` pasa sobre `src/graficas/`
+- [x] 2.1 Tests primero en `tests/arquitectura/capas.test.ts`: un import de valor de `echarts` y de `echarts/core` en `src/graficas/` da error; `import type` de `echarts` no; `src/cliente/` sigue pudiendo importar valores de `echarts`; luego la regla en `eslint.config.mjs`; verificar que cada caso nuevo falla con la configuración anterior
+- [x] 2.2 Tests primero de por zona y por cuenta (una barra por entrada en el orden de `Metricas`, etiquetas con R-17, `aria` activado) y de `barMaxWidth` en todas las barras, incluida `porCategoria`; luego las funciones; verificar que quitar el grosor máximo hace fallar el test
+- [x] 2.3 Tests primero de por día (una barra por día del periodo, color y marca por tipo de día de R-13, eje con días en R-17) y por hora (24 barras); luego las funciones, con los rótulos visibles recibidos por argumento; verificar que cambiar el color de quincena por el normal hace fallar un test
+- [x] 2.4 Tests primero de por día de la semana (7 barras de lunes a domingo con el `promedio`, viernes a domingo marcados por R-14, nombres de los días por argumento); luego la función; verificar que usar el `monto` total en lugar del promedio hace fallar el test y que `npm run lint` pasa sobre `src/graficas/`
 
 ## 3. Cliente: filtros, recálculo y estado vacío
 

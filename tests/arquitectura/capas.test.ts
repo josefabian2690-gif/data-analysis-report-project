@@ -66,6 +66,14 @@ beforeAll(async () => {
     JSON.stringify({ name: 'papaparse', main: 'index.js' }),
   );
   writeFileSync(join(arbol, 'node_modules', 'papaparse', 'index.js'), 'module.exports = {};\n');
+  mkdirSync(join(arbol, 'node_modules', 'echarts'), { recursive: true });
+  writeFileSync(
+    join(arbol, 'node_modules', 'echarts', 'package.json'),
+    JSON.stringify({ name: 'echarts', main: 'index.js' }),
+  );
+  for (const archivo of ['index.js', 'core.js', 'charts.js']) {
+    writeFileSync(join(arbol, 'node_modules', 'echarts', archivo), 'module.exports = {};\n');
+  }
   process.chdir(arbol);
   eslint = new ESLint({ cwd: arbol, overrideConfigFile: configuracionReal });
   await lintar('dominio', '');
@@ -263,5 +271,107 @@ describe('capas puras: sin I/O', () => {
     );
 
     expect(reglas).toEqual([]);
+  });
+});
+
+describe('graficas: de echarts solo se importan tipos', () => {
+  const REGLA_DE_IMPORTS = '@typescript-eslint/no-restricted-imports';
+  const valores = [
+    ['importar un valor de echarts', `import { init } from 'echarts';\nexport const f = init;\n`],
+    [
+      'importar el módulo entero de echarts',
+      `import * as echarts from 'echarts';\nexport const f = echarts;\n`,
+    ],
+    [
+      'importar el default de echarts',
+      `import echarts from 'echarts';\nexport const f = echarts;\n`,
+    ],
+    [
+      'importar un valor de echarts/core',
+      `import { use } from 'echarts/core';\nexport const f = use;\n`,
+    ],
+    [
+      'importar un valor de echarts/charts',
+      `import { BarChart } from 'echarts/charts';\nexport const f = BarChart;\n`,
+    ],
+    [
+      'importar un valor con import { type X, valor }',
+      `import { type EChartsOption, init } from 'echarts';\nexport const f: EChartsOption = init;\n`,
+    ],
+    ['importar solo por efecto de echarts/core', `import 'echarts/core';\n`],
+    ['reexportar todo de echarts', `export * from 'echarts';\n`],
+    ['reexportar un valor de echarts', `export { init } from 'echarts';\n`],
+  ] as const;
+
+  it.each(valores)('graficas no puede %s', async (_accion, codigo) => {
+    const reglas = await reglasQueFallan('graficas', codigo);
+
+    expect(reglas).toContain(REGLA_DE_IMPORTS);
+  });
+
+  it.each([
+    ['import(echarts)', `export const f = () => import('echarts');\n`],
+    ['import(`echarts`)', 'export const f = () => import(`echarts`);\n'],
+    ['import(echarts/core)', `export const f = () => import('echarts/core');\n`],
+  ])('graficas no puede cargar %s de forma dinámica', async (_accion, codigo) => {
+    const reglas = await reglasQueFallan('graficas', codigo);
+
+    expect(reglas).toContain('no-restricted-syntax');
+  });
+
+  it.each([
+    [
+      'import type { X } from echarts',
+      `import type { EChartsOption } from 'echarts';\nexport type F = EChartsOption;\n`,
+    ],
+    [
+      'import { type X } from echarts',
+      `import { type EChartsOption } from 'echarts';\nexport type F = EChartsOption;\n`,
+    ],
+    [
+      'import type X from echarts/core',
+      `import type Core from 'echarts/core';\nexport type F = Core;\n`,
+    ],
+    [
+      'import type { X } from echarts/charts',
+      `import type { BarSeriesOption } from 'echarts/charts';\nexport type F = BarSeriesOption;\n`,
+    ],
+  ])('graficas puede usar %s', async (_accion, codigo) => {
+    const reglas = await reglasQueFallan('graficas', codigo);
+
+    expect(reglas).toEqual([]);
+  });
+
+  it.each(['dominio', 'reporte', 'servidor'] as const)(
+    '%s no queda sujeta a esta regla de echarts',
+    async (capa) => {
+      const reglas = await reglasQueFallan(
+        capa,
+        `import { init } from 'echarts';\nexport const f = init;\n`,
+      );
+
+      expect(reglas).not.toContain('@typescript-eslint/no-restricted-imports');
+    },
+  );
+
+  it('cliente puede importar valores de echarts y de sus subrutas', async () => {
+    const reglas = await reglasQueFallan(
+      'cliente',
+      [
+        `import { init, use } from 'echarts/core';`,
+        `import { BarChart } from 'echarts/charts';`,
+        `import * as echarts from 'echarts';`,
+        `export const f = [init, use, BarChart, echarts];`,
+        '',
+      ].join('\n'),
+    );
+
+    expect(reglas).toEqual([]);
+  });
+
+  it('graficas conserva la pureza: Date.now() sigue fallando junto a la regla de echarts', async () => {
+    const reglas = await reglasQueFallan('graficas', `export const t = Date.now();\n`);
+
+    expect(reglas).toContain('no-restricted-properties');
   });
 });

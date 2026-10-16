@@ -40,6 +40,20 @@ const aliasesDelGlobal = ['globalThis', 'self', 'global'].map((name) => ({
   message: sinAliasGlobal,
 }));
 
+const sintaxisProhibidaEnCapasPuras = [
+  { selector: "NewExpression[callee.name='Date'][arguments.length=0]", message: sinIo },
+  { selector: "CallExpression[callee.name='Date']", message: sinIo },
+  { selector: "MetaProperty[meta.name='import']", message: sinIo },
+];
+
+const soloTiposDeEcharts =
+  'graficas solo importa tipos de echarts: el runtime se registra en src/cliente/echarts.ts (docs/ARQUITECTURA.md, tabla de capas).';
+const rutaDeEcharts = String.raw`/^echarts(\/.*)?$/`;
+const importDinamicoDeEcharts = [
+  `ImportExpression[source.value=${rutaDeEcharts}]`,
+  `ImportExpression[source.quasis.0.value.cooked=${rutaDeEcharts}]`,
+].map((selector) => ({ selector, message: soloTiposDeEcharts }));
+
 export default defineConfig(
   {
     ignores: [
@@ -74,11 +88,28 @@ export default defineConfig(
       'import/no-nodejs-modules': 'error',
       'no-restricted-globals': ['error', ...globalesProhibidos, ...aliasesDelGlobal],
       'no-restricted-properties': ['error', { object: 'Date', property: 'now', message: sinIo }],
+      'no-restricted-syntax': ['error', ...sintaxisProhibidaEnCapasPuras],
+    },
+  },
+  {
+    files: [`src/graficas/**/*.{${extensionesDeCodigo}}`],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['echarts', 'echarts/*'],
+              allowTypeImports: true,
+              message: soloTiposDeEcharts,
+            },
+          ],
+        },
+      ],
       'no-restricted-syntax': [
         'error',
-        { selector: "NewExpression[callee.name='Date'][arguments.length=0]", message: sinIo },
-        { selector: "CallExpression[callee.name='Date']", message: sinIo },
-        { selector: "MetaProperty[meta.name='import']", message: sinIo },
+        ...sintaxisProhibidaEnCapasPuras,
+        ...importDinamicoDeEcharts,
       ],
     },
   },
