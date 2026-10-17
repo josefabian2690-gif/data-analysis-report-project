@@ -1,7 +1,7 @@
 import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { createMonthStore, type MonthStore } from '../../src/servidor/month-store';
 import { AGOSTO, JULIO, SEPTIEMBRE, transaccionesDelFixture, unaTransaccion } from './ayudas';
@@ -100,6 +100,21 @@ describe('almacén de meses: escritura atómica', () => {
     expect(fallo).toBeInstanceOf(Error);
     expect(readdirSync(carpeta)).toEqual([]);
     expect(await almacen().list()).toEqual([]);
+  });
+});
+
+describe('almacén de meses: el temporal', () => {
+  it('se escribe en la carpeta del historial, para que el rename no cruce sistemas de archivos, y no con la forma de un mes', async () => {
+    const rutas: string[] = [];
+
+    await almacen(async (ruta, datos) => {
+      rutas.push(ruta);
+      await writeFile(ruta, datos);
+    }).save('2026-07', ORIGINAL, { replace: false });
+
+    expect(rutas).toHaveLength(1);
+    expect(dirname(rutas[0]!)).toBe(carpeta);
+    expect(rutas[0]).not.toBe(join(carpeta, '2026-07.json'));
   });
 });
 

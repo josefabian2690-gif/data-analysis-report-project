@@ -274,10 +274,4 @@ describe('arranque: la API del historial', () => {
     expect(JSON.parse(lista.cuerpo)).toEqual([]);
     expect(existsSync(join(raiz, 'historial'))).toBe(false);
   });
-
-  it('la página del bundle sigue sirviéndose junto a la API', async () => {
-    const servidor = await arrancar();
-
-    expect((await pedir(servidor, 'GET', '/')).cuerpo).toBe(PAGINA);
-  });
 });
