@@ -55,6 +55,7 @@ test('el dashboard del mes se filtra, se ordena y se recupera de punta a punta',
   await tabla.getByRole('button', { name: textos.tabla.columnas.monto, exact: true }).click();
 
   await expect(tabla.getByRole('row').nth(1).getByRole('cell').last()).toHaveText('$12,990.00');
+  await expect(page.getByText(textos.tabla.pagina(1, 12), { exact: true })).toBeVisible();
 
   await page.getByRole('button', { name: textos.filtros.quitar }).click();
 
