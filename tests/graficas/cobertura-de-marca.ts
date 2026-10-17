@@ -3,7 +3,7 @@ import { init } from 'echarts';
 export interface HuellaDeMarca {
   /** Fracción de la losa que el patrón pinta. */
   cobertura: number;
-  /** `true` si alguna figura es más ancha o más alta que la losa: la losa la recorta y solo queda una astilla. */
+  /** `true` si alguna figura es más ancha o más alta que la losa: la losa la recorta. */
   figuraMasGrandeQueLaLosa: boolean;
 }
 
