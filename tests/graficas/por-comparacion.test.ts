@@ -2,6 +2,7 @@ import type { BarSeriesOption, EChartsOption } from 'echarts';
 import { describe, expect, it } from 'vitest';
 
 import { porComparacion } from '../../src/graficas/por-comparacion';
+import type { Comparacion } from '../../src/dominio/comparacion';
 import { COMPARACION_DE_PRUEBA, ROTULOS_DE_MESES } from './comparacion-de-prueba';
 
 interface SerieDeMes extends BarSeriesOption {
@@ -51,6 +52,20 @@ describe('porComparacion', () => {
     expect(JSON.stringify(segundo?.itemStyle.decal)).not.toBe(
       JSON.stringify(primero?.itemStyle.decal),
     );
+  });
+
+  it('rechaza una comparación sin rótulo de alguno de sus meses y nombra el mes que falta', () => {
+    expect(() => porComparacion(COMPARACION_DE_PRUEBA, { '2026-07': 'Julio de 2026' })).toThrow(
+      /2026-08/,
+    );
+  });
+
+  it.each([1, 3])('rechaza una comparación de %i mes(es): la gráfica es de dos', (cuantos) => {
+    const meses = ['2026-06', '2026-07', '2026-08'].slice(-cuantos);
+    const comparacion: Comparacion = { ...COMPARACION_DE_PRUEBA, meses };
+    const rotulos = Object.fromEntries(meses.map((mes) => [mes, mes]));
+
+    expect(() => porComparacion(comparacion, rotulos)).toThrow(/dos meses/);
   });
 
   it('formatea el eje de montos en MXN (R-17)', () => {

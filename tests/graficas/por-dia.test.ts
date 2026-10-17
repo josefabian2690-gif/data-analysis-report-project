@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import type { TipoDeDia } from '../../src/dominio/calendario';
 import type { GastoDeDia, Metricas } from '../../src/dominio/metricas';
 import { porDia } from '../../src/graficas/por-dia';
+import { huellaDeMarca } from './cobertura-de-marca';
 import { METRICAS_VACIAS } from './metricas-de-prueba';
 
 const ROTULOS: Record<TipoDeDia, string> = {
@@ -85,13 +86,14 @@ describe('porDia', () => {
     expect(serieDe('normal').itemStyle.decal).toBeUndefined();
   });
 
-  it('dibuja la marca de la post-quincena con un símbolo no más chico que el de las rayas, para que se vea igual de bien (R-13)', () => {
+  it('dibuja la post-quincena con un patrón cuyas figuras caben en su losa y que pinta al menos la mitad que las rayas más tenues (R-13)', () => {
     const { serieDe } = dibujar();
-    const tamano = (tipo: TipoDeDia) =>
-      (serieDe(tipo).itemStyle.decal as { symbolSize?: number }).symbolSize ?? 1;
+    const huella = (tipo: TipoDeDia) => huellaDeMarca(serieDe(tipo).itemStyle.decal as object);
+    const rayas = Math.min(huella('quincena').cobertura, huella('pre-quincena').cobertura);
+    const post = huella('post-quincena');
 
-    expect(tamano('post-quincena')).toBeGreaterThanOrEqual(tamano('quincena'));
-    expect(tamano('post-quincena')).toBeGreaterThanOrEqual(tamano('pre-quincena'));
+    expect(post.figuraMasGrandeQueLaLosa).toBe(false);
+    expect(post.cobertura).toBeGreaterThanOrEqual(rayas / 2);
   });
 
   it('muestra una leyenda con el nombre de cada tipo de día, para que se lea qué significa la marca', () => {
