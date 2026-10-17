@@ -46,7 +46,7 @@ export function columnas({
     aria: { enabled: true },
     ...(leyenda === undefined
       ? {}
-      : { legend: { show: true, data: leyenda, selectedMode: false } }),
+      : { legend: { show: true, data: leyenda, selectedMode: false, top: 8 } }),
     grid: { top: leyenda === undefined ? 16 : 48, left: 88, right: 16, bottom: 72 },
     xAxis: {
       type: 'category',
