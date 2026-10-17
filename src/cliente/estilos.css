@@ -162,6 +162,14 @@ td {
   height: 22rem;
 }
 
+.tarjeta-grafica {
+  overflow-x: auto;
+}
+
+.grafica-ancha .grafica {
+  min-width: 640px;
+}
+
 @media (max-width: 1000px) {
   .categorias {
     grid-template-columns: 1fr;

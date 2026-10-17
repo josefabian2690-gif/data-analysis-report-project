@@ -4,6 +4,7 @@ import type { ResultadoCarga } from '../dominio/carga';
 import { filtrar, opcionesDeFiltro, periodoDelFiltro, type Filtro } from '../dominio/filtro';
 import { metricas as calcularMetricas } from '../dominio/metricas';
 import { GastoPorCategoria } from './GastoPorCategoria';
+import { GraficasDelPeriodo } from './GraficasDelPeriodo';
 import { Kpis } from './Kpis';
 import { PanelDeFiltros } from './PanelDeFiltros';
 import { Resumen } from './Resumen';
@@ -37,6 +38,7 @@ export function Tablero({ resultado }: { resultado: ResultadoCarga }) {
         <>
           <Kpis metricas={metricas} />
           <GastoPorCategoria metricas={metricas} />
+          <GraficasDelPeriodo metricas={metricas} />
           <TablaDeTransacciones transacciones={filtradas} />
         </>
       )}
