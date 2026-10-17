@@ -69,3 +69,27 @@ describe('gasto por categoría', () => {
     expect(esperado.categoriaDominante).toBe('Compras');
   });
 });
+
+describe('descripción accesible de la gráfica por categoría', () => {
+  it('es el nombre de la gráfica seguido de cada categoría con su monto y su porcentaje, separadas por punto y coma', async () => {
+    render(<App historial={crearHistorialFalso()} />);
+
+    await elegir(
+      archivoCsv(
+        csv('fecha,monto,concepto,categoria', [
+          '2026-07-03 10:00:00,100,Café,Comida',
+          '2026-07-10 10:00:00,600,Vuelo,Viajes',
+          '2026-07-17 10:00:00,300,Consulta,Salud',
+        ]),
+      ),
+    );
+
+    const grafica = await screen.findByRole('img', {
+      name: new RegExp(`^${textos.categorias.nombreGrafica}`),
+    });
+    expect(grafica).toHaveAttribute(
+      'aria-label',
+      `${textos.categorias.nombreGrafica}. Viajes, $600.00, 60.0%; Salud, $300.00, 30.0%; Comida, $100.00, 10.0%.`,
+    );
+  });
+});
