@@ -7,6 +7,7 @@ import { GastoPorCategoria } from './GastoPorCategoria';
 import { Kpis } from './Kpis';
 import { PanelDeFiltros } from './PanelDeFiltros';
 import { Resumen } from './Resumen';
+import { TablaDeTransacciones } from './TablaDeTransacciones';
 import { textos } from './textos';
 
 const SIN_FILTRO: Filtro = {};
@@ -36,6 +37,7 @@ export function Tablero({ resultado }: { resultado: ResultadoCarga }) {
         <>
           <Kpis metricas={metricas} />
           <GastoPorCategoria metricas={metricas} />
+          <TablaDeTransacciones transacciones={filtradas} />
         </>
       )}
     </>

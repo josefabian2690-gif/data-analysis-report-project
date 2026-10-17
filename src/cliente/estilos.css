@@ -236,3 +236,23 @@ td {
   background: #fffbeb;
   color: #78350f;
 }
+
+.orden-de-columna {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.paginacion {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
