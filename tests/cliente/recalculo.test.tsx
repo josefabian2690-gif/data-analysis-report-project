@@ -113,6 +113,20 @@ describe('el tablero se recalcula con el filtro', () => {
     expect(valorDe(textos.kpis.transacciones)).toBe('2');
   });
 
+  it('quitar los filtros también borra un texto inválido del monto, que no se mezcla con lo que se escribe después', async () => {
+    const usuario = await conElMesCargado();
+    await usuario.type(
+      screen.getByRole('spinbutton', { name: textos.filtros.montoMinimo }),
+      '100e',
+    );
+
+    await usuario.click(screen.getByRole('button', { name: textos.filtros.quitar }));
+    await usuario.type(screen.getByRole('spinbutton', { name: textos.filtros.montoMinimo }), '5');
+
+    expect(valorDe(textos.kpis.gastoTotal)).toBe('$1,200.00');
+    expect(screen.getByRole('spinbutton', { name: textos.filtros.montoMinimo })).toHaveValue(5);
+  });
+
   it('el resumen de la carga no cambia al filtrar', async () => {
     const usuario = await conElMesCargado();
 
