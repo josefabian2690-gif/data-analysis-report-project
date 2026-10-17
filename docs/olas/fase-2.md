@@ -20,7 +20,7 @@
 | #19 | fase-2-dashboard-filtros-y-tabla · 2.1–2.4 | `feat/fase-2-charts` | mergeada (`5f8a035`) — 0 mecánicas · 1 ronda (juicio del crítico: rótulos del test iguales a los que fijaría la capa) · 0 por corrección; pasada 2 LISTA sin hallazgos |
 | #18 | fase-2-dashboard-filtros-y-tabla · 3.1–3.3 | `feat/fase-2-client-filters` | mergeada (`66d57be`) — 0 mecánicas · 1 ronda (juicio del crítico: el monto mínimo sin test de comportamiento) · 0 por corrección; pasada 2 LISTA con 1 NO BLOQUEA cerrado en la pasada final trivial |
 | #20 | fase-2-dashboard-filtros-y-tabla · 4.1–4.3 | `feat/fase-2-transactions-table` | mergeada (`ee64c92`) — 0 mecánicas · 1 ronda (juicio del crítico: la fila sin hora empataba con una de `00:00:00` y el desempate de TanStack seguía el orden del archivo) · 0 por corrección; pasada 2 LISTA sin hallazgos |
-| — | fase-2-dashboard-filtros-y-tabla · 5.1–5.2 | `feat/fase-2-client-charts-system` | pendiente |
+| — | fase-2-dashboard-filtros-y-tabla · 5.1–5.2 | `feat/fase-2-client-charts-system` | en implementación |
 
 ## Decisiones del PM
 
@@ -65,6 +65,7 @@
 
 - Worktree del PM: `/home/fabs/da-wt/tablero-gastos/pm-fase-2` (`ola/fase-2`), tomado por el PM entrante el 2026-10-16 (relevo por §1b; registro, PRs y OpenSpec coinciden: 12/17).
 - Grupo 4: mergeado; worktree `g4` quitado.
+- Grupo 5: worktree `/home/fabs/da-wt/tablero-gastos/g5`, rama `feat/fase-2-client-charts-system` desde `ola/fase-2` @ `a6f93b5` (`montar`: preparar y comprobar OK); implementador `impl-g5` trabajando.
 
 ## Coste
 
