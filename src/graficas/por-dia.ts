@@ -28,6 +28,7 @@ export function porDia({ gastoPorDia }: Metricas, rotulos: RotulosDePorDia): ECh
   return columnas({
     categorias: gastoPorDia.map((d) => formatearFecha(d.dia)),
     series,
+    rotulosCompletos: true,
     leyenda: TIPOS_DE_DIA.map((tipo) => rotulos[tipo]),
   });
 }

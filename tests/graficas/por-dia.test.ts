@@ -7,10 +7,10 @@ import { porDia } from '../../src/graficas/por-dia';
 import { METRICAS_VACIAS } from './metricas-de-prueba';
 
 const ROTULOS: Record<TipoDeDia, string> = {
-  quincena: 'Día de quincena',
-  'post-quincena': 'Día posterior a la quincena',
-  'pre-quincena': 'Día previo a la quincena',
-  normal: 'Día normal',
+  quincena: 'Q·q',
+  'post-quincena': 'P·p',
+  'pre-quincena': 'R·r',
+  normal: 'N·n',
 };
 
 function dia(dia: string, monto: number, tipo: TipoDeDia): GastoDeDia {
@@ -90,12 +90,23 @@ describe('porDia', () => {
     const leyenda = opcion.legend as { show?: boolean; data: string[] };
 
     expect(leyenda.show).not.toBe(false);
-    expect(leyenda.data).toEqual([
-      'Día de quincena',
-      'Día posterior a la quincena',
-      'Día previo a la quincena',
-      'Día normal',
-    ]);
+    expect(leyenda.data).toEqual(['Q·q', 'P·p', 'R·r', 'N·n']);
+  });
+
+  it('muestra todas las fechas del eje, inclinadas, para que no se oculten las de quincena', () => {
+    const { opcion } = dibujar();
+    const rotulos = (opcion.xAxis as { axisLabel: { interval: number; rotate: number } }).axisLabel;
+
+    expect(rotulos.interval).toBe(0);
+    expect(rotulos.rotate).toBeGreaterThan(0);
+  });
+
+  it('apila todas las series en la misma pila, para que cada barra ocupe todo su ancho', () => {
+    const { series } = dibujar();
+    const pilas = new Set(series.map((s) => s.stack));
+
+    expect(pilas.size).toBe(1);
+    expect(pilas.has(undefined)).toBe(false);
   });
 
   it('formatea el eje de montos en MXN (R-17)', () => {

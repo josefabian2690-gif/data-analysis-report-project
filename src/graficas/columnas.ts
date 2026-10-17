@@ -31,17 +31,28 @@ interface Columnas {
   series: BarSeriesOption[];
   /** Si hay, la leyenda muestra solo estos nombres y no se puede apagar una clase. */
   leyenda?: string[];
+  /** Muestra todos los rótulos del eje, inclinados, en lugar de ocultar los que se solapan. */
+  rotulosCompletos?: boolean;
 }
 
 /** Columnas verticales con el eje de montos en MXN (R-17). */
-export function columnas({ categorias, series, leyenda }: Columnas): EChartsOption {
+export function columnas({
+  categorias,
+  series,
+  leyenda,
+  rotulosCompletos,
+}: Columnas): EChartsOption {
   return {
     aria: { enabled: true },
     ...(leyenda === undefined
       ? {}
       : { legend: { show: true, data: leyenda, selectedMode: false } }),
     grid: { top: leyenda === undefined ? 16 : 48, left: 88, right: 16, bottom: 72 },
-    xAxis: { type: 'category', data: categorias },
+    xAxis: {
+      type: 'category',
+      data: categorias,
+      axisLabel: rotulosCompletos === true ? { interval: 0, rotate: 45 } : {},
+    },
     yAxis: { type: 'value', axisLabel: { formatter: (monto: number) => formatearMonto(monto) } },
     series,
   };

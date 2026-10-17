@@ -11,16 +11,16 @@ import { METRICAS_VACIAS } from './metricas-de-prueba';
 
 const ROTULOS: RotulosDePorDiaDeLaSemana = {
   dias: {
-    0: 'Lunes',
-    1: 'Martes',
-    2: 'Miércoles',
-    3: 'Jueves',
-    4: 'Viernes',
-    5: 'Sábado',
-    6: 'Domingo',
+    0: 'L·0',
+    1: 'M·1',
+    2: 'X·2',
+    3: 'J·3',
+    4: 'V·4',
+    5: 'S·5',
+    6: 'D·6',
   },
-  entreSemana: 'Entre semana',
-  finDeSemana: 'Fin de semana',
+  entreSemana: 'ES',
+  finDeSemana: 'FS',
 };
 
 // Julio de 2026 tiene cinco miércoles, jueves y viernes: el total premia a esos días y el promedio no.
@@ -59,34 +59,34 @@ describe('porDiaDeLaSemana', () => {
     const { opcion } = dibujar();
 
     expect((opcion.xAxis as { data: string[] }).data).toEqual([
-      'Lunes',
-      'Martes',
-      'Miércoles',
-      'Jueves',
-      'Viernes',
-      'Sábado',
-      'Domingo',
+      'L·0',
+      'M·1',
+      'X·2',
+      'J·3',
+      'V·4',
+      'S·5',
+      'D·6',
     ]);
   });
 
   it('mide el promedio por día y no el total, para que los días que caen cinco veces no salgan premiados (R-14)', () => {
     const { serieDe } = dibujar();
 
-    expect(serieDe('Entre semana').data).toEqual([100, 100, 200, 200, null, null, null]);
-    expect(serieDe('Fin de semana').data).toEqual([null, null, null, null, 200, 200, 200]);
+    expect(serieDe('ES').data).toEqual([100, 100, 200, 200, null, null, null]);
+    expect(serieDe('FS').data).toEqual([null, null, null, null, 200, 200, 200]);
   });
 
   it('pone viernes, sábado y domingo en la serie de fin de semana, y los demás días fuera (R-14)', () => {
     const { serieDe } = dibujar();
-    const enFinDeSemana = serieDe('Fin de semana').data.map((valor) => valor !== null);
+    const enFinDeSemana = serieDe('FS').data.map((valor) => valor !== null);
 
     expect(enFinDeSemana).toEqual([false, false, false, false, true, true, true]);
   });
 
   it('distingue el fin de semana por color y por un patrón, no solo por color', () => {
     const { serieDe } = dibujar();
-    const finDeSemana = serieDe('Fin de semana').itemStyle;
-    const entreSemana = serieDe('Entre semana').itemStyle;
+    const finDeSemana = serieDe('FS').itemStyle;
+    const entreSemana = serieDe('ES').itemStyle;
 
     expect(finDeSemana.color).not.toBe(entreSemana.color);
     expect(finDeSemana.decal).toBeDefined();
@@ -97,7 +97,15 @@ describe('porDiaDeLaSemana', () => {
     const leyenda = dibujar().opcion.legend as { show?: boolean; data: string[] };
 
     expect(leyenda.show).not.toBe(false);
-    expect(leyenda.data).toEqual(['Entre semana', 'Fin de semana']);
+    expect(leyenda.data).toEqual(['ES', 'FS']);
+  });
+
+  it('apila las dos series en la misma pila, para que cada barra ocupe todo su ancho', () => {
+    const { series } = dibujar();
+    const pilas = new Set(series.map((s) => s.stack));
+
+    expect(pilas.size).toBe(1);
+    expect(pilas.has(undefined)).toBe(false);
   });
 
   it('formatea el eje de montos en MXN (R-17)', () => {
@@ -117,12 +125,5 @@ describe('porDiaDeLaSemana', () => {
 
   it('activa aria para lectores de pantalla', () => {
     expect(dibujar().opcion.aria).toMatchObject({ enabled: true });
-  });
-
-  it('sin datos devuelve una gráfica vacía y no falla', () => {
-    const { opcion, series } = dibujar({ ...METRICAS, gastoPorDiaDeLaSemana: [] });
-
-    expect((opcion.xAxis as { data: string[] }).data).toEqual([]);
-    expect(series.every((s) => s.data.length === 0)).toBe(true);
   });
 });

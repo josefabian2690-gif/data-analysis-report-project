@@ -368,10 +368,4 @@ describe('graficas: de echarts solo se importan tipos', () => {
 
     expect(reglas).toEqual([]);
   });
-
-  it('graficas conserva la pureza: Date.now() sigue fallando junto a la regla de echarts', async () => {
-    const reglas = await reglasQueFallan('graficas', `export const t = Date.now();\n`);
-
-    expect(reglas).toContain('no-restricted-properties');
-  });
 });

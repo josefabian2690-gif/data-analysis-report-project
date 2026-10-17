@@ -22,7 +22,7 @@ function barra({ monto, proporcion }: EntradaDeBarra, esDominante: boolean) {
   };
 }
 
-/** Barras horizontales, la primera entrada arriba y resaltada, cada una con su monto y proporción (R-17). */
+/** Barras horizontales, la primera entrada arriba y resaltada, cada una con su monto en MXN (R-17) y su proporción. */
 export function barrasHorizontales(entradas: EntradaDeBarra[]): EChartsOption {
   const serie: BarSeriesOption = {
     type: 'bar',

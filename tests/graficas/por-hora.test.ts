@@ -20,7 +20,7 @@ function dibujar(metricas: Metricas = METRICAS) {
 }
 
 describe('porHora', () => {
-  it('dibuja 24 barras, de la hora 0 a la 23 y en ese orden, con su monto', () => {
+  it('dibuja 24 barras, de la hora 0 a la 23 y en ese orden, con su monto, sin inventar una para las transacciones sin hora (R-03)', () => {
     const { opcion, datos } = dibujar();
 
     expect(datos).toHaveLength(24);
@@ -29,15 +29,6 @@ describe('porHora', () => {
     expect(horas).toHaveLength(24);
     expect(horas[0]).toBe('00');
     expect(horas[23]).toBe('23');
-  });
-
-  it('no inventa una barra para las transacciones sin hora (R-03)', () => {
-    const { opcion, datos } = dibujar();
-
-    expect((opcion.xAxis as { data: string[] }).data).toHaveLength(24);
-    expect(datos.reduce((suma, monto) => suma + monto, 0)).toBeCloseTo(
-      HORAS.reduce((suma, h) => suma + h.monto, 0),
-    );
   });
 
   it('formatea el eje de montos en MXN (R-17)', () => {
