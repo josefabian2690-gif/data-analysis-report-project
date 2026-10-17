@@ -128,9 +128,10 @@ function idRepetido(lista: unknown[]): string | undefined {
 }
 
 /**
- * Valida lo que viaja por la API del historial: una lista no vacía de transacciones del mes
- * `mes`, con exactamente los campos de `Transaccion` y ids sin repetir (docs/ARQUITECTURA.md,
- * «API del historial»).
+ * Valida lo que viaja por la API del historial: el cuerpo es `Transaccion[]` y se valida con el
+ * esquema del dominio (docs/ARQUITECTURA.md, «API del historial»). Exige exactamente los campos
+ * de `Transaccion`, todas del mes `mes` (R-08), ids sin repetir (R-06) y una lista no vacía,
+ * porque un mes sin ninguna fila válida no se guarda (docs/DOMINIO.md, «Casos borde»).
  */
 export function leerMesGuardado(mes: string, valor: unknown): MesGuardado {
   if (!Array.isArray(valor)) return { ok: false, motivo: 'el cuerpo debe ser una lista' };

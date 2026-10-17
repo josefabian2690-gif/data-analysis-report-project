@@ -32,12 +32,12 @@ export function formatearProporcion(proporcion: number): string {
   return PROPORCION.format(proporcion);
 }
 
-/** `588512.93` → `+$588,512.93`, `-612819.78` → `-$612,819.78`; el cero va sin signo (R-17). */
+/** `588512.93` → `+$588,512.93`, `-612819.78` → `-$612,819.78`; el cero va sin signo. */
 export function formatearDiferenciaDeMonto(diferencia: number): string {
   return MONTO_CON_SIGNO.format(diferencia);
 }
 
-/** `2.275` → `+227.5%`, `-0.0857` → `-8.6%`; el cero va sin signo (R-17). */
+/** `2.275` → `+227.5%`, `-0.0857` → `-8.6%`; el cero va sin signo. */
 export function formatearDiferenciaDeProporcion(diferencia: number): string {
   return PROPORCION_CON_SIGNO.format(diferencia);
 }

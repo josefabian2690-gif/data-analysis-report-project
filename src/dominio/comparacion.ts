@@ -50,8 +50,9 @@ function sumar(montos: Iterable<number>): number {
 }
 
 /**
- * R-15: por categoría y en el total, cuánto cambió el gasto de cada mes contra el anterior. Una
- * categoría que no aparece en un mes cuenta como 0. Los montos no se redondean (docs/DOMINIO.md,
+ * R-15: diferencia absoluta y proporcional por categoría y en el total; una categoría que no
+ * aparece en un mes cuenta como 0. Con tres o más meses cada diferencia es contra el mes anterior,
+ * lectura de mes a mes que elige este módulo. Los montos no se redondean (docs/DOMINIO.md,
  * «Casos borde»).
  */
 export function comparar(meses: { [mes: string]: Transaccion[] }): Comparacion {
