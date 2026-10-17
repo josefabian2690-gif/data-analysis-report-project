@@ -1,5 +1,12 @@
 import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
-import { afterEach } from 'vitest';
+import { afterEach, beforeEach } from 'vitest';
 
-afterEach(cleanup);
+import { exigirSinRed, prohibirLaRed } from './cliente/red-prohibida';
+
+beforeEach(prohibirLaRed);
+
+afterEach(() => {
+  cleanup();
+  exigirSinRed();
+});

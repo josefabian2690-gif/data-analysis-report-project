@@ -38,6 +38,13 @@ function archivoConInvalidas() {
 
 const TROZOS_DEL_ARCHIVO = ['TX000001', 'Montañez'];
 
+// El cuerpo del guardado es `Transaccion[]` en JSON (docs/ARQUITECTURA.md, «API del historial»): trae
+// ids y conceptos del archivo como campos, así que se busca el encabezado y las líneas crudas.
+const LINEAS_DEL_ARCHIVO = archivoConInvalidas()
+  .buffer.toString('utf8')
+  .split(/\r?\n/)
+  .filter((linea) => linea !== '');
+
 function dato(pagina: Page, etiqueta: string) {
   return pagina.getByRole('group', { name: etiqueta, exact: true }).locator('strong');
 }
@@ -86,9 +93,23 @@ test('el CSV del generador con tres filas inválidas se convierte en el tablero 
   );
   await expect(primera.locator('mark')).toHaveText(textos.categorias.dominante);
 
+  await expect(
+    page
+      .getByText(textos.guardado.guardado('julio de 2026'), { exact: true })
+      .or(page.getByText(textos.guardado.pregunta('julio de 2026'), { exact: true })),
+  ).toBeVisible();
+
   expect(
-    peticiones.filter(({ metodo, cuerpo }) => metodo !== 'GET' || cuerpo !== null),
-    'peticiones con método distinto de GET o con cuerpo',
+    peticiones.filter(({ cuerpo }) => cuerpo !== null).map(({ metodo, url }) => `${metodo} ${url}`),
+    'peticiones con cuerpo',
+  ).toEqual(['PUT http://127.0.0.1:4173/api/meses/2026-07']);
+  expect(
+    peticiones.filter(({ cuerpo, url }) =>
+      LINEAS_DEL_ARCHIVO.some(
+        (linea) => (cuerpo ?? '').includes(linea) || decodeURIComponent(url).includes(linea),
+      ),
+    ),
+    'peticiones que llevan el encabezado o una línea del archivo',
   ).toEqual([]);
   expect(
     peticiones.filter(({ url }) =>

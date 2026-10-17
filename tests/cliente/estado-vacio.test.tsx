@@ -4,11 +4,12 @@ import { describe, expect, it } from 'vitest';
 import { App } from '../../src/cliente/App';
 import { textos } from '../../src/cliente/textos';
 import { elegir, hayTablero, valorDe } from './ayudas';
+import { crearHistorialFalso } from './historial-falso';
 import { gastosDeJulioConDimensiones } from './ayudas-filtros';
 
 /** Mínimo 500 y máximo 400: cada límite por sí solo deja gastos (100 a 600), juntos ninguno. */
 async function conUnMontoImposible() {
-  render(<App />);
+  render(<App historial={crearHistorialFalso()} />);
   const usuario = await elegir(gastosDeJulioConDimensiones());
   await screen.findByRole('group', { name: textos.kpis.gastoTotal });
   await usuario.type(screen.getByRole('spinbutton', { name: textos.filtros.montoMinimo }), '500');
@@ -16,20 +17,25 @@ async function conUnMontoImposible() {
   return usuario;
 }
 
+/** La región de estado del tablero, la única sin nombre: la del guardado lleva el suyo. */
+function regionDelFiltro(): HTMLElement {
+  return screen.getByRole('status', { name: '' });
+}
+
 describe('filtro que deja 0 filas', () => {
   it('con resultados la región de estado sigue en la página, vacía, para que se anuncie al llenarse', async () => {
-    render(<App />);
+    render(<App historial={crearHistorialFalso()} />);
     await elegir(gastosDeJulioConDimensiones());
 
     await screen.findByRole('group', { name: textos.kpis.gastoTotal });
 
-    expect(screen.getByRole('status')).toBeEmptyDOMElement();
+    expect(regionDelFiltro()).toBeEmptyDOMElement();
   });
 
   it('avisa con un mensaje de estado en lugar de los KPIs y la gráfica, sin ningún NaN', async () => {
     await conUnMontoImposible();
 
-    expect(screen.getByRole('status')).toHaveTextContent(textos.filtros.sinResultados);
+    expect(regionDelFiltro()).toHaveTextContent(textos.filtros.sinResultados);
     expect(hayTablero()).toBe(false);
     expect(screen.queryByRole('table', { name: textos.categorias.tabla })).not.toBeInTheDocument();
     expect(screen.queryByRole('img', { name: /^Gráfico/ })).not.toBeInTheDocument();
@@ -42,7 +48,7 @@ describe('filtro que deja 0 filas', () => {
 
     await usuario.click(screen.getByRole('button', { name: textos.filtros.quitar }));
 
-    expect(screen.getByRole('status')).toBeEmptyDOMElement();
+    expect(regionDelFiltro()).toBeEmptyDOMElement();
     expect(valorDe(textos.kpis.gastoTotal)).toBe('$1,200.00');
   });
 
@@ -54,7 +60,7 @@ describe('filtro que deja 0 filas', () => {
     await usuario.clear(maximo);
     await usuario.type(maximo, '300');
 
-    expect(screen.getByRole('status')).toBeEmptyDOMElement();
+    expect(regionDelFiltro()).toBeEmptyDOMElement();
     expect(valorDe(textos.kpis.gastoTotal)).toBe('$600.00');
   });
 });

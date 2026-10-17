@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { App } from '../../src/cliente/App';
 import { textos } from '../../src/cliente/textos';
 import { elegir } from './ayudas';
+import { crearHistorialFalso } from './historial-falso';
 import { gastosDeJulioConDimensiones } from './ayudas-filtros';
 import {
   celdasDe,
@@ -32,7 +33,7 @@ function gastosConUnoSinHora() {
 }
 
 async function conElArchivoCargado(archivo: File) {
-  render(<App />);
+  render(<App historial={crearHistorialFalso()} />);
   const usuario = await elegir(archivo);
   const tabla = await tablaDeTransacciones();
   return { usuario, tabla };

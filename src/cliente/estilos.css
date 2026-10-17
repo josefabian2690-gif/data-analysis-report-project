@@ -291,3 +291,45 @@ td {
   width: 8.5rem;
   white-space: nowrap;
 }
+
+.aviso-guardado {
+  margin: 1rem 0 0;
+}
+
+.confirmacion .aviso-guardado {
+  margin: 1em 0;
+}
+
+.aviso-guardado:empty {
+  margin: 0;
+}
+
+.vistas {
+  display: inline-flex;
+  margin-top: 1.5rem;
+  border: 1px solid #94a3b8;
+  border-radius: 0.5rem;
+  background: #fff;
+  overflow: hidden;
+}
+
+.vistas button {
+  padding: 0.5rem 1.25rem;
+  border: 0;
+  border-right: 1px solid #94a3b8;
+  background: transparent;
+  color: #334155;
+  font: inherit;
+  cursor: pointer;
+}
+
+.vistas button:last-child {
+  border-right: 0;
+}
+
+.vistas button[aria-pressed='true'] {
+  background: #e0e7ff;
+  color: #1e3a8a;
+  font-weight: 700;
+  box-shadow: inset 0 -3px 0 #1d4ed8;
+}

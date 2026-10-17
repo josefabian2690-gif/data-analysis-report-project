@@ -5,6 +5,7 @@ import { App } from '../../src/cliente/App';
 import { textos } from '../../src/cliente/textos';
 import semilla1 from '../fixtures/generador/2026-07-semilla-1.csv?raw';
 import { archivoCsv, elegir } from './ayudas';
+import { crearHistorialFalso } from './historial-falso';
 import {
   celdasDe,
   conceptosDe,
@@ -19,7 +20,7 @@ import {
 const { anterior, siguiente, columnas } = textos.tabla;
 
 async function conGastos(cantidad: number) {
-  render(<App />);
+  render(<App historial={crearHistorialFalso()} />);
   const usuario = await elegir(csvDeGastos(gastosAlternados(cantidad)));
   const tabla = await tablaDeTransacciones();
   return { usuario, tabla };
@@ -31,7 +32,7 @@ function boton(nombre: string): HTMLElement {
 
 describe('paginación de la tabla', () => {
   it('el fixture de 2 000 transacciones se muestra en páginas de 50 filas: página 1 de 40', async () => {
-    render(<App />);
+    render(<App historial={crearHistorialFalso()} />);
     await elegir(archivoCsv(semilla1));
 
     const tabla = await tablaDeTransacciones();

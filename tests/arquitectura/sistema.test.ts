@@ -1,9 +1,9 @@
-import { mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readdirSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { dirname, join } from 'node:path';
+import { dirname, isAbsolute, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ESLint } from 'eslint';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const configuracionReal = join(dirname(fileURLToPath(import.meta.url)), '../../eslint.config.mjs');
 const REGLA_DE_IMPORTS = 'no-restricted-imports';
@@ -171,5 +171,68 @@ describe('suite de sistema: toda spec lleva la vigilancia de peticiones', () => 
     const reglas = await reglasQueFallan('tests/sistema/sin-red.ts', importaTestDePlaywright);
 
     expect(reglas).toEqual([]);
+  });
+});
+
+describe('suite de sistema: el historial de la corrida', () => {
+  const raizDelRepositorio = realpathSync(join(dirname(fileURLToPath(import.meta.url)), '../..'));
+  const entornoInicial = { ...process.env };
+  const creadas: string[] = [];
+
+  async function evaluarLaConfiguracion(): Promise<string> {
+    vi.resetModules();
+    const { webServer } = (await import('../../playwright.config')).default;
+    const servidor = Array.isArray(webServer) ? webServer[0] : webServer;
+    const carpeta = servidor?.env?.['TABLERO_HISTORIAL'];
+    if (carpeta === undefined) throw new Error('playwright.config.ts no define TABLERO_HISTORIAL');
+    creadas.push(carpeta);
+    return carpeta;
+  }
+
+  function empezarOtraCorrida() {
+    for (const clave of Object.keys(process.env)) {
+      if (!(clave in entornoInicial)) delete process.env[clave];
+    }
+  }
+
+  beforeEach(() => {
+    // La suite se lanza desde la raíz del repositorio; el `beforeAll` de arriba dejó el directorio de trabajo en un árbol temporal.
+    process.chdir(raizAnterior);
+  });
+
+  afterEach(() => {
+    process.chdir(arbol);
+    empezarOtraCorrida();
+    for (const carpeta of creadas.splice(0)) rmSync(carpeta, { recursive: true, force: true });
+  });
+
+  it('la carpeta del historial del servidor de la suite cae fuera del repositorio', async () => {
+    const carpeta = await evaluarLaConfiguracion();
+
+    const respectoDelRepositorio = relative(raizDelRepositorio, realpathSync(carpeta));
+    const dentro = !respectoDelRepositorio.startsWith('..') && !isAbsolute(respectoDelRepositorio);
+    expect(isAbsolute(carpeta)).toBe(true);
+    expect(dentro).toBe(false);
+  });
+
+  it('evaluar la configuración otra vez en la misma corrida reutiliza la carpeta y no borra lo guardado', async () => {
+    const carpeta = await evaluarLaConfiguracion();
+    writeFileSync(join(carpeta, '2026-07.json'), '[]');
+
+    const otraEvaluacion = await evaluarLaConfiguracion();
+
+    expect(otraEvaluacion).toBe(carpeta);
+    expect(readdirSync(carpeta)).toEqual(['2026-07.json']);
+  });
+
+  it('cada corrida empieza con una carpeta vacía, distinta de la anterior', async () => {
+    const anterior = await evaluarLaConfiguracion();
+    writeFileSync(join(anterior, '2026-07.json'), '[]');
+    empezarOtraCorrida();
+
+    const carpeta = await evaluarLaConfiguracion();
+
+    expect(carpeta).not.toBe(anterior);
+    expect(readdirSync(carpeta)).toEqual([]);
   });
 });

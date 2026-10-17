@@ -6,6 +6,7 @@ import { textos } from '../../src/cliente/textos';
 import esperado from '../fixtures/generador/2026-07-semilla-1.esperado.json';
 import semilla1 from '../fixtures/generador/2026-07-semilla-1.csv?raw';
 import { archivoCsv, csv, elegir } from './ayudas';
+import { crearHistorialFalso } from './historial-falso';
 
 async function filasDeCategorias(): Promise<HTMLElement[]> {
   const tabla = await screen.findByRole('table', { name: textos.categorias.tabla });
@@ -20,7 +21,7 @@ function celdas(fila: HTMLElement): string[] {
 
 describe('gasto por categoría', () => {
   it('lista las categorías de mayor a menor monto con su monto y su porcentaje', async () => {
-    render(<App />);
+    render(<App historial={crearHistorialFalso()} />);
 
     await elegir(
       archivoCsv(
@@ -41,7 +42,7 @@ describe('gasto por categoría', () => {
   });
 
   it('marca como dominante solo la primera categoría', async () => {
-    render(<App />);
+    render(<App historial={crearHistorialFalso()} />);
     await elegir(
       archivoCsv(
         csv('fecha,monto,concepto,categoria', [
@@ -58,7 +59,7 @@ describe('gasto por categoría', () => {
   });
 
   it('con el fixture de semilla 1 la primera es la categoría dominante de su esperado, marcada', async () => {
-    render(<App />);
+    render(<App historial={crearHistorialFalso()} />);
 
     await elegir(archivoCsv(semilla1));
 
