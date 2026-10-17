@@ -19,7 +19,7 @@
 |---|---|---|---|
 | #25 | `fase-3-historial-y-comparacion` · 1.1–1.3 | `feat/fase-3-domain-schema-compare` | mergeada — 0 mecánicas · 1 ronda · 0 por corrección (+ pasada final de comentarios con pasada corta) |
 | #27 | `fase-3-historial-y-comparacion` · 2.1–2.4 | `feat/fase-3-server-history-api` | mergeada — 0 mecánicas · 0 rondas · 0 por corrección (+ pasada final trivial, solo tests) |
-| #26 | `fase-3-historial-y-comparacion` · 3.1–3.2 | `feat/fase-3-charts-compare` | en revisión (ronda 1 corregida en `569f56a`, pasada 2 del crítico en curso) |
+| #26 | `fase-3-historial-y-comparacion` · 3.1–3.2 | `feat/fase-3-charts-compare` | mergeada — 0 mecánicas · 1 ronda · 0 por corrección (+ pasada final con pasada corta y una línea trivial) |
 | — | `fase-3-historial-y-comparacion` · 4.1–4.4 | `feat/fase-3-client-save-history` | pendiente |
 | — | `fase-3-historial-y-comparacion` · 5.1–5.4 | `feat/fase-3-client-compare-system` | pendiente |
 
@@ -40,6 +40,11 @@
 - **`Host` estricto (PR #27):** solo `127.0.0.1:<puerto>` y `localhost:<puerto>` en minúsculas; `[::1]` y `LOCALHOST` dan 403. Aceptado con el crítico: el servidor no escucha en `::1` y los navegadores mandan el host en minúsculas.
 - **Mutante «sin `sort`» de la lista (PR #27):** equivalente en Linux (libuv ordena `scandir`); aceptado con el crítico.
 - **Pasada final de #27 trivial, sin otra pasada del crítico:** solo tests unitarios; `sistema` no se repitió (código de producto idéntico a `e7d1e61`).
+- **Ronda de #26 (clase: juicio del crítico):** el test nuevo de la marca solo comparaba `symbolSize` y pasaba con la marca vieja y con puntos invisibles. El defecto real era la fila `[0]` de `dashArrayX`, que colapsa la losa a 1 px (`node_modules/echarts/lib/util/number.js:677-685`). Se sustituyó por `tests/graficas/cobertura-de-marca.ts`, que renderiza el `decal` con ECharts SSR a SVG y mide la losa y sus figuras; el crítico lo juzgó válido (falla con la losa colapsada y con puntos espaciados, pasa con un patrón más visible, y falla con ruido si cambia el formato del SVG). Descartado: borrar el test y dejar solo la captura (salida que D12 permitía).
+- **Marca de post-quincena (PR #26):** círculos de tamaño completo, 4 px cada 8 px, filas escalonadas (`dashArrayX: [[4,4],[0,4,4,0]]`, `dashArrayY: [4,2]`). Descartado: otra rotación de rayas (se confundiría con quincena y pre-quincena).
+- **`porComparacion(c, rotulos)` (PR #26):** `rotulos: Record<'AAAA-MM', string>`; lanza si falta el rótulo de un mes o si la comparación no es de dos meses; primer mes gris liso, segundo azul con rayas diagonales; la fila del total no entra. Descartado: respaldo con el `AAAA-MM` (texto visible fuera del catálogo) y estilos cíclicos para más meses.
+- **Pasada final de #26:** `7b0b827` con pasada corta del crítico (tocó un comentario de producto); `cfb42cc`, una línea de comentario de un ayudante de tests, trivial y revisada por el PM; `sistema` sobre `7b0b827`, código de producto idéntico en `cfb42cc`.
+- **Permalinks de capturas de #26** apuntan a `1db248b`, el commit de capturas tras el rebase sobre #27.
 
 ## Deuda
 
@@ -60,7 +65,7 @@ Issues deshabilitadas en el repositorio: la deuda vive aquí y en la PR de ola.
 
 ## Entorno vivo
 
-- Worktree del PM: `/home/fabs/da-wt/tablero-gastos/pm` (`ola/fase-3`).
+- Worktree del PM: `/home/fabs/da-wt/tablero-gastos/pm` (`ola/fase-3` @ `82ec088` antes de este commit). Sin worktrees de grupo, sin servidores, sin implementadores ni críticos en vuelo.
 
 ## Coste
 
@@ -68,4 +73,19 @@ Issues deshabilitadas en el repositorio: la deuda vive aquí y en la PR de ola.
 
 ## Handover
 
-- —
+- **Estado estable:** tres PRs internas mergeadas (#25, #27, #26) a `ola/fase-3`; nada en vuelo. OpenSpec 9/17 (1.1–1.3, 2.1–2.4, 3.1–3.2).
+- **Hecho:** grupo 1 (dominio: `esMes`, `leerMesGuardado`, `comparar`, formatos con signo), grupo 2 (almacén y API del historial), grupo 3 (`porComparacion` y marca de post-quincena).
+- **Lo que queda en orden:** grupo 4 (`implementador-cliente`; tareas 4.1–4.4; rama `feat/fase-3-client-save-history` desde `ola/fase-3`), después grupo 5 (5.1–5.4; rama `feat/fase-3-client-compare-system`). El 5 depende del 4 y del 3; en serie.
+- **Avisos para los encargos:**
+  - El rótulo de la fila del total de la comparación sale de `src/cliente/textos.ts`; no se pinta `total.nombre` (`'Total'` es clave de datos del dominio).
+  - `porComparacion(c, rotulos)` exige un rótulo por mes (`Record<'AAAA-MM', string>`) y exactamente dos meses; lanza si no.
+  - `GET /api/meses` devuelve `total` sin redondear (`1689470.6699999995` para julio): el cliente formatea con `formatearMonto`; los tests de componente comparan el texto formateado (`$1,689,470.67`).
+  - La API exige `Host` `127.0.0.1:<puerto>` o `localhost:<puerto>`; `PUT` con `Content-Type: application/json`; 409 sin `?reemplazar=1`.
+  - Arranque: `readConfig(env, root)` y `StartupDeps.root`; `TABLERO_HISTORIAL` relativa se resuelve contra la raíz.
+  - Capturas del grupo 4: contra `npm start` del worktree con `TABLERO_HISTORIAL` temporal y `TABLERO_PUERTO` propio (no `npm run dev`, que no sirve `/api/`), levantado con candado solo mientras el implementador captura.
+  - La R-09 «se pregunta si se reemplaza» aún no tiene test que la nombre (el de `esquema.test.ts` cubre «los meses nunca se mezclan»): es del grupo 4.
+  - En los worktrees, `.claude/da/da` queda sin bit de ejecución: `.claude/da/da en <wt> -- node .claude/da/da citas <rutas>`.
+  - A los críticos: restaurar mutantes desde copias, nunca con `git checkout`.
+  - Tras cada `verify` y `sistema`, `git status --ignored` del worktree no debe mostrar `historial/`.
+- **Pendiente con el Team Manager o el usuario:** nada.
+- **Por qué paro:** tres PRs internas mergeadas (§6).
