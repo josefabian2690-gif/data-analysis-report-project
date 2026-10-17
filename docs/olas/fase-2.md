@@ -20,6 +20,7 @@
 | #19 | fase-2-dashboard-filtros-y-tabla · 2.1–2.4 | `feat/fase-2-charts` | mergeada (`5f8a035`) — 0 mecánicas · 1 ronda (juicio del crítico: rótulos del test iguales a los que fijaría la capa) · 0 por corrección; pasada 2 LISTA sin hallazgos |
 | #18 | fase-2-dashboard-filtros-y-tabla · 3.1–3.3 | `feat/fase-2-client-filters` | mergeada (`66d57be`) — 0 mecánicas · 1 ronda (juicio del crítico: el monto mínimo sin test de comportamiento) · 0 por corrección; pasada 2 LISTA con 1 NO BLOQUEA cerrado en la pasada final trivial |
 | #20 | fase-2-dashboard-filtros-y-tabla · 4.1–4.3 | `feat/fase-2-transactions-table` | mergeada (`ee64c92`) — 0 mecánicas · 1 ronda (juicio del crítico: la fila sin hora empataba con una de `00:00:00` y el desempate de TanStack seguía el orden del archivo) · 0 por corrección; pasada 2 LISTA sin hallazgos |
+| #21 | fase-2-dashboard-filtros-y-tabla · corrección de 2.3–2.4 | `fix/fase-2-chart-legend-position` | mergeada (`4366f7b`) — 0 mecánicas · 1 ronda (juicio del crítico: el test acotaba solo el borde superior de la leyenda) · 0 por corrección; pasada 2 LISTA sin hallazgos |
 | — | fase-2-dashboard-filtros-y-tabla · 5.1–5.2 | `feat/fase-2-client-charts-system` | en implementación |
 
 ## Decisiones del PM
@@ -48,6 +49,9 @@
 - **Reinicio de página propio (PR #20):** `autoResetPageIndex: false`, paginación controlada y vuelta a la página 1 al cambiar la identidad del conjunto filtrado o al ordenar. Descartado: confiar en el auto-reset de la biblioteca (D7).
 - **Columna Fecha (PR #20):** `dd/mm/aaaa HH:MM:SS`, sin hora solo `dd/mm/aaaa`; orden de columnas Fecha, Concepto, Categoría, Cuenta, Zona, Monto. Descartado: hora en columna propia.
 - **Relevo de PM (2026-10-16):** el PM entrante tomó la ola por §1b tras #19; registro, PRs y OpenSpec coincidían (12/17).
+- **Corrección de la leyenda como PR propia (#21) antes del grupo 5:** el defecto está en `src/graficas/`, fuera del área del grupo 5 (§2.9); el grupo 5 rehace sus capturas sobre ella. Descartado: que el cliente reescriba la posición de la leyenda en la opción (D5 lo descarta para ejes y leyendas) o ensanchar el área del grupo 5.
+- **Mutaciones de sistema del grupo 5 sobre el árbol sin commitear (`a6f93b5+sucio`):** línea base 3/3, y cada mutación (filtro de fechas, promedio del mes completo, orden de la tabla) hizo fallar la spec nueva en su aserción. Corridas antes del rebase sobre #21, que solo toca `src/graficas/columnas.ts`.
+- **Corte por límite de la API (2026-10-17, HTTP 429):** cortó al PM tras el reporte de `impl-fix-leyenda`; el Team Manager avisó del restablecimiento y se siguió con las mismas instancias.
 
 ## Deuda
 
@@ -55,7 +59,7 @@
 
 ## Se coló
 
-- —
+- **Leyenda de las gráficas de columnas abajo (#19 → #21).** ECharts 6.1.0 pone la leyenda abajo por defecto (`node_modules/echarts/lib/component/legend/LegendModel.js:250`); `columnas` no fijaba posición y reservaba la franja de arriba. En la gráfica por día la leyenda tapaba los 31 rótulos de fecha. Lo vio el implementador del grupo 5 al capturar; ningún test de #19 miraba la posición resuelta. Corregido en #21 (§2.9).
 
 ## Lo que queda fuera
 
