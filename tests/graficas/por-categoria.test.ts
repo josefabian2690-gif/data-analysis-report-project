@@ -15,6 +15,12 @@ const METRICAS: Metricas = {
     { categoria: 'Comida', monto: 900, transacciones: 9, proporcion: 0.3 },
     { categoria: 'Salud', monto: 10.126, transacciones: 2, proporcion: 0.0123 },
   ],
+  gastoPorZona: [],
+  gastoPorCuenta: [],
+  gastoPorDia: [],
+  gastoPorHora: [],
+  transaccionesSinHora: 0,
+  gastoPorDiaDeLaSemana: [],
 };
 
 function barras() {
@@ -90,6 +96,16 @@ describe('porCategoria', () => {
 
   it('activa aria para lectores de pantalla', () => {
     expect(barras().opcion.aria).toMatchObject({ enabled: true });
+  });
+
+  it('acota el grosor de la barra, para que una sola categoría no llene el alto', () => {
+    const unaSola = porCategoria({
+      ...METRICAS,
+      gastoPorCategoria: [{ categoria: 'Viajes', monto: 100, transacciones: 1, proporcion: 1 }],
+    });
+    const [serie] = unaSola.series as BarSeriesOption[];
+
+    expect(serie?.barMaxWidth).toBeGreaterThan(0);
   });
 
   it('sin categorías devuelve una gráfica vacía y no falla', () => {

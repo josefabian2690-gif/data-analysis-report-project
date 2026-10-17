@@ -67,12 +67,46 @@ export const textos = {
     columnaMotivo: 'Motivo',
   },
   kpis: {
-    titulo: 'Indicadores del mes',
+    titulo: 'Indicadores',
     gastoTotal: 'Gasto total',
     transacciones: 'Transacciones',
     ticketPromedio: 'Ticket promedio',
     mediana: 'Mediana',
     gastoPromedioPorDia: 'Gasto promedio por día',
+  },
+  filtros: {
+    titulo: 'Filtros',
+    fechas: 'Fechas',
+    desde: 'Desde',
+    hasta: 'Hasta',
+    sinLimite: 'Sin límite',
+    categorias: 'Categorías',
+    cuentas: 'Cuentas',
+    zonas: 'Zonas',
+    monto: 'Monto',
+    montoMinimo: 'Monto mínimo',
+    montoMaximo: 'Monto máximo',
+    quitar: 'Quitar filtros',
+    sinResultados:
+      'Ningún gasto cumple los filtros. Cambia o quita los filtros para ver el tablero.',
+  },
+  tabla: {
+    titulo: 'Detalle de transacciones',
+    nombre: 'Transacciones del conjunto filtrado',
+    columnas: {
+      fecha: 'Fecha',
+      concepto: 'Concepto',
+      categoria: 'Categoría',
+      cuenta: 'Cuenta',
+      zona: 'Zona',
+      monto: 'Monto',
+    },
+    indicadorAscendente: '▲',
+    indicadorDescendente: '▼',
+    paginacion: 'Páginas de la tabla',
+    anterior: 'Anterior',
+    siguiente: 'Siguiente',
+    pagina: (actual: number, total: number) => `Página ${actual} de ${total}`,
   },
   categorias: {
     titulo: 'Gasto por categoría',
@@ -85,5 +119,54 @@ export const textos = {
     descripcionGrafica: (detalle: string) => `${nombreGrafica}. ${detalle}.`,
     detalleDeCategoria: (categoria: string, monto: string, porcentaje: string) =>
       `${categoria}, ${monto}, ${porcentaje}`,
+  },
+  graficas: {
+    descripcion: (nombre: string, detalle: string) => `${nombre}. ${detalle}.`,
+    tiposDeDia: {
+      quincena: 'Quincena',
+      'post-quincena': 'Post-quincena',
+      'pre-quincena': 'Pre-quincena',
+      normal: 'Día normal',
+    },
+    porDia: {
+      titulo: 'Gasto por día',
+      nombre: 'Gráfico de columnas del gasto por día del periodo, con la quincena marcada',
+      detalle: (dia: string, tipo: string, monto: string) => `${dia}, ${tipo}, ${monto}`,
+    },
+    porDiaDeLaSemana: {
+      titulo: 'Gasto promedio por día de la semana',
+      nombre:
+        'Gráfico de columnas del gasto promedio por día de la semana, con el fin de semana marcado',
+      dias: {
+        0: 'Lunes',
+        1: 'Martes',
+        2: 'Miércoles',
+        3: 'Jueves',
+        4: 'Viernes',
+        5: 'Sábado',
+        6: 'Domingo',
+      },
+      entreSemana: 'Entre semana',
+      finDeSemana: 'Fin de semana',
+      detalle: (dia: string, promedio: string, clase: string) =>
+        `${dia}, promedio ${promedio}, ${clase}`,
+    },
+    porHora: {
+      titulo: 'Gasto por hora',
+      nombre: 'Gráfico de columnas del gasto por hora del día',
+      detalle: (hora: string, monto: string) => `${hora} h: ${monto}`,
+    },
+    porZona: {
+      titulo: 'Gasto por zona',
+      nombre: 'Gráfico de barras del gasto por zona, de mayor a menor',
+      detalle: (zona: string, monto: string, porcentaje: string) =>
+        `${zona}: ${monto}, ${porcentaje}`,
+    },
+    porCuenta: {
+      titulo: 'Gasto por cuenta',
+      nombre: 'Gráfico de barras del gasto por cuenta, de mayor a menor',
+      detalle: (cuenta: string, monto: string, porcentaje: string) =>
+        `${cuenta}: ${monto}, ${porcentaje}`,
+    },
   },
 } as const;

@@ -11,16 +11,16 @@ type Pantalla =
   | { tipo: 'inicial' }
   | { tipo: 'rechazado'; motivo: MotivoRechazo }
   | { tipo: 'ilegible' }
-  | { tipo: 'por-confirmar'; resultado: ResultadoCarga }
-  | { tipo: 'tablero'; resultado: ResultadoCarga };
+  | { tipo: 'por-confirmar'; resultado: ResultadoCarga; eleccion: number }
+  | { tipo: 'tablero'; resultado: ResultadoCarga; eleccion: number };
 
 const INICIAL: Pantalla = { tipo: 'inicial' };
 const ILEGIBLE: Pantalla = { tipo: 'ilegible' };
 
-function pantallaDe(carga: EstadoDeCarga): Pantalla {
+function pantallaDe(carga: EstadoDeCarga, eleccion: number): Pantalla {
   if (carga.tipo === 'rechazado') return carga;
   const { resultado } = carga;
-  return { tipo: pideConfirmacion(resultado) ? 'por-confirmar' : 'tablero', resultado };
+  return { tipo: pideConfirmacion(resultado) ? 'por-confirmar' : 'tablero', resultado, eleccion };
 }
 
 export function App() {
@@ -34,7 +34,10 @@ export function App() {
     entrada.value = '';
     if (archivo === undefined) return;
     const eleccion = ++ultimaEleccion.current;
-    const siguiente = await leerArchivo(archivo).then(pantallaDe, () => ILEGIBLE);
+    const siguiente = await leerArchivo(archivo).then(
+      (carga) => pantallaDe(carga, eleccion),
+      () => ILEGIBLE,
+    );
     if (eleccion === ultimaEleccion.current) setPantalla(siguiente);
   }
 
@@ -55,11 +58,13 @@ export function App() {
         <Confirmacion
           invalidas={pantalla.resultado.invalidas.length}
           validas={pantalla.resultado.transacciones.length}
-          alConfirmar={() => setPantalla({ tipo: 'tablero', resultado: pantalla.resultado })}
+          alConfirmar={() => setPantalla({ ...pantalla, tipo: 'tablero' })}
           alCancelar={() => setPantalla(INICIAL)}
         />
       )}
-      {pantalla.tipo === 'tablero' && <Tablero resultado={pantalla.resultado} />}
+      {pantalla.tipo === 'tablero' && (
+        <Tablero key={pantalla.eleccion} resultado={pantalla.resultado} />
+      )}
     </main>
   );
 }
