@@ -36,8 +36,8 @@ export function ordenarPor(usuario: UserEvent, tabla: HTMLElement, columna: stri
   return usuario.click(within(tabla).getByRole('button', { name: columna }));
 }
 
-export function textoDePagina(): string {
-  return screen.getByText(/^Página \d+ de \d+$/).textContent ?? '';
+export function paginaVisible(actual: number, total: number): HTMLElement {
+  return screen.getByText(textos.tabla.pagina(actual, total));
 }
 
 /**

@@ -62,7 +62,8 @@ h2 {
   gap: 0.75rem;
 }
 
-.acciones button {
+.acciones button,
+.paginacion button {
   padding: 0.5rem 1rem;
   border: 1px solid #1d4ed8;
   border-radius: 0.375rem;
@@ -255,4 +256,30 @@ td {
   align-items: center;
   gap: 1rem;
   margin-top: 0.75rem;
+}
+
+.paginacion button:disabled {
+  border-color: #cbd5e1;
+  background: #e2e8f0;
+  color: #64748b;
+  cursor: not-allowed;
+}
+
+.tabla-de-transacciones {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.tabla-de-transacciones td {
+  overflow-wrap: anywhere;
+}
+
+.tabla-de-transacciones .columna-fecha {
+  width: 11.5rem;
+  white-space: nowrap;
+}
+
+.tabla-de-transacciones .columna-monto {
+  width: 8.5rem;
+  white-space: nowrap;
 }

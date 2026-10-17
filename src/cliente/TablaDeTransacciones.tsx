@@ -4,6 +4,7 @@ import {
   createPaginatedRowModel,
   createSortedRowModel,
   functionalUpdate,
+  metaHelper,
   rowPaginationFeature,
   rowSortingFeature,
   sortFn_basic,
@@ -33,18 +34,18 @@ const features = tableFeatures({
   sortedRowModel: createSortedRowModel(),
   paginatedRowModel: createPaginatedRowModel(),
   sortFns: { basic: sortFn_basic, texto },
-  columnMeta: {} as { numerica?: boolean },
+  columnMeta: metaHelper<{ clase?: string }>(),
 });
 
 const columna = createColumnHelper<typeof features, Transaccion>();
 
 /**
- * Clave de la fecha: día y hora en `AAAA-MM-DDTHH:MM:SS`, que ordena igual como cadena. Una
- * transacción sin hora (R-03) no tiene hora que comparar: cuenta como el inicio de su día y queda
- * antes de las que sí traen hora.
+ * Clave de la fecha: `AAAA-MM-DDTHH:MM:SS`, que ordena igual como cadena. Una transacción sin hora
+ * (R-03) deja la parte de la hora vacía: su clave es prefijo de la de cualquier hora de su día, así
+ * que va antes que todas, incluida la de las 00:00:00, sin depender del desempate de la tabla.
  */
 function claveDeFecha({ dia, hora }: Transaccion): string {
-  return `${dia}T${hora ?? '00:00:00'}`;
+  return `${dia}T${hora ?? ''}`;
 }
 
 function textoDeFecha({ dia, hora }: Transaccion): string {
@@ -58,6 +59,7 @@ const columnas = columna.columns([
     header: textos.tabla.columnas.fecha,
     cell: ({ row }) => textoDeFecha(row.original),
     sortFn: 'basic',
+    meta: { clase: 'columna-fecha' },
   }),
   columna.accessor('concepto', {
     header: textos.tabla.columnas.concepto,
@@ -79,7 +81,7 @@ const columnas = columna.columns([
     header: textos.tabla.columnas.monto,
     cell: ({ getValue }) => formatearMonto(getValue()),
     sortFn: 'basic',
-    meta: { numerica: true },
+    meta: { clase: 'columna-monto numerico' },
   }),
 ]);
 
@@ -131,7 +133,7 @@ export function TablaDeTransacciones({ transacciones }: { transacciones: Transac
   return (
     <section aria-labelledby={id}>
       <h2 id={id}>{textos.tabla.titulo}</h2>
-      <table>
+      <table className="tabla-de-transacciones">
         <caption>{textos.tabla.nombre}</caption>
         <thead>
           {tabla.getHeaderGroups().map((grupo) => (
@@ -143,7 +145,7 @@ export function TablaDeTransacciones({ transacciones }: { transacciones: Transac
                     key={encabezado.id}
                     scope="col"
                     aria-sort={ordenAnunciado(orden)}
-                    className={encabezado.column.columnDef.meta?.numerica ? 'numerico' : undefined}
+                    className={encabezado.column.columnDef.meta?.clase}
                   >
                     <button
                       type="button"
@@ -166,10 +168,7 @@ export function TablaDeTransacciones({ transacciones }: { transacciones: Transac
           {tabla.getRowModel().rows.map((fila) => (
             <tr key={fila.id}>
               {fila.getAllCells().map((celda) => (
-                <td
-                  key={celda.id}
-                  className={celda.column.columnDef.meta?.numerica ? 'numerico' : undefined}
-                >
+                <td key={celda.id} className={celda.column.columnDef.meta?.clase}>
                   <tabla.FlexRender cell={celda} />
                 </td>
               ))}

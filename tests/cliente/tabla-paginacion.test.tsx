@@ -13,7 +13,7 @@ import {
   gastosAlternados,
   ordenarPor,
   tablaDeTransacciones,
-  textoDePagina,
+  paginaVisible,
 } from './ayudas-tabla';
 
 const { anterior, siguiente, columnas } = textos.tabla;
@@ -37,7 +37,7 @@ describe('paginación de la tabla', () => {
     const tabla = await tablaDeTransacciones();
 
     expect(filasDeDatos(tabla)).toHaveLength(50);
-    expect(textoDePagina()).toBe('Página 1 de 40');
+    expect(paginaVisible(1, 40)).toBeInTheDocument();
   });
 
   it('la primera página trae 50 filas, no deja ir atrás y ofrece la siguiente', async () => {
@@ -45,7 +45,7 @@ describe('paginación de la tabla', () => {
 
     expect(conceptosDe(tabla)[0]).toBe('Gasto 1');
     expect(filasDeDatos(tabla)).toHaveLength(50);
-    expect(textoDePagina()).toBe('Página 1 de 3');
+    expect(paginaVisible(1, 3)).toBeInTheDocument();
     expect(boton(anterior)).toBeDisabled();
     expect(boton(siguiente)).toBeEnabled();
   });
@@ -54,12 +54,12 @@ describe('paginación de la tabla', () => {
     const { usuario, tabla } = await conGastos(120);
 
     await usuario.click(boton(siguiente));
-    expect(textoDePagina()).toBe('Página 2 de 3');
+    expect(paginaVisible(2, 3)).toBeInTheDocument();
     expect(conceptosDe(tabla)[0]).toBe('Gasto 51');
     expect(filasDeDatos(tabla)).toHaveLength(50);
 
     await usuario.click(boton(siguiente));
-    expect(textoDePagina()).toBe('Página 3 de 3');
+    expect(paginaVisible(3, 3)).toBeInTheDocument();
     expect(conceptosDe(tabla)[0]).toBe('Gasto 101');
     expect(filasDeDatos(tabla)).toHaveLength(20);
     expect(boton(siguiente)).toBeDisabled();
@@ -73,14 +73,14 @@ describe('paginación de la tabla', () => {
 
     await usuario.click(boton(anterior));
 
-    expect(textoDePagina()).toBe('Página 2 de 3');
+    expect(paginaVisible(2, 3)).toBeInTheDocument();
     expect(conceptosDe(tabla)[0]).toBe('Gasto 51');
   });
 
   it('con menos de 50 transacciones hay una sola página y no se puede navegar', async () => {
     await conGastos(3);
 
-    expect(textoDePagina()).toBe('Página 1 de 1');
+    expect(paginaVisible(1, 1)).toBeInTheDocument();
     expect(boton(anterior)).toBeDisabled();
     expect(boton(siguiente)).toBeDisabled();
   });
@@ -89,11 +89,11 @@ describe('paginación de la tabla', () => {
     const { usuario, tabla } = await conGastos(120);
     await usuario.click(boton(siguiente));
     await usuario.click(boton(siguiente));
-    expect(textoDePagina()).toBe('Página 3 de 3');
+    expect(paginaVisible(3, 3)).toBeInTheDocument();
 
     await usuario.click(screen.getByRole('checkbox', { name: 'Comida' }));
 
-    expect(textoDePagina()).toBe('Página 1 de 2');
+    expect(paginaVisible(1, 2)).toBeInTheDocument();
     expect(filasDeDatos(tabla)).toHaveLength(50);
     expect(conceptosDe(tabla)[0]).toBe('Gasto 1');
   });
@@ -102,11 +102,11 @@ describe('paginación de la tabla', () => {
     const { usuario, tabla } = await conGastos(120);
     await usuario.click(screen.getByRole('checkbox', { name: 'Comida' }));
     await usuario.click(boton(siguiente));
-    expect(textoDePagina()).toBe('Página 2 de 2');
+    expect(paginaVisible(2, 2)).toBeInTheDocument();
 
     await usuario.click(screen.getByRole('button', { name: textos.filtros.quitar }));
 
-    expect(textoDePagina()).toBe('Página 1 de 3');
+    expect(paginaVisible(1, 3)).toBeInTheDocument();
     expect(conceptosDe(tabla)[0]).toBe('Gasto 1');
   });
 
@@ -116,7 +116,7 @@ describe('paginación de la tabla', () => {
 
     await ordenarPor(usuario, tabla, columnas.monto);
 
-    expect(textoDePagina()).toBe('Página 1 de 3');
+    expect(paginaVisible(1, 3)).toBeInTheDocument();
     expect(celdasDe(filasDeDatos(tabla)[0]!)[5]).toBe('$120.00');
   });
 });

@@ -17,10 +17,14 @@ import {
 
 const { columnas } = textos.tabla;
 
-/** Una transacción sin hora entre otras del mismo día; el orden del archivo no es el cronológico. */
+/**
+ * Una transacción sin hora entre otras del mismo día, una de ellas a las 00:00:00 y antes de ella
+ * en el archivo; el orden del archivo no es el cronológico.
+ */
 function gastosConUnoSinHora() {
   return csvDeGastos([
     '2026-07-10 08:00:00,500,Almuerzo,Comida,Débito,Centro',
+    '2026-07-10 00:00:00,300,Medianoche,Comida,Débito,Centro',
     '2026-07-10,200,Sin hora,Comida,Débito,Centro',
     '2026-07-09 23:00:00,900,Cena,Comida,Débito,Centro',
     '2026-07-10 00:00:01,100,Madrugada,Comida,Débito,Centro',
@@ -94,7 +98,7 @@ describe('tabla de transacciones', () => {
   it('una transacción sin hora va al inicio de su día en el orden inicial', async () => {
     const { tabla } = await conElArchivoCargado(gastosConUnoSinHora());
 
-    expect(conceptosDe(tabla)).toEqual(['Cena', 'Sin hora', 'Madrugada', 'Almuerzo']);
+    expect(conceptosDe(tabla)).toEqual(['Cena', 'Sin hora', 'Medianoche', 'Madrugada', 'Almuerzo']);
   });
 
   it('sigue al filtro: solo lista las transacciones de la categoría marcada y vuelve a todas al desmarcarla', async () => {
@@ -179,18 +183,18 @@ describe('orden por columna', () => {
     await ordenarPor(usuario, tabla, columnas.fecha);
 
     expect(ordenAnunciado(tabla, columnas.fecha)).toBe('descending');
-    expect(conceptosDe(tabla)).toEqual(['Almuerzo', 'Madrugada', 'Sin hora', 'Cena']);
+    expect(conceptosDe(tabla)).toEqual(['Almuerzo', 'Madrugada', 'Medianoche', 'Sin hora', 'Cena']);
   });
 
   it('ordenar por fecha ascendente pone la transacción sin hora antes que las de su mismo día', async () => {
     const { usuario, tabla } = await conElArchivoCargado(gastosConUnoSinHora());
     await ordenarPor(usuario, tabla, columnas.monto);
-    expect(conceptosDe(tabla)).toEqual(['Cena', 'Almuerzo', 'Sin hora', 'Madrugada']);
+    expect(conceptosDe(tabla)).toEqual(['Cena', 'Almuerzo', 'Medianoche', 'Sin hora', 'Madrugada']);
 
     await ordenarPor(usuario, tabla, columnas.fecha);
 
     expect(ordenAnunciado(tabla, columnas.fecha)).toBe('ascending');
-    expect(conceptosDe(tabla)).toEqual(['Cena', 'Sin hora', 'Madrugada', 'Almuerzo']);
+    expect(conceptosDe(tabla)).toEqual(['Cena', 'Sin hora', 'Medianoche', 'Madrugada', 'Almuerzo']);
   });
 
   it('una columna de texto se ordena según el español: Álamo va antes que Banco', async () => {
