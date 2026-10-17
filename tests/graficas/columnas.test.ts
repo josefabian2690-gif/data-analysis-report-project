@@ -1,12 +1,14 @@
 import { init, type EChartsOption } from 'echarts';
 import { describe, expect, it } from 'vitest';
 
+import { porComparacion } from '../../src/graficas/por-comparacion';
 import { porDia } from '../../src/graficas/por-dia';
 import {
   porDiaDeLaSemana,
   type RotulosDePorDiaDeLaSemana,
 } from '../../src/graficas/por-dia-de-la-semana';
 import { porHora } from '../../src/graficas/por-hora';
+import { COMPARACION_DE_PRUEBA, ROTULOS_DE_MESES } from './comparacion-de-prueba';
 import { METRICAS_VACIAS } from './metricas-de-prueba';
 
 const ROTULOS_DE_TIPO = {
@@ -45,6 +47,7 @@ function leyendaResuelta(opcion: EChartsOption): Leyenda {
 const GRAFICAS_CON_LEYENDA: [string, EChartsOption][] = [
   ['por día', porDia(METRICAS_VACIAS, ROTULOS_DE_TIPO)],
   ['por día de la semana', porDiaDeLaSemana(METRICAS_VACIAS, ROTULOS_DE_SEMANA)],
+  ['de la comparación', porComparacion(COMPARACION_DE_PRUEBA, ROTULOS_DE_MESES)],
 ];
 
 describe('leyenda de las gráficas de columnas', () => {

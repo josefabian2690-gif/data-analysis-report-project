@@ -11,19 +11,23 @@ export interface ClaseDeColumna {
   marca?: Marca;
 }
 
-/** Las columnas de una clase, apiladas con las de las demás: cada categoría tiene solo una con valor. */
-export function serieDeClase(
+/** Las columnas de una clase, una al lado de la otra con las de las demás series. */
+export function serieAgrupada(
   { nombre, color, marca }: ClaseDeColumna,
   valores: (number | null)[],
 ): BarSeriesOption {
   return {
     type: 'bar',
     name: nombre,
-    stack: 'gasto',
     barMaxWidth: GROSOR_MAXIMO_DE_BARRA,
     itemStyle: marca === undefined ? { color } : { color, decal: marca },
     data: valores,
   };
+}
+
+/** Las columnas de una clase, apiladas con las de las demás: cada categoría tiene solo una con valor. */
+export function serieDeClase(clase: ClaseDeColumna, valores: (number | null)[]): BarSeriesOption {
+  return { ...serieAgrupada(clase, valores), stack: 'gasto' };
 }
 
 interface Columnas {
