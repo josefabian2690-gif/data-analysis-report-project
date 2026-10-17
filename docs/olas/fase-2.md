@@ -21,7 +21,7 @@
 | #18 | fase-2-dashboard-filtros-y-tabla · 3.1–3.3 | `feat/fase-2-client-filters` | mergeada (`66d57be`) — 0 mecánicas · 1 ronda (juicio del crítico: el monto mínimo sin test de comportamiento) · 0 por corrección; pasada 2 LISTA con 1 NO BLOQUEA cerrado en la pasada final trivial |
 | #20 | fase-2-dashboard-filtros-y-tabla · 4.1–4.3 | `feat/fase-2-transactions-table` | mergeada (`ee64c92`) — 0 mecánicas · 1 ronda (juicio del crítico: la fila sin hora empataba con una de `00:00:00` y el desempate de TanStack seguía el orden del archivo) · 0 por corrección; pasada 2 LISTA sin hallazgos |
 | #21 | fase-2-dashboard-filtros-y-tabla · corrección de 2.3–2.4 | `fix/fase-2-chart-legend-position` | mergeada (`4366f7b`) — 0 mecánicas · 1 ronda (juicio del crítico: el test acotaba solo el borde superior de la leyenda) · 0 por corrección; pasada 2 LISTA sin hallazgos |
-| — | fase-2-dashboard-filtros-y-tabla · 5.1–5.2 | `feat/fase-2-client-charts-system` | en implementación |
+| #22 | fase-2-dashboard-filtros-y-tabla · 5.1–5.2 | `feat/fase-2-client-charts-system` | mergeada (`7c13376`) — 0 mecánicas · 0 rondas · 0 por corrección; LISTA en la pasada 1 con 9 NO BLOQUEA: 5 cerrados en la pasada final trivial (`3b4500e`), 4 a *Deuda*. Antes del PR, un defecto visual de #19 destapado al capturar → #21 |
 
 ## Decisiones del PM
 
@@ -52,10 +52,18 @@
 - **Corrección de la leyenda como PR propia (#21) antes del grupo 5:** el defecto está en `src/graficas/`, fuera del área del grupo 5 (§2.9); el grupo 5 rehace sus capturas sobre ella. Descartado: que el cliente reescriba la posición de la leyenda en la opción (D5 lo descarta para ejes y leyendas) o ensanchar el área del grupo 5.
 - **Mutaciones de sistema del grupo 5 sobre el árbol sin commitear (`a6f93b5+sucio`):** línea base 3/3, y cada mutación (filtro de fechas, promedio del mes completo, orden de la tabla) hizo fallar la spec nueva en su aserción. Corridas antes del rebase sobre #21, que solo toca `src/graficas/columnas.ts`.
 - **Corte por límite de la API (2026-10-17, HTTP 429):** cortó al PM tras el reporte de `impl-fix-leyenda`; el Team Manager avisó del restablecimiento y se siguió con las mismas instancias.
+- **Gráficas del grupo 5 (PR #22):** cinco secciones en `GraficasDelPeriodo` entre «Gasto por categoría» y la tabla; descripción accesible armada en `src/cliente/opciones-de-graficas.ts` con el catálogo (`textos.graficas`); `LegendComponent` registrado; ancho mínimo de 640 px para la gráfica por día. Descartado: rótulos inclinados que se tocan en tarjetas estrechas.
+- **Pasada final de #22 trivial, sin otra pasada del crítico:** solo tests (`tests/cliente/graficas-del-mes.test.tsx`, `tests/sistema/dashboard-filtrado.spec.ts`); se repitió `sistema` porque cambió la spec de sistema.
+- **Cuatro NO BLOQUEA de #22 a deuda y no a corrección:** tocan archivos de producto fuera del grupo (`src/graficas/`, `Grafica.tsx`, `GastoPorCategoria.tsx`) o no tienen comportamiento que proteger; una sexta PR (otra corrección de `graficas`) no compensaba. Descartado: abrirla antes del cierre.
 
 ## Deuda
 
-- —
+Issues deshabilitadas en el repositorio: la deuda vive aquí y en la PR de ola.
+
+- **Marca de post-quincena casi lisa (#22, crítico NO BLOQUEA 1).** `src/graficas/estilo.ts:23-29`, `MARCA_DE_PUNTOS` se ve como rayas horizontales tenues y en el cuadro de la leyenda casi liso; el teal `#0f766e` y el gris `#64748b` tienen luminancia parecida. Impacto hoy: quien no distingue el color separa post-quincena de día normal casi solo por color (R-13, «marca que no dependa solo del color»). Si no se hace: el requisito queda cumplido a medias para la post-quincena. Postura del PM: deuda, porque es de la capa `graficas` (#19), fuera del área del grupo 5, y abrir otra PR de corrección pasaba el umbral de la ola; quincena y pre-quincena sí se distinguen.
+- **`Grafica` recrea la instancia de ECharts en cada cambio de opción (#22, NO BLOQUEA 6).** `src/cliente/Grafica.tsx:9-19`: seis instancias liberadas y recreadas por cada cambio de filtro, con la animación de entrada desde cero. Impacto hoy: parpadeo y trabajo extra al teclear en Monto. Si no se hace: crece con cada gráfica que añada la fase siguiente.
+- **`conDescripcion` duplicado (#22, NO BLOQUEA 7).** `src/cliente/opciones-de-graficas.ts:14-17` y `src/cliente/GastoPorCategoria.tsx`; también `padStart` de la hora repetido respecto de `src/graficas/por-hora.ts`. Impacto hoy: ninguno. Si no se hace: dos formatos de descripción que pueden divergir.
+- **CSS y rejilla (#22, NO BLOQUEA 8).** Segundo bloque `.tarjeta-grafica` en `src/cliente/estilos.css` y `bottom: 72` en `src/graficas/columnas.ts` aunque no haya rótulos inclinados (franja vacía de unos 70 px en hora y día de la semana). Impacto hoy: espacio en blanco. Si no se hace: ninguno funcional.
 
 ## Se coló
 
@@ -69,7 +77,7 @@
 
 - Worktree del PM: `/home/fabs/da-wt/tablero-gastos/pm-fase-2` (`ola/fase-2`), tomado por el PM entrante el 2026-10-16 (relevo por §1b; registro, PRs y OpenSpec coinciden: 12/17).
 - Grupo 4: mergeado; worktree `g4` quitado.
-- Grupo 5: worktree `/home/fabs/da-wt/tablero-gastos/g5`, rama `feat/fase-2-client-charts-system` desde `ola/fase-2` @ `a6f93b5` (`montar`: preparar y comprobar OK); implementador `impl-g5` trabajando.
+- Grupo 5 y corrección #21: mergeados; worktrees `g5` y `fix-leyenda` quitados. Ningún servidor ni comando en vuelo.
 
 ## Coste
 
@@ -77,17 +85,16 @@
 
 ## Handover
 
-- **Estado estable:** #19 mergeada en `ola/fase-2` (`5f8a035`); nada en vuelo (sin implementadores ni críticos activos, sin servidores, sin worktrees de grupo).
-- **Hecho:** grupos 1, 2 y 3 cerrados; #17, #18 y #19 mergeadas. `openspec instructions apply`: 12/17.
-- **Lo que queda en orden:**
-  - grupo 4 (tabla, `implementador-cliente`), rama `feat/fase-2-transactions-table` desde `ola/fase-2`, worktree `/home/fabs/da-wt/tablero-gastos/g4` con `.claude/da/da worktree montar … --desde ola/fase-2`;
-  - después el grupo 5 (gráficas en el cliente y spec de sistema), que depende del 2 y del 4;
-  - luego el cierre: PR `ola/fase-2` → `chore/fase-2-planning` con la plantilla B.
-- **Avisos para los encargos:**
-  - Grupo 4: el conjunto filtrado es `filtradas` en `src/cliente/Tablero.tsx` (variable local con `useMemo`); la tabla cuelga de la rama con resultados (con 0 filas solo se ve la región `role="status"`, siempre montada). Leer antes la guía de TanStack Table 9.3.1 (`node_modules/@tanstack/react-table/skills/getting-started/SKILL.md`, `table-state/SKILL.md`). El título de la sección de KPIs ahora es «Indicadores».
-  - Grupo 5: registrar `LegendComponent` en `src/cliente/echarts.ts` (lo usan `porDia` y `porDiaDeLaSemana`; sin él la leyenda desaparece en silencio) y afirmar en un test de componente que la leyenda aparece. Rótulos desde `src/cliente/textos.ts`: tipos de día (`quincena`, `post-quincena`, `pre-quincena`, `normal`), días de lunes (0) a domingo (6), «entre semana» y «fin de semana». Con `interval: 0`, si la rejilla mide menos de unos 600 px los 31 rótulos inclinados pueden tocarse: la captura del tablero completo lo debe mostrar. La barra única del gráfico por categoría ya está acotada (`barMaxWidth` 32).
-  - Capturas: el PM levanta `npm run dev` del worktree con `.claude/da/da pesado -- npm --prefix <wt> run dev` en dos tiempos (el implementador avisa «listo para capturar»), y lo apaga al terminar matando el proceso de vite por PID (un `pkill -f` con la ruta mata también la propia shell).
-  - `verify` y `sistema` salen `+sucio` mientras las capturas están sin commitear en `imgs/screenshots/pendiente/`; se declara en el cuerpo.
-  - Recordar en cada encargo y crítico: sin `npx` ni instaladores; el crítico de #19 se coló una vez con `git checkout --` para restaurar (sin efecto): pedir restaurar desde copias.
-- **Pendiente con el Team Manager o el usuario:** nada.
-- **Por qué paro:** 3 PRs internas mergeadas (umbral de handover de `desarrollo-autonomo-pm`).
+- **Estado estable:** #22 mergeada en `ola/fase-2` (`7c13376`); nada en vuelo (sin implementadores ni críticos activos, sin servidores, sin worktrees de grupo; solo el del PM).
+- **Hecho:** grupos 1 a 5 cerrados y la corrección #21; #17, #18, #19, #20, #21 y #22 mergeadas. `openspec instructions apply`: 17/17, `all_done`.
+- **Lo que queda en orden:** solo el cierre (`desarrollo-autonomo-pm` §5) en el worktree del PM `/home/fabs/da-wt/tablero-gastos/pm-fase-2`:
+  - `.claude/da/da verify --wt /home/fabs/da-wt/tablero-gastos/pm-fase-2` y `.claude/da/da sistema --wt …` sobre la punta de `ola/fase-2` (esperado: `verify` con 41 archivos y 578 tests; `sistema` 3/3 con `dashboard-filtrado.spec.ts`);
+  - `## Coste` a mano (`.claude/da/da medir` falla con este entorno, brief §5);
+  - PR `ola/fase-2` → `chore/fase-2-planning` con la plantilla B; seis bloques de grupo (#17, #18, #19, #20, #21, #22) con las cifras de la tabla *PRs*; *Deuda* con los cuatro items de arriba;
+  - entregar número y enlace al Team Manager.
+- **Avisos:**
+  - El cuerpo de una PR se edita con `gh api -X PATCH repos/josefabian2690-gif/data-analysis-report-project/pulls/<n> -F body=@cuerpo.md` (`gh pr edit` falla).
+  - `.claude/da/da cuerpo-pr armar --sha <sha>` se corre desde la raíz del checkout principal (desde el worktree no encuentra el estado).
+  - `sistema` y `verify` de #22 y #20 están en sus hilos; las mutaciones de 5.2 en el cuerpo de #22.
+- **Pendiente con el Team Manager o el usuario:** nada que bloquee; la deuda de la marca de post-quincena (R-13) es una decisión a confirmar en la PR de ola.
+- **Por qué paro:** 3 PRs internas mergeadas por este PM (#20, #21, #22), umbral de handover de `desarrollo-autonomo-pm` §6.
