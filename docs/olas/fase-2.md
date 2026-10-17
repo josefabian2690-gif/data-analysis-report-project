@@ -19,7 +19,7 @@
 | #17 | fase-2-dashboard-filtros-y-tabla · 1.1–1.5 | `feat/fase-2-domain-filters-series` | mergeada (`a74e9df`) — 0 mecánicas · 0 rondas · 0 por corrección; LISTA en la pasada 1 con 4 NO BLOQUEA cerrados en la pasada final trivial |
 | #19 | fase-2-dashboard-filtros-y-tabla · 2.1–2.4 | `feat/fase-2-charts` | mergeada (`5f8a035`) — 0 mecánicas · 1 ronda (juicio del crítico: rótulos del test iguales a los que fijaría la capa) · 0 por corrección; pasada 2 LISTA sin hallazgos |
 | #18 | fase-2-dashboard-filtros-y-tabla · 3.1–3.3 | `feat/fase-2-client-filters` | mergeada (`66d57be`) — 0 mecánicas · 1 ronda (juicio del crítico: el monto mínimo sin test de comportamiento) · 0 por corrección; pasada 2 LISTA con 1 NO BLOQUEA cerrado en la pasada final trivial |
-| — | fase-2-dashboard-filtros-y-tabla · 4.1–4.3 | `feat/fase-2-transactions-table` | pendiente |
+| — | fase-2-dashboard-filtros-y-tabla · 4.1–4.3 | `feat/fase-2-transactions-table` | en implementación |
 | — | fase-2-dashboard-filtros-y-tabla · 5.1–5.2 | `feat/fase-2-client-charts-system` | pendiente |
 
 ## Decisiones del PM
@@ -58,7 +58,8 @@
 
 ## Entorno vivo
 
-- Worktree del PM: `/home/fabs/da-wt/tablero-gastos/pm-fase-2` (`ola/fase-2` @ `5f8a035`); el PM entrante lo puede tomar (lo montó `.claude/da/da worktree montar`, comprobado). Ningún worktree de grupo, servidor ni comando en vuelo.
+- Worktree del PM: `/home/fabs/da-wt/tablero-gastos/pm-fase-2` (`ola/fase-2`), tomado por el PM entrante el 2026-10-16 (relevo por §1b; registro, PRs y OpenSpec coinciden: 12/17).
+- Grupo 4: worktree `/home/fabs/da-wt/tablero-gastos/g4`, rama `feat/fase-2-transactions-table` desde `ola/fase-2` @ `48999fb` (`montar`: preparar y comprobar OK); implementador `impl-g4` trabajando.
 
 ## Coste
 
