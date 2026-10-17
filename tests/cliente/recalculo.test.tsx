@@ -104,6 +104,15 @@ describe('el tablero se recalcula con el filtro', () => {
     expect(valorDe(textos.kpis.transacciones)).toBe('4');
   });
 
+  it('un monto mínimo recorta el tablero e incluye el gasto que lo iguala', async () => {
+    const usuario = await conElMesCargado();
+
+    await usuario.type(screen.getByRole('spinbutton', { name: textos.filtros.montoMinimo }), '300');
+
+    expect(valorDe(textos.kpis.gastoTotal)).toBe('$900.00');
+    expect(valorDe(textos.kpis.transacciones)).toBe('2');
+  });
+
   it('el resumen de la carga no cambia al filtrar', async () => {
     const usuario = await conElMesCargado();
 

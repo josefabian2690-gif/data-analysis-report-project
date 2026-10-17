@@ -1,4 +1,4 @@
-import { useId, type ChangeEvent } from 'react';
+import { useId, useState, type ChangeEvent } from 'react';
 
 import { periodoDelMes, recorrerPeriodo } from '../dominio/calendario';
 import type { Filtro, OpcionesDeFiltro } from '../dominio/filtro';
@@ -110,6 +110,7 @@ function Casillas({
 
 export function PanelDeFiltros({ mes, opciones, filtro, alCambiar }: PanelDeFiltrosProps) {
   const id = useId();
+  const [vaciadosDeMonto, setVaciadosDeMonto] = useState(0);
   const dias = recorrerPeriodo(periodoDelMes(mes));
 
   function elegirDia(extremo: Extremo, dia: string | undefined) {
@@ -126,6 +127,11 @@ export function PanelDeFiltros({ mes, opciones, filtro, alCambiar }: PanelDeFilt
       ? elegidas.filter((elegida) => elegida !== opcion)
       : [...elegidas, opcion];
     alCambiar({ ...filtro, [dimension]: siguientes });
+  }
+
+  function quitarFiltros() {
+    setVaciadosDeMonto((vaciados) => vaciados + 1);
+    alCambiar({});
   }
 
   function casillas(dimension: DimensionDeLista, leyenda: string) {
@@ -161,11 +167,13 @@ export function PanelDeFiltros({ mes, opciones, filtro, alCambiar }: PanelDeFilt
         <fieldset>
           <legend>{textos.filtros.monto}</legend>
           <CampoDeMonto
+            key={`minimo-${vaciadosDeMonto}`}
             etiqueta={textos.filtros.montoMinimo}
             valor={filtro.montoMinimo}
             alEscribir={(monto) => escribirMonto('montoMinimo', monto)}
           />
           <CampoDeMonto
+            key={`maximo-${vaciadosDeMonto}`}
             etiqueta={textos.filtros.montoMaximo}
             valor={filtro.montoMaximo}
             alEscribir={(monto) => escribirMonto('montoMaximo', monto)}
@@ -175,7 +183,7 @@ export function PanelDeFiltros({ mes, opciones, filtro, alCambiar }: PanelDeFilt
         {casillas('cuentas', textos.filtros.cuentas)}
         {casillas('zonas', textos.filtros.zonas)}
       </div>
-      <button type="button" className="quitar-filtros" onClick={() => alCambiar({})}>
+      <button type="button" className="quitar-filtros" onClick={quitarFiltros}>
         {textos.filtros.quitar}
       </button>
     </section>

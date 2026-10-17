@@ -67,7 +67,7 @@ export const textos = {
     columnaMotivo: 'Motivo',
   },
   kpis: {
-    titulo: 'Indicadores del mes',
+    titulo: 'Indicadores',
     gastoTotal: 'Gasto total',
     transacciones: 'Transacciones',
     ticketPromedio: 'Ticket promedio',

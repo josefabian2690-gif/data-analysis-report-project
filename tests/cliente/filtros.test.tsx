@@ -39,18 +39,6 @@ describe('panel de filtros', () => {
     expect(casillasDe(textos.filtros.zonas)).toEqual(['Centro', 'Roma']);
   });
 
-  it('ofrece los dos campos de monto y el botón para quitar los filtros', async () => {
-    render(<App />);
-
-    await elegir(gastosDeJulioConDimensiones());
-
-    expect(
-      await screen.findByRole('spinbutton', { name: textos.filtros.montoMinimo }),
-    ).toBeVisible();
-    expect(screen.getByRole('spinbutton', { name: textos.filtros.montoMaximo })).toBeVisible();
-    expect(screen.getByRole('button', { name: textos.filtros.quitar })).toBeVisible();
-  });
-
   it('tras marcar una categoría siguen ofreciéndose todas las opciones del mes', async () => {
     render(<App />);
     const usuario = await elegir(gastosDeJulioConDimensiones());

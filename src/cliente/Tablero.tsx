@@ -19,6 +19,7 @@ export function Tablero({ resultado }: { resultado: ResultadoCarga }) {
     () => calcularMetricas(filtradas, periodoDelFiltro(resultado.mes, filtro)),
     [filtradas, resultado.mes, filtro],
   );
+  const sinResultados = filtradas.length === 0;
   return (
     <>
       <Resumen resultado={resultado} />
@@ -28,11 +29,10 @@ export function Tablero({ resultado }: { resultado: ResultadoCarga }) {
         filtro={filtro}
         alCambiar={setFiltro}
       />
-      {filtradas.length === 0 ? (
-        <p role="status" className="sin-resultados">
-          {textos.filtros.sinResultados}
-        </p>
-      ) : (
+      <p role="status" className="sin-resultados">
+        {sinResultados ? textos.filtros.sinResultados : null}
+      </p>
+      {!sinResultados && (
         <>
           <Kpis metricas={metricas} />
           <GastoPorCategoria metricas={metricas} />
