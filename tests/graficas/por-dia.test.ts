@@ -85,6 +85,15 @@ describe('porDia', () => {
     expect(serieDe('normal').itemStyle.decal).toBeUndefined();
   });
 
+  it('dibuja la marca de la post-quincena con un símbolo no más chico que el de las rayas, para que se vea igual de bien (R-13)', () => {
+    const { serieDe } = dibujar();
+    const tamano = (tipo: TipoDeDia) =>
+      (serieDe(tipo).itemStyle.decal as { symbolSize?: number }).symbolSize ?? 1;
+
+    expect(tamano('post-quincena')).toBeGreaterThanOrEqual(tamano('quincena'));
+    expect(tamano('post-quincena')).toBeGreaterThanOrEqual(tamano('pre-quincena'));
+  });
+
   it('muestra una leyenda con el nombre de cada tipo de día, para que se lea qué significa la marca', () => {
     const { opcion } = dibujar();
     const leyenda = opcion.legend as { show?: boolean; data: string[] };
