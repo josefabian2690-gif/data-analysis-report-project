@@ -43,7 +43,7 @@ describe('porComparacion', () => {
     expect(series[1]?.data).toEqual([201746.52, 15000.5, 120]);
   });
 
-  it('distingue el segundo mes del primero por un color distinto y por una marca (R-13)', () => {
+  it('distingue el segundo mes del primero por un color distinto y por una marca', () => {
     const { series } = dibujar();
     const [primero, segundo] = series;
 

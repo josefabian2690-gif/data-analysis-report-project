@@ -18,7 +18,7 @@ function rotuloDe(mes: string, rotulos: RotulosDeMeses): string {
   return rotulo;
 }
 
-/** R-15: el monto de cada categoría en cada mes, en columnas agrupadas por categoría. */
+/** El monto de cada categoría en cada mes, en columnas agrupadas por categoría. */
 export function porComparacion(
   { meses, categorias }: Comparacion,
   rotulos: RotulosDeMeses,

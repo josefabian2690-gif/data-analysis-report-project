@@ -3,7 +3,7 @@ import { init } from 'echarts';
 export interface HuellaDeMarca {
   /** Fracción de la losa que el patrón pinta. */
   cobertura: number;
-  /** `true` si alguna figura es más ancha o más alta que la losa: al repetirse se pisa a sí misma. */
+  /** `true` si alguna figura es más ancha o más alta que la losa: la losa la recorta y solo queda una astilla. */
   figuraMasGrandeQueLaLosa: boolean;
 }
 
@@ -67,6 +67,7 @@ export function huellaDeMarca(marca: object): HuellaDeMarca {
   const figuras = [...(losa[3] ?? '').matchAll(/<path d="([^"]+)"/g)].map(([, d]) =>
     primitivaDe(d ?? ''),
   );
+  if (figuras.length === 0) throw new Error('la losa del patrón no tiene figuras que medir');
   for (const { desde, hasta, contiene } of figuras) {
     for (let y = desde[1] + PASO / 2; y < hasta[1]; y += PASO) {
       for (let x = desde[0] + PASO / 2; x < hasta[0]; x += PASO) {
