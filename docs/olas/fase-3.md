@@ -20,7 +20,7 @@
 | #25 | `fase-3-historial-y-comparacion` · 1.1–1.3 | `feat/fase-3-domain-schema-compare` | mergeada — 0 mecánicas · 1 ronda · 0 por corrección (+ pasada final de comentarios con pasada corta) |
 | #27 | `fase-3-historial-y-comparacion` · 2.1–2.4 | `feat/fase-3-server-history-api` | mergeada — 0 mecánicas · 0 rondas · 0 por corrección (+ pasada final trivial, solo tests) |
 | #26 | `fase-3-historial-y-comparacion` · 3.1–3.2 | `feat/fase-3-charts-compare` | mergeada — 0 mecánicas · 1 ronda · 0 por corrección (+ pasada final con pasada corta y una línea trivial) |
-| — | `fase-3-historial-y-comparacion` · 4.1–4.4 | `feat/fase-3-client-save-history` | pendiente |
+| #28 | `fase-3-historial-y-comparacion` · 4.1–4.4 | `feat/fase-3-client-save-history` | mergeada — 1 mecánica (PM: capturas ajenas) · 1 ronda · 0 por corrección (+ pasada final con pasada corta) |
 | — | `fase-3-historial-y-comparacion` · 5.1–5.4 | `feat/fase-3-client-compare-system` | pendiente |
 
 ## Decisiones del PM
@@ -45,6 +45,15 @@
 - **`porComparacion(c, rotulos)` (PR #26):** `rotulos: Record<'AAAA-MM', string>`; lanza si falta el rótulo de un mes o si la comparación no es de dos meses; primer mes gris liso, segundo azul con rayas diagonales; la fila del total no entra. Descartado: respaldo con el `AAAA-MM` (texto visible fuera del catálogo) y estilos cíclicos para más meses.
 - **Pasada final de #26:** `7b0b827` con pasada corta del crítico (tocó un comentario de producto); `cfb42cc`, una línea de comentario de un ayudante de tests, trivial y revisada por el PM; `sistema` sobre `7b0b827`, código de producto idéntico en `cfb42cc`.
 - **Permalinks de capturas de #26** apuntan a `1db248b`, el commit de capturas tras el rebase sobre #27.
+- **Relevo de PM (2026-10-17)** tras #26: el PM entrante retomó por §1b sin discrepancias entre registro y PRs. Un corte por límite de uso de la API (HTTP 429) detuvo al crítico de #28 a mitad de la pasada 2; se reanudó la misma instancia (no lo paró el usuario).
+- **Ronda de #28 (clase: juicio del crítico):** dos BLOQUEA de código: cargar un CSV con la vista «Historial» abierta dejaba oculto el resumen y el tablero (contradice «Resumen de validación» y R-05 de `tablero-del-mes`); y el `fetch` global que rechaza no hacía fallar un test que olvidara el historial falso (el cliente convierte el rechazo en aviso). Corregidos en la misma ronda junto con dos NO BLOQUEA de código (pregunta de R-09 con la caja de R-05 y vistas como control segmentado; nombre de un test).
+- **Devolución mecánica del PM en #28:** al mover `imgs/screenshots/pendiente/` a `28/` el PM arrastró seis capturas de la fase 1 que estaban en esa carpeta del worktree; el crítico lo marcó BLOQUEA y el PM las quitó en un commit solo de `imgs/`. A partir de aquí, el PM lista la carpeta antes de moverla.
+- **Vistas de la página (PR #28):** «Tablero del mes» e «Historial», un control segmentado con `aria-pressed`; las dos vistas quedan montadas y la oculta lleva `hidden` (sale del árbol accesible y conserva el filtro). Una carga aceptada, o el confirmar de R-05, vuelve al tablero. Rechazo, archivo ilegible, confirmación de R-05 y el aviso de guardado van fuera de las vistas. Descartado: desmontar la vista oculta (perdía el filtro).
+- **Guardado (PR #28):** se lanza desde los manejadores (al terminar la lectura o en el confirmar de R-05), nunca desde un efecto, para que `StrictMode` no haga dos `PUT`. La lista se recarga tras guardar o reemplazar aunque la respuesta sea de una elección vieja (el servidor sí cambió); el aviso solo cambia si es la última elección.
+- **Tests de componente sin red (PR #28):** `tests/cliente/red-prohibida.ts` + `tests/preparar-cliente.ts`: el `fetch` global rechaza y anota; un `afterEach` falla si hubo alguna llamada. `main.test.tsx` y `main-historial.test.tsx` ponen su propio `fetch` porque montan `main.tsx` con el cliente real.
+- **Carpeta del historial de la suite (PR #28):** `playwright.config.ts` crea con `mkdtemp` una carpeta por corrida en la primera evaluación, la anota en `TABLERO_HISTORIAL_SISTEMA` (los workers la heredan) y la borra al salir. NO BLOQUEA aceptado sin acción con el crítico: en `--ui`/watch el proceso principal reutilizaría la carpeta sin vaciarla; la mecánica corre la suite con `da sistema`, un proceso nuevo por corrida.
+- **Comprobación de «el archivo no sale del navegador» (PR #28):** se buscan las líneas crudas del CSV (encabezado incluido) en cada cuerpo y URL, no ids ni conceptos, que el `PUT` lleva legítimamente como campos. El PM corrió la mutación «el concepto de la primera transacción del `PUT` es el texto del archivo»: `flujo-principal` en rojo con «peticiones que llevan el encabezado o una línea del archivo».
+- **Pasada final de #28:** `6cd16a4` con pasada corta del crítico (tocó `AvisoDeGuardado.tsx`, `estilos.css` y un comentario de producto); `sistema` 3/3 sobre `6cd16a4`; la punta `11b1a4b` solo rehace una captura.
 
 ## Deuda
 
@@ -65,7 +74,7 @@ Issues deshabilitadas en el repositorio: la deuda vive aquí y en la PR de ola.
 
 ## Entorno vivo
 
-- Worktree del PM: `/home/fabs/da-wt/tablero-gastos/pm` (`ola/fase-3` @ `82ec088` antes de este commit). Sin worktrees de grupo, sin servidores, sin implementadores ni críticos en vuelo.
+- Worktree del PM: `/home/fabs/da-wt/tablero-gastos/pm` (`ola/fase-3` @ `6361ab5` antes de este commit). Sin worktrees de grupo, sin servidores, sin implementadores ni críticos en vuelo.
 
 ## Coste
 
