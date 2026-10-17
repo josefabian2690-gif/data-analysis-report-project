@@ -10,7 +10,7 @@ Eres el **project manager** de la Ola fase-3 de tablero-gastos. Tu procedimiento
   - Registro: `docs/olas/fase-3.md`.
 - **Pila de PRs abiertas** (nadie mergea a `master` ni las de la cadena; el usuario las mergea todas después, en orden):
   - #3 → `master`, #4 → `master`, #8 → `chore/fase-0-planning`, #9 → `ola/fase-0`, #15 → `chore/fase-1-planning`, #16 → `ola/fase-1`, #23 → `chore/fase-2-planning`
-  - la PR de planeación de esta ola, `chore/fase-3-planning` → `ola/fase-2`
+  - #24, la PR de planeación de esta ola, `chore/fase-3-planning` → `ola/fase-2`
   - La rama principal es `master`, no `main`: en `.claude/da/da worktree montar` pasa siempre `--desde` explícito.
 - **Change:** `fase-3-historial-y-comparacion`, ya propuesto y refinado; lo tomas, no lo reescribes. Si `desarrollo-autonomo-pm` §1.3 destapa algo inalcanzable: `openspec-update-change` y registro.
 - **Entregable:**
