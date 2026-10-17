@@ -17,8 +17,8 @@
 | # | Grupo (change · tareas) | Rama | Estado |
 |---|---|---|---|
 | #17 | fase-2-dashboard-filtros-y-tabla · 1.1–1.5 | `feat/fase-2-domain-filters-series` | mergeada (`a74e9df`) — 0 mecánicas · 0 rondas · 0 por corrección; LISTA en la pasada 1 con 4 NO BLOQUEA cerrados en la pasada final trivial |
-| — | fase-2-dashboard-filtros-y-tabla · 2.1–2.4 | `feat/fase-2-charts` | pendiente |
-| — | fase-2-dashboard-filtros-y-tabla · 3.1–3.3 | `feat/fase-2-client-filters` | pendiente |
+| #19 | fase-2-dashboard-filtros-y-tabla · 2.1–2.4 | `feat/fase-2-charts` | en revisión: pasada 1 NO LISTA (1 BLOQUEA de test), ronda 1 enviada |
+| #18 | fase-2-dashboard-filtros-y-tabla · 3.1–3.3 | `feat/fase-2-client-filters` | mergeada (`66d57be`) — 0 mecánicas · 1 ronda (juicio del crítico: el monto mínimo sin test de comportamiento) · 0 por corrección; pasada 2 LISTA con 1 NO BLOQUEA cerrado en la pasada final trivial |
 | — | fase-2-dashboard-filtros-y-tabla · 4.1–4.3 | `feat/fase-2-transactions-table` | pendiente |
 | — | fase-2-dashboard-filtros-y-tabla · 5.1–5.2 | `feat/fase-2-client-charts-system` | pendiente |
 
@@ -34,6 +34,12 @@
 - **Transacciones fuera del periodo (PR #17):** cuentan en `gastoTotal`, hora, zona y cuenta, pero no en las series por día y por día de la semana. Aceptado con el crítico: el cliente pasa el mismo filtro a `filtrar` y a `periodoDelFiltro`, así que lo filtrado siempre cae dentro del periodo. Descartado: recortar `tx` al periodo dentro de `metricas` (mezcla filtrar y medir, D2).
 - **Pasada final de #17 trivial, sin otra pasada del crítico:** solo tests unitarios y un comentario; se repitió `sistema` porque tocó un archivo de producto.
 - **El escenario «Las opciones no desaparecen al filtrar» se protege en el cliente (grupo 3):** en el dominio solo puede afirmarse que `opcionesDeFiltro` usa lo que recibe.
+- **Grupos 2 y 3 en paralelo** tras #17, en worktrees disjuntos (`g2`: `src/graficas/`, `tests/graficas/`, `eslint.config.mjs`, `tests/arquitectura/capas.test.ts`; `g3`: `src/cliente/`, `tests/cliente/`). El crítico de #19 se lanzó mientras #18 estaba en su ronda (los críticos solo leen y las áreas son disjuntas); los merges siguieron en serie, con rebase de #19 sobre #18. Descartado: esperar a cerrar #18 para empezar a revisar #19.
+- **Capturas del grupo 3 contra `npm run dev` del worktree** (`127.0.0.1:5173`), levantado por el PM con candado solo mientras el implementador capturaba. Descartado: dejarlo arriba durante la implementación (bloquea el candado del `verify` del otro grupo).
+- **Título de la sección de KPIs (PR #18):** «Indicadores del mes» pasa a «Indicadores», porque con filtro las cifras no son del mes. Descartado: un título que cambie con el filtro (texto nuevo sin escenario en la spec).
+- **Región de estado montada siempre (PR #18):** el `role="status"` vive vacío con resultados y solo cambia su contenido, para que los lectores de pantalla anuncien el mensaje. Descartado: montarlo solo con 0 filas.
+- **Pasada final de #18 trivial, sin otra pasada del crítico:** solo un test unitario; `sistema` no se repitió (código de producto idéntico a `9c72563`).
+- **Corte por límite de la API (2026-10-16):** se cortaron el implementador del grupo 3 (capturando) y el crítico de #19; el Team Manager avisó del restablecimiento y se reanudaron las mismas instancias por mensaje, sin relanzar.
 
 ## Deuda
 
