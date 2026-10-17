@@ -59,6 +59,7 @@ export const textos = {
   },
   guardado: {
     region: 'Estado del guardado en el historial',
+    tituloDeLaPregunta: 'Confirma el reemplazo',
     guardando: (mes: string) => `Guardando el mes ${mes} en el historial…`,
     guardado: (mes: string) => `El mes ${mes} quedó guardado en el historial.`,
     pregunta: (mes: string) =>
@@ -76,8 +77,8 @@ export const textos = {
     historial: 'Historial',
   },
   historial: {
-    titulo: 'Meses guardados',
-    tabla: 'Meses guardados en el historial',
+    titulo: 'Historial de meses',
+    tabla: 'Transacciones y gasto total de cada mes guardado',
     columnas: { mes: 'Mes', transacciones: 'Transacciones', total: 'Gasto total' },
     vacio: 'Todavía no hay meses guardados. Carga un CSV y quedará aquí.',
     noDisponible:

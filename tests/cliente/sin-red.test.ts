@@ -1,5 +1,10 @@
 import { expect, it } from 'vitest';
 
-it('un test de componente no puede hacer red: el fetch global rechaza avisando del historial falso', async () => {
+import { llamadasAlFetchGlobal } from './red-prohibida';
+
+it('un test de componente que llama al fetch global lo ve rechazado y la llamada queda anotada para fallar', async () => {
   await expect(fetch('/api/meses')).rejects.toThrow('crearHistorialFalso');
+
+  expect(llamadasAlFetchGlobal).toEqual(['/api/meses']);
+  llamadasAlFetchGlobal.length = 0;
 });

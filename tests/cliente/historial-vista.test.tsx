@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 import { App } from '../../src/cliente/App';
 import { textos } from '../../src/cliente/textos';
 import type { Transaccion } from '../../src/dominio/esquema';
+import invalidas from '../fixtures/a-mano/invalidas.csv?raw';
 import { archivoCsv, csv, elegir, gastosDeJulio, hayTablero, valorDe } from './ayudas';
 import { gastosDeJulioConDimensiones } from './ayudas-filtros';
 import { crearHistorialFalso } from './historial-falso';
@@ -107,10 +108,10 @@ describe('la tabla de meses guardados', () => {
     expect(screen.queryByRole('table', { name: textos.historial.tabla })).toBeNull();
   });
 
-  it('se actualiza al guardar un mes mientras el analista mira el historial', async () => {
+  it('tras guardar un mes, la tabla de meses lo trae sin recargar la página', async () => {
     render(<App historial={crearHistorialFalso()} />);
     const usuario = await elegir(archivoCsv(csv('fecha,monto,concepto', gastosDeJulio(3))));
-    await screen.findByRole('group', { name: textos.kpis.gastoTotal });
+    await screen.findByText(textos.guardado.guardado('julio de 2026'));
 
     await usuario.click(botonDeVista(textos.vistas.historial));
 
@@ -150,6 +151,55 @@ describe('respuestas de la lista que llegan tarde', () => {
     await act(async () => responderLaPrimera());
 
     expect(filasDeMeses()).toEqual([['julio de 2026', '3', '$30.00']]);
+  });
+});
+
+describe('cargar un CSV con la vista de historial abierta', () => {
+  it('una carga aceptada deja a la vista el resumen, los KPIs y el tablero del mes', async () => {
+    render(<App historial={crearHistorialFalso()} />);
+    const usuario = userEvent.setup();
+    await usuario.click(botonDeVista(textos.vistas.historial));
+
+    await elegir(archivoCsv(csv('fecha,monto,concepto', gastosDeJulio(3))));
+
+    expect(await screen.findByRole('group', { name: textos.kpis.gastoTotal })).toBeVisible();
+    expect(screen.getByRole('heading', { name: textos.resumen.titulo })).toBeVisible();
+    expect(botonDeVista(textos.vistas.tablero)).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  it('con la confirmación de R-05, al confirmar quedan a la vista el resumen y el tablero', async () => {
+    render(<App historial={crearHistorialFalso()} />);
+    const usuario = userEvent.setup();
+    await usuario.click(botonDeVista(textos.vistas.historial));
+    await elegir(archivoCsv(invalidas));
+
+    await usuario.click(await screen.findByRole('button', { name: textos.confirmacion.confirmar }));
+
+    expect(await screen.findByRole('group', { name: textos.kpis.gastoTotal })).toBeVisible();
+    expect(screen.getByRole('heading', { name: textos.resumen.titulo })).toBeVisible();
+  });
+
+  it('un archivo rechazado se ve igual, sin cambiar de vista', async () => {
+    render(<App historial={crearHistorialFalso()} />);
+    await userEvent.setup().click(botonDeVista(textos.vistas.historial));
+
+    await elegir(archivoCsv(csv('fecha,concepto', ['2026-07-03 10:00:00,Café'])));
+
+    expect(await screen.findByRole('alert')).toBeVisible();
+    expect(botonDeVista(textos.vistas.historial)).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  it('un archivo ilegible se ve igual, sin cambiar de vista', async () => {
+    render(<App historial={crearHistorialFalso()} />);
+    await userEvent.setup().click(botonDeVista(textos.vistas.historial));
+    const sinDescargar = Object.assign(archivoCsv('x'), {
+      text: () => Promise.reject(new Error('el archivo no está descargado')),
+    });
+
+    await elegir(sinDescargar);
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(textos.lecturaFallida);
+    expect(botonDeVista(textos.vistas.historial)).toHaveAttribute('aria-pressed', 'true');
   });
 });
 

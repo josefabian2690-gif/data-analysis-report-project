@@ -70,7 +70,9 @@ export function App({ historial }: { historial: Historial }) {
     );
     if (eleccion !== ultimaEleccion.current) return;
     setPantalla(siguiente);
-    if (siguiente.tipo === 'tablero') void guardar(siguiente.resultado, eleccion, false);
+    if (siguiente.tipo !== 'tablero') return;
+    setVista('tablero');
+    void guardar(siguiente.resultado, eleccion, false);
   }
 
   function reemplazarElGuardado() {
@@ -111,6 +113,7 @@ export function App({ historial }: { historial: Historial }) {
           validas={pantalla.resultado.transacciones.length}
           alConfirmar={() => {
             setPantalla({ ...pantalla, tipo: 'tablero', guardado: 'guardando' });
+            setVista('tablero');
             void guardar(pantalla.resultado, pantalla.eleccion, false);
           }}
           alCancelar={() => setPantalla(INICIAL)}
