@@ -32,10 +32,19 @@ export const VALORES_POR_DEFECTO = {
   zona: 'Sin zona',
 } as const;
 
-const CAMPOS: readonly string[] = [
-  ...['id', 'dia', 'hora', 'monto', 'concepto', 'categoria'],
-  ...['cuenta', 'zona', 'latitud', 'longitud'],
-];
+const CAMPOS_DE_TRANSACCION: Record<keyof Transaccion, true> = {
+  id: true,
+  dia: true,
+  hora: true,
+  monto: true,
+  concepto: true,
+  categoria: true,
+  cuenta: true,
+  zona: true,
+  latitud: true,
+  longitud: true,
+};
+const CAMPOS: readonly string[] = Object.keys(CAMPOS_DE_TRANSACCION);
 const MES = /^\d{4}-(0[1-9]|1[0-2])$/;
 const LATITUD_MAXIMA = 90;
 const LONGITUD_MAXIMA = 180;
@@ -81,7 +90,7 @@ function motivoDeFechaYHora(registro: Record<string, unknown>, mes: string): str
   if (typeof dia !== 'string' || leerFecha(dia)?.dia !== dia) {
     return 'su día debe tener la forma AAAA-MM-DD y existir';
   }
-  if (!dia.startsWith(`${mes}-`)) return `su día ${dia} no es del mes ${mes}`;
+  if (dia.slice(0, 7) !== mes) return `su día ${dia} no es del mes ${mes}`;
   if (hora === null) return null;
   const valida = typeof hora === 'string' && leerFecha(`${dia} ${hora}`)?.hora === hora;
   return valida ? null : 'su hora debe ser null o HH:MM:SS válida';

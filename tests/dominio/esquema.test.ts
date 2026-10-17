@@ -1,8 +1,16 @@
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+
 import { describe, expect, it } from 'vitest';
 
+import { parsearCsv } from '../../src/dominio/carga';
 import { esMes, leerMesGuardado, type Transaccion } from '../../src/dominio/esquema';
 
 import { gasto } from './ayudas';
+
+const FIXTURE_DE_JULIO = fileURLToPath(
+  new URL('../fixtures/generador/2026-07-semilla-1.csv', import.meta.url),
+);
 
 const JULIO = '2026-07';
 
@@ -75,6 +83,16 @@ describe('leerMesGuardado: lo que se acepta', () => {
     const lista = conCambio({ hora: '23:59:59', latitud: 90, longitud: -180 });
 
     expect(leerMesGuardado(JULIO, lista).ok).toBe(true);
+  });
+
+  it('acepta tal cual lo que la carga produce de un CSV real del generador', () => {
+    const { mes, transacciones } = parsearCsv(readFileSync(FIXTURE_DE_JULIO, 'utf-8'));
+
+    expect(leerMesGuardado(mes, transacciones)).toEqual({ ok: true, transacciones });
+  });
+
+  it('acepta latitud 0 con longitud 0: el cero es una coordenada', () => {
+    expect(leerMesGuardado(JULIO, conCambio({ latitud: 0, longitud: 0 })).ok).toBe(true);
   });
 
   it('acepta un monto positivo mínimo con decimales', () => {
@@ -177,6 +195,8 @@ describe('leerMesGuardado: lo que se rechaza, con motivo legible', () => {
   );
 
   it.each([
+    ['latitud 0 con longitud null', { latitud: 0, longitud: null }],
+    ['latitud null con longitud 0', { latitud: null, longitud: 0 }],
     ['solo latitud', { latitud: 19.4, longitud: null }],
     ['solo longitud', { latitud: null, longitud: -99.1 }],
   ])('rechaza una sola coordenada: %s (R-07)', (_nombre, cambio) => {
@@ -205,4 +225,33 @@ describe('leerMesGuardado: lo que se rechaza, con motivo legible', () => {
 
     expect(motivoDeRechazo(lista)).toMatch(/\S/);
   });
+});
+
+describe('leerMesGuardado: el mes de la ruta manda (R-09, los meses nunca se mezclan)', () => {
+  const listaDeAgosto = [
+    gasto({ id: 'TX000001', dia: '2026-08-01', monto: 10 }),
+    gasto({ id: 'TX000002', dia: '2026-08-15', monto: 20 }),
+  ];
+
+  it('rechaza una lista entera de agosto validada contra 2026-07', () => {
+    expect(leerMesGuardado('2026-07', listaDeAgosto).ok).toBe(false);
+  });
+
+  it('rechaza una lista de julio validada contra 2026-08', () => {
+    expect(leerMesGuardado('2026-08', listaDeJulio()).ok).toBe(false);
+  });
+
+  it('acepta la lista de agosto validada contra 2026-08', () => {
+    expect(leerMesGuardado('2026-08', listaDeAgosto)).toEqual({
+      ok: true,
+      transacciones: listaDeAgosto,
+    });
+  });
+
+  it.each(['2026', '2026-0', '2026-7', ''])(
+    'rechaza una lista de julio validada contra el mes mal formado %j',
+    (mes) => {
+      expect(leerMesGuardado(mes, listaDeJulio()).ok).toBe(false);
+    },
+  );
 });
