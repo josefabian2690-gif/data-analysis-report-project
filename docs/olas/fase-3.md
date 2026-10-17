@@ -17,7 +17,7 @@
 
 | # | Grupo (change · tareas) | Rama | Estado |
 |---|---|---|---|
-| — | `fase-3-historial-y-comparacion` · 1.1–1.3 | `feat/fase-3-domain-schema-compare` | en curso |
+| #25 | `fase-3-historial-y-comparacion` · 1.1–1.3 | `feat/fase-3-domain-schema-compare` | mergeada — 0 mecánicas · 1 ronda · 0 por corrección (+ pasada final de comentarios con pasada corta) |
 | — | `fase-3-historial-y-comparacion` · 2.1–2.4 | `feat/fase-3-server-history-api` | pendiente |
 | — | `fase-3-historial-y-comparacion` · 3.1–3.2 | `feat/fase-3-charts-compare` | pendiente |
 | — | `fase-3-historial-y-comparacion` · 4.1–4.4 | `feat/fase-3-client-save-history` | pendiente |
@@ -31,12 +31,16 @@
 - **D-TM2 (Team Manager), decisión 4: (a).** Entran las peticiones tardías de la vigilancia, la marca de post-quincena de R-13 y una sola `conDescripcion`. Descartado: dejar la marca como deuda.
 - **D-TM3 (Team Manager), decisión 5: (a).** Una sola ola de 5 PRs, con el grupo del servidor en ~800 líneas. Descartado: dos olas.
 - Las cinco coinciden con lo escrito en `design.md`: no hace falta `openspec-update-change`.
+- **Ronda de #25 (clase: juicio del crítico):** ningún test cambiaba el `mes` de `leerMesGuardado`; el mutante «validar contra el mes de la primera transacción» sobrevivía. En la misma ronda entraron tres NO BLOQUEA de código (`slice(0, 7)`, `CAMPOS` atado a `keyof Transaccion`, tests de `latitud: 0` y de una lista real de `parsearCsv`).
+- **Fila del total de `Comparacion` con `nombre: 'Total'` (PR #25):** se queda como clave de datos; los grupos 4 y 5 toman el rótulo de `src/cliente/textos.ts` y no pintan `total.nombre`. Descartado: dejar `nombre` vacío en el dominio.
+- **Pasada final de #25 con pasada corta del crítico:** solo comentarios, pero en archivos de producto (§2.10, salida (a)); se repitió `sistema`.
 
 ## Deuda
 
 Issues deshabilitadas en el repositorio: la deuda vive aquí y en la PR de ola.
 
-- —
+- Mecánica (no producto): en los worktrees montados, `.claude/da/da` queda con modo 644 y `da en <wt> -- .claude/da/da citas` falla con `EACCES`; se corre `node .claude/da/da citas`. Candidato a arreglo del gancho `preparar`.
+- Mecánica (no producto): el PM corrió una vez `npx --version` por error al commitear el registro de arranque (binario local, sin descarga).
 
 ## Se coló
 
