@@ -75,26 +75,38 @@ Issues deshabilitadas en el repositorio: la deuda vive aquí y en la PR de ola.
 
 ## Entorno vivo
 
-- Worktree del PM: `/home/fabs/da-wt/tablero-gastos/pm-fase-2` (`ola/fase-2`), tomado por el PM entrante el 2026-10-16 (relevo por §1b; registro, PRs y OpenSpec coinciden: 12/17).
-- Grupo 4: mergeado; worktree `g4` quitado.
-- Grupo 5 y corrección #21: mergeados; worktrees `g5` y `fix-leyenda` quitados. Ningún servidor ni comando en vuelo.
+- Vacío al cierre: sin implementadores ni críticos activos, sin servidores, sin worktrees de grupo (`g1` a `g5` y `fix-leyenda` quitados al mergear su PR).
+- El worktree del PM, `/home/fabs/da-wt/tablero-gastos/pm-fase-2`, se quita tras abrir la PR de ola (§5.5).
 
 ## Coste
 
-- —
+Salida de `.claude/da/da medir fase-2` (falla igual que en las fases 0 y 1; tras el error imprime las tablas en cero, que no se pegan):
+
+```
+da medir: gh pr list falló -- Unknown JSON field: "closingIssuesReferences"
+```
+
+A mano, desde la tabla *PRs* de este registro y los veredictos pegados en cada PR:
+
+| PR | Mecánicas | Rondas | Pasadas de crítico |
+|---|---|---|---|
+| #17 | 0 | 0 | 1 (más pasada final trivial del PM) |
+| #18 | 0 | 1 | 2 (más pasada final trivial del PM) |
+| #19 | 0 | 1 | 2 |
+| #20 | 0 | 1 | 2 |
+| #21 | 0 | 1 | 2 |
+| #22 | 0 | 0 | 1 (más pasada final trivial del PM) |
+
+- Se coló: 1 (leyenda de las gráficas de columnas, #19 → #21).
+- BLOQUEA de código: 4, uno por veredicto (#18 monto mínimo sin test; #19 rótulos del test iguales a los de la capa; #20 empate de la fila sin hora con `00:00:00`; #21 test que solo acotaba el borde superior de la leyenda).
+- `verify` al cierre: verde sobre `d5edb68`, 41 archivos y 578 tests.
+- `sistema` al cierre: 3/3 sobre `d5edb68` (`flujo-principal`, `pagina-vacia`, `dashboard-filtrado`); la corrida sobre la punta de la PR de ola, en su *Evidencia*.
 
 ## Handover
 
-- **Estado estable:** #22 mergeada en `ola/fase-2` (`7c13376`); nada en vuelo (sin implementadores ni críticos activos, sin servidores, sin worktrees de grupo; solo el del PM).
-- **Hecho:** grupos 1 a 5 cerrados y la corrección #21; #17, #18, #19, #20, #21 y #22 mergeadas. `openspec instructions apply`: 17/17, `all_done`.
-- **Lo que queda en orden:** solo el cierre (`desarrollo-autonomo-pm` §5) en el worktree del PM `/home/fabs/da-wt/tablero-gastos/pm-fase-2`:
-  - `.claude/da/da verify --wt /home/fabs/da-wt/tablero-gastos/pm-fase-2` y `.claude/da/da sistema --wt …` sobre la punta de `ola/fase-2` (esperado: `verify` con 41 archivos y 578 tests; `sistema` 3/3 con `dashboard-filtrado.spec.ts`);
-  - `## Coste` a mano (`.claude/da/da medir` falla con este entorno, brief §5);
-  - PR `ola/fase-2` → `chore/fase-2-planning` con la plantilla B; seis bloques de grupo (#17, #18, #19, #20, #21, #22) con las cifras de la tabla *PRs*; *Deuda* con los cuatro items de arriba;
-  - entregar número y enlace al Team Manager.
-- **Avisos:**
-  - El cuerpo de una PR se edita con `gh api -X PATCH repos/josefabian2690-gif/data-analysis-report-project/pulls/<n> -F body=@cuerpo.md` (`gh pr edit` falla).
-  - `.claude/da/da cuerpo-pr armar --sha <sha>` se corre desde la raíz del checkout principal (desde el worktree no encuentra el estado).
-  - `sistema` y `verify` de #22 y #20 están en sus hilos; las mutaciones de 5.2 en el cuerpo de #22.
-- **Pendiente con el Team Manager o el usuario:** nada que bloquee; la deuda de la marca de post-quincena (R-13) es una decisión a confirmar en la PR de ola.
-- **Por qué paro:** 3 PRs internas mergeadas por este PM (#20, #21, #22), umbral de handover de `desarrollo-autonomo-pm` §6.
+- **Estado estable:** ola cerrada; nada en vuelo. Las seis PRs internas mergeadas; queda abrir la PR de ola `ola/fase-2` → `chore/fase-2-planning`.
+- **Hecho:** grupos 1 a 5 y la corrección #21; `openspec instructions apply`: 17/17, `all_done`; `verify` y `sistema` de cierre en verde.
+- **Lo que queda en orden:** nada del PM. Tras el merge del usuario, el Team Manager lanza al Archivador (`desarrollo-autonomo-team-manager` §7).
+- **Avisos:** el cuerpo de una PR se edita con `gh api -X PATCH repos/josefabian2690-gif/data-analysis-report-project/pulls/<n> -F body=@cuerpo.md` (`gh pr edit` falla); `.claude/da/da medir` sigue roto.
+- **Pendiente con el Team Manager o el usuario:** confirmar o revertir en la PR de ola las decisiones y la deuda, en especial la marca de post-quincena (R-13).
+- **Por qué paro:** misión cumplida (cierre, `desarrollo-autonomo-pm` §5).
