@@ -17,7 +17,7 @@
 | # | Grupo (change · tareas) | Rama | Estado |
 |---|---|---|---|
 | #17 | fase-2-dashboard-filtros-y-tabla · 1.1–1.5 | `feat/fase-2-domain-filters-series` | mergeada (`a74e9df`) — 0 mecánicas · 0 rondas · 0 por corrección; LISTA en la pasada 1 con 4 NO BLOQUEA cerrados en la pasada final trivial |
-| #19 | fase-2-dashboard-filtros-y-tabla · 2.1–2.4 | `feat/fase-2-charts` | en revisión: pasada 1 NO LISTA (1 BLOQUEA de test), ronda 1 enviada |
+| #19 | fase-2-dashboard-filtros-y-tabla · 2.1–2.4 | `feat/fase-2-charts` | mergeada (`5f8a035`) — 0 mecánicas · 1 ronda (juicio del crítico: rótulos del test iguales a los que fijaría la capa) · 0 por corrección; pasada 2 LISTA sin hallazgos |
 | #18 | fase-2-dashboard-filtros-y-tabla · 3.1–3.3 | `feat/fase-2-client-filters` | mergeada (`66d57be`) — 0 mecánicas · 1 ronda (juicio del crítico: el monto mínimo sin test de comportamiento) · 0 por corrección; pasada 2 LISTA con 1 NO BLOQUEA cerrado en la pasada final trivial |
 | — | fase-2-dashboard-filtros-y-tabla · 4.1–4.3 | `feat/fase-2-transactions-table` | pendiente |
 | — | fase-2-dashboard-filtros-y-tabla · 5.1–5.2 | `feat/fase-2-client-charts-system` | pendiente |
@@ -39,6 +39,9 @@
 - **Título de la sección de KPIs (PR #18):** «Indicadores del mes» pasa a «Indicadores», porque con filtro las cifras no son del mes. Descartado: un título que cambie con el filtro (texto nuevo sin escenario en la spec).
 - **Región de estado montada siempre (PR #18):** el `role="status"` vive vacío con resultados y solo cambia su contenido, para que los lectores de pantalla anuncien el mensaje. Descartado: montarlo solo con 0 filas.
 - **Pasada final de #18 trivial, sin otra pasada del crítico:** solo un test unitario; `sistema` no se repitió (código de producto idéntico a `9c72563`).
+- **Rótulos de las gráficas por argumento (PR #19):** `porDia(m, rotulos: Record<TipoDeDia, string>)` y `porDiaDeLaSemana(m, { dias: Record<DiaDeLaSemana, string>, entreSemana, finDeSemana })`; `porHora`, `porZona`, `porCuenta` sin rótulos (sus ejes solo llevan datos). Marca de quincena y fin de semana: color más patrón `decal` en `itemStyle`, con leyenda; el patrón lo aplica el núcleo de ECharts sin `aria.decal` (comprobado por el crítico en el instalado). Descartado: `markArea`.
+- **Eje de días con todas las fechas a 45° (PR #19):** `interval: 0` y `rotate: 45`, para que el 15 y el 31 no queden ocultos por el `interval: 'auto'`. Descartado: dejar que ECharts oculte rótulos.
+- **Lint de `echarts` en `graficas` (PR #19):** `@typescript-eslint/no-restricted-imports` con `allowTypeImports`, más selectores de `import()` dinámico; la sintaxis prohibida de las capas puras pasó a una constante para que el bloque de `graficas` no la pierda al redefinir `no-restricted-syntax`.
 - **Corte por límite de la API (2026-10-16):** se cortaron el implementador del grupo 3 (capturando) y el crítico de #19; el Team Manager avisó del restablecimiento y se reanudaron las mismas instancias por mensaje, sin relanzar.
 
 ## Deuda
@@ -55,7 +58,7 @@
 
 ## Entorno vivo
 
-- Worktree del PM: `/home/fabs/da-wt/tablero-gastos/pm-fase-2` (`ola/fase-2`).
+- Worktree del PM: `/home/fabs/da-wt/tablero-gastos/pm-fase-2` (`ola/fase-2` @ `5f8a035`); el PM entrante lo puede tomar (lo montó `.claude/da/da worktree montar`, comprobado). Ningún worktree de grupo, servidor ni comando en vuelo.
 
 ## Coste
 
@@ -63,4 +66,17 @@
 
 ## Handover
 
-- —
+- **Estado estable:** #19 mergeada en `ola/fase-2` (`5f8a035`); nada en vuelo (sin implementadores ni críticos activos, sin servidores, sin worktrees de grupo).
+- **Hecho:** grupos 1, 2 y 3 cerrados; #17, #18 y #19 mergeadas. `openspec instructions apply`: 12/17.
+- **Lo que queda en orden:**
+  - grupo 4 (tabla, `implementador-cliente`), rama `feat/fase-2-transactions-table` desde `ola/fase-2`, worktree `/home/fabs/da-wt/tablero-gastos/g4` con `.claude/da/da worktree montar … --desde ola/fase-2`;
+  - después el grupo 5 (gráficas en el cliente y spec de sistema), que depende del 2 y del 4;
+  - luego el cierre: PR `ola/fase-2` → `chore/fase-2-planning` con la plantilla B.
+- **Avisos para los encargos:**
+  - Grupo 4: el conjunto filtrado es `filtradas` en `src/cliente/Tablero.tsx` (variable local con `useMemo`); la tabla cuelga de la rama con resultados (con 0 filas solo se ve la región `role="status"`, siempre montada). Leer antes la guía de TanStack Table 9.3.1 (`node_modules/@tanstack/react-table/skills/getting-started/SKILL.md`, `table-state/SKILL.md`). El título de la sección de KPIs ahora es «Indicadores».
+  - Grupo 5: registrar `LegendComponent` en `src/cliente/echarts.ts` (lo usan `porDia` y `porDiaDeLaSemana`; sin él la leyenda desaparece en silencio) y afirmar en un test de componente que la leyenda aparece. Rótulos desde `src/cliente/textos.ts`: tipos de día (`quincena`, `post-quincena`, `pre-quincena`, `normal`), días de lunes (0) a domingo (6), «entre semana» y «fin de semana». Con `interval: 0`, si la rejilla mide menos de unos 600 px los 31 rótulos inclinados pueden tocarse: la captura del tablero completo lo debe mostrar. La barra única del gráfico por categoría ya está acotada (`barMaxWidth` 32).
+  - Capturas: el PM levanta `npm run dev` del worktree con `.claude/da/da pesado -- npm --prefix <wt> run dev` en dos tiempos (el implementador avisa «listo para capturar»), y lo apaga al terminar matando el proceso de vite por PID (un `pkill -f` con la ruta mata también la propia shell).
+  - `verify` y `sistema` salen `+sucio` mientras las capturas están sin commitear en `imgs/screenshots/pendiente/`; se declara en el cuerpo.
+  - Recordar en cada encargo y crítico: sin `npx` ni instaladores; el crítico de #19 se coló una vez con `git checkout --` para restaurar (sin efecto): pedir restaurar desde copias.
+- **Pendiente con el Team Manager o el usuario:** nada.
+- **Por qué paro:** 3 PRs internas mergeadas (umbral de handover de `desarrollo-autonomo-pm`).
