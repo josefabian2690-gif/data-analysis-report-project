@@ -8,8 +8,8 @@ export interface IntentoDeGuardado {
 
 /**
  * Un historial en memoria que responde como la API de docs/ARQUITECTURA.md («API del historial»):
- * 409 (`existe`) si el mes ya está y no se pidió reemplazarlo, lista en orden cronológico y
- * rechazo de lo que el esquema del dominio no admite.
+ * 409 (`existe`) si el mes ya está y no se pidió reemplazarlo. Además rechaza lo que el esquema
+ * del dominio no admite y lista los meses en orden cronológico, como el servidor.
  */
 export interface HistorialFalso extends Historial {
   /** Lo que el «servidor» tiene guardado, por mes. */

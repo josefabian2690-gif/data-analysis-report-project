@@ -196,7 +196,7 @@ describe('suite de sistema: el historial de la corrida', () => {
   }
 
   beforeEach(() => {
-    // La suite se lanza desde la raíz del repositorio; este archivo está en un árbol temporal.
+    // La suite se lanza desde la raíz del repositorio; el `beforeAll` de arriba dejó el directorio de trabajo en un árbol temporal.
     process.chdir(raizAnterior);
   });
 

@@ -296,6 +296,10 @@ td {
   margin: 1rem 0 0;
 }
 
+.confirmacion .aviso-guardado {
+  margin: 1em 0;
+}
+
 .aviso-guardado:empty {
   margin: 0;
 }

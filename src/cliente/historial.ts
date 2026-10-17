@@ -7,7 +7,7 @@ export interface MesListado {
   total: number;
 }
 
-/** `existe` es la respuesta 409 de R-09 (docs/DOMINIO.md): el mes ya está guardado y no se pidió reemplazarlo. */
+/** `existe` es el 409 de `PUT /api/meses/:mes` (docs/ARQUITECTURA.md, «API del historial»): el mes ya está guardado y falta `?reemplazar=1`; R-09 (docs/DOMINIO.md) pide preguntar. */
 export type ResultadoDeGuardado = 'creado' | 'reemplazado' | 'existe';
 
 export interface OpcionesDeGuardado {
