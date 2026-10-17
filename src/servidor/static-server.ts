@@ -18,9 +18,17 @@ const CONTENT_TYPES: Readonly<Record<string, string>> = {
 const FALLBACK_CONTENT_TYPE = 'application/octet-stream';
 const ALLOWED_METHODS = 'GET, HEAD';
 
+export type ApiHandler = (request: IncomingMessage, response: ServerResponse) => Promise<void>;
+
 export interface StaticServerOptions {
   directory: string;
   port: number;
+  api?: ApiHandler;
+}
+
+function isApiRequest(requestTarget: string): boolean {
+  const [path = ''] = requestTarget.split(/[?#]/);
+  return path.startsWith('/api/');
 }
 
 /** Ruta absoluta del archivo pedido, o `undefined` si la ruta no es válida o cae fuera de `directory`. */
@@ -65,9 +73,10 @@ async function serve(directory: string, request: IncomingMessage, response: Serv
 }
 
 /** Sirve los archivos de `directory` por GET y HEAD, escuchando solo en `LOCAL_ADDRESS`. */
-export function startStaticServer({ directory, port }: StaticServerOptions): Promise<Server> {
+export function startStaticServer({ directory, port, api }: StaticServerOptions): Promise<Server> {
   const server = createServer((request, response) => {
-    void serve(directory, request, response);
+    const handler = api !== undefined && isApiRequest(request.url ?? '') ? api : undefined;
+    void (handler?.(request, response) ?? serve(directory, request, response));
   });
   return new Promise((resolveServer, rejectServer) => {
     server.once('error', rejectServer);
