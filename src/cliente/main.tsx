@@ -1,6 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
+import { crearHistorial } from './historial';
 import { textos } from './textos';
 import './estilos.css';
 
@@ -11,8 +12,10 @@ if (!raiz) {
 
 document.title = textos.titulo;
 
+const historial = crearHistorial((url, init) => fetch(url, init));
+
 createRoot(raiz).render(
   <StrictMode>
-    <App />
+    <App historial={historial} />
   </StrictMode>,
 );

@@ -57,6 +57,32 @@ export const textos = {
     confirmar: 'Cargar de todos modos',
     cancelar: 'Cancelar',
   },
+  guardado: {
+    region: 'Estado del guardado en el historial',
+    guardando: (mes: string) => `Guardando el mes ${mes} en el historial…`,
+    guardado: (mes: string) => `El mes ${mes} quedó guardado en el historial.`,
+    pregunta: (mes: string) =>
+      `El mes ${mes} ya está guardado en el historial. ¿Quieres reemplazarlo con este archivo?`,
+    reemplazar: 'Reemplazar',
+    conservar: 'Conservar el guardado',
+    reemplazado: (mes: string) => `El mes ${mes} se reemplazó en el historial.`,
+    conservado: (mes: string) => `Se conservó el mes ${mes} que ya estaba guardado.`,
+    fallido: (mes: string) =>
+      `No se pudo guardar el mes ${mes} en el historial. El tablero sigue disponible.`,
+  },
+  vistas: {
+    nombre: 'Vistas de la página',
+    tablero: 'Tablero del mes',
+    historial: 'Historial',
+  },
+  historial: {
+    titulo: 'Meses guardados',
+    tabla: 'Meses guardados en el historial',
+    columnas: { mes: 'Mes', transacciones: 'Transacciones', total: 'Gasto total' },
+    vacio: 'Todavía no hay meses guardados. Carga un CSV y quedará aquí.',
+    noDisponible:
+      'No se pudo obtener la lista de meses guardados. Puedes seguir cargando archivos CSV.',
+  },
   resumen: {
     titulo: 'Resumen de la carga',
     mes: 'Mes',

@@ -4,9 +4,10 @@ import { expect, it } from 'vitest';
 import { App } from '../../src/cliente/App';
 import { textos } from '../../src/cliente/textos';
 import { archivoCsv, csv, elegir, valorDe } from './ayudas';
+import { crearHistorialFalso } from './historial-falso';
 
 it('con tres gastos de 100, 200 y 600 el analista lee los cinco KPIs en MXN', async () => {
-  render(<App />);
+  render(<App historial={crearHistorialFalso()} />);
 
   await elegir(
     archivoCsv(
@@ -28,7 +29,7 @@ it('con tres gastos de 100, 200 y 600 el analista lee los cinco KPIs en MXN', as
 
 it('con el fixture de semilla 1 lee 2,000 transacciones y un gasto total de $1,689,470.67', async () => {
   const { default: semilla1 } = await import('../fixtures/generador/2026-07-semilla-1.csv?raw');
-  render(<App />);
+  render(<App historial={crearHistorialFalso()} />);
 
   await elegir(archivoCsv(semilla1));
 

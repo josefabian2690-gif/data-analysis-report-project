@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { App } from '../../src/cliente/App';
 import { textos } from '../../src/cliente/textos';
 import { elegir } from './ayudas';
+import { crearHistorialFalso } from './historial-falso';
 import { casillasDe, diasOfrecidos, gastosDeJulioConDimensiones } from './ayudas-filtros';
 
 const DIAS_DE_JULIO = Array.from(
@@ -13,7 +14,7 @@ const DIAS_DE_JULIO = Array.from(
 
 describe('panel de filtros', () => {
   it('ofrece el inicio y el fin del periodo con los días del mes en dd/mm/aaaa', async () => {
-    render(<App />);
+    render(<App historial={crearHistorialFalso()} />);
 
     await elegir(gastosDeJulioConDimensiones());
 
@@ -29,7 +30,7 @@ describe('panel de filtros', () => {
   });
 
   it('ofrece una casilla por categoría, cuenta y zona del mes, ordenadas por nombre', async () => {
-    render(<App />);
+    render(<App historial={crearHistorialFalso()} />);
 
     await elegir(gastosDeJulioConDimensiones());
 
@@ -40,7 +41,7 @@ describe('panel de filtros', () => {
   });
 
   it('tras marcar una categoría siguen ofreciéndose todas las opciones del mes', async () => {
-    render(<App />);
+    render(<App historial={crearHistorialFalso()} />);
     const usuario = await elegir(gastosDeJulioConDimensiones());
 
     await usuario.click(await screen.findByRole('checkbox', { name: 'Comida' }));

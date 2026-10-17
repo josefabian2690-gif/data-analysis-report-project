@@ -5,16 +5,17 @@ import { App } from '../../src/cliente/App';
 import { textos } from '../../src/cliente/textos';
 import type { MotivoRechazo } from '../../src/dominio/carga';
 import { archivoCsv, csv, elegir, gastosDeJulio, hayTablero, valorDe } from './ayudas';
+import { crearHistorialFalso } from './historial-falso';
 
 describe('página del tablero', () => {
   it('muestra al analista el título del tablero como encabezado', () => {
-    render(<App />);
+    render(<App historial={crearHistorialFalso()} />);
 
     expect(screen.getByRole('heading', { name: textos.titulo })).toBeInTheDocument();
   });
 
   it('al abrirla ofrece el control para elegir un CSV y todavía no hay KPIs', () => {
-    render(<App />);
+    render(<App historial={crearHistorialFalso()} />);
 
     expect(screen.getByLabelText(textos.elegirCsv)).toBeInTheDocument();
     expect(hayTablero()).toBe(false);
@@ -23,7 +24,7 @@ describe('página del tablero', () => {
 
 describe('rechazo de la carga', () => {
   it('un CSV sin la columna monto muestra un rechazo que nombra monto y ningún KPI', async () => {
-    render(<App />);
+    render(<App historial={crearHistorialFalso()} />);
 
     await elegir(archivoCsv(csv('fecha,concepto', ['2026-07-03 10:00:00,Café'])));
 
@@ -34,7 +35,7 @@ describe('rechazo de la carga', () => {
   });
 
   it('nombra todas las columnas que faltan', async () => {
-    render(<App />);
+    render(<App historial={crearHistorialFalso()} />);
 
     await elegir(archivoCsv(csv('concepto', ['Café'])));
 
@@ -50,7 +51,7 @@ describe('rechazo de la carga', () => {
   it.each(casos)(
     'el rechazo «%s» le dice al analista por qué no sirve su archivo',
     async (codigo, texto) => {
-      render(<App />);
+      render(<App historial={crearHistorialFalso()} />);
 
       await elegir(archivoCsv(texto));
 
@@ -61,7 +62,7 @@ describe('rechazo de la carga', () => {
   );
 
   it('tras un rechazo el analista elige otro archivo y lo carga sin recargar la página', async () => {
-    render(<App />);
+    render(<App historial={crearHistorialFalso()} />);
     await elegir(archivoCsv(csv('fecha,concepto', ['2026-07-03 10:00:00,Café'])));
     await screen.findByRole('alert');
 
@@ -74,7 +75,7 @@ describe('rechazo de la carga', () => {
 
 describe('archivo que no se puede leer', () => {
   it('avisa con una alerta y deja de mostrar el mes anterior, que ya no es el que eligió el analista', async () => {
-    render(<App />);
+    render(<App historial={crearHistorialFalso()} />);
     await elegir(archivoCsv(csv('fecha,monto,concepto', gastosDeJulio(3))));
     await screen.findByRole('group', { name: textos.kpis.gastoTotal });
     const sinDescargar = Object.assign(archivoCsv('x'), {
@@ -90,7 +91,7 @@ describe('archivo que no se puede leer', () => {
 
 describe('dos elecciones seguidas', () => {
   it('cuenta solo la última aunque la primera termine de leerse después', async () => {
-    render(<App />);
+    render(<App historial={crearHistorialFalso()} />);
     let terminarLecturaLenta: (texto: string) => void = () => undefined;
     const textoLento = csv('fecha,monto,concepto', ['2026-07-03 10:00:00,100,Café']);
     const lento = Object.assign(archivoCsv(textoLento), {

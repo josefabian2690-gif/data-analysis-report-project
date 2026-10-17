@@ -1,8 +1,13 @@
 import { useRef, useState, type ChangeEvent } from 'react';
 
 import { pideConfirmacion, type MotivoRechazo, type ResultadoCarga } from '../dominio/carga';
+import { AvisoDeGuardado } from './AvisoDeGuardado';
 import { leerArchivo, type EstadoDeCarga } from './cargar';
 import { Confirmacion } from './Confirmacion';
+import { cambiaElHistorial, guardarMes, type EstadoDeGuardado } from './guardado';
+import type { Historial } from './historial';
+import { HistorialDeMeses } from './HistorialDeMeses';
+import { useListado } from './listado';
 import { Rechazo } from './Rechazo';
 import { Tablero } from './Tablero';
 import { textos } from './textos';
@@ -12,7 +17,14 @@ type Pantalla =
   | { tipo: 'rechazado'; motivo: MotivoRechazo }
   | { tipo: 'ilegible' }
   | { tipo: 'por-confirmar'; resultado: ResultadoCarga; eleccion: number }
-  | { tipo: 'tablero'; resultado: ResultadoCarga; eleccion: number };
+  | {
+      tipo: 'tablero';
+      resultado: ResultadoCarga;
+      eleccion: number;
+      guardado: EstadoDeGuardado;
+    };
+
+type Vista = 'tablero' | 'historial';
 
 const INICIAL: Pantalla = { tipo: 'inicial' };
 const ILEGIBLE: Pantalla = { tipo: 'ilegible' };
@@ -20,12 +32,30 @@ const ILEGIBLE: Pantalla = { tipo: 'ilegible' };
 function pantallaDe(carga: EstadoDeCarga, eleccion: number): Pantalla {
   if (carga.tipo === 'rechazado') return carga;
   const { resultado } = carga;
-  return { tipo: pideConfirmacion(resultado) ? 'por-confirmar' : 'tablero', resultado, eleccion };
+  return pideConfirmacion(resultado)
+    ? { tipo: 'por-confirmar', resultado, eleccion }
+    : { tipo: 'tablero', resultado, eleccion, guardado: 'guardando' };
 }
 
-export function App() {
+export function App({ historial }: { historial: Historial }) {
   const [pantalla, setPantalla] = useState<Pantalla>(INICIAL);
+  const [vista, setVista] = useState<Vista>('tablero');
+  const { listado, recargar } = useListado(historial);
   const ultimaEleccion = useRef(0);
+
+  async function guardar(resultado: ResultadoCarga, eleccion: number, reemplazar: boolean) {
+    const guardado = await guardarMes(
+      historial,
+      resultado.mes,
+      resultado.transacciones,
+      reemplazar,
+    );
+    if (cambiaElHistorial(guardado)) recargar();
+    if (eleccion !== ultimaEleccion.current) return;
+    setPantalla((actual) =>
+      actual.tipo === 'tablero' && actual.eleccion === eleccion ? { ...actual, guardado } : actual,
+    );
+  }
 
   async function alElegir(evento: ChangeEvent<HTMLInputElement>) {
     const entrada = evento.currentTarget;
@@ -38,8 +68,23 @@ export function App() {
       (carga) => pantallaDe(carga, eleccion),
       () => ILEGIBLE,
     );
-    if (eleccion === ultimaEleccion.current) setPantalla(siguiente);
+    if (eleccion !== ultimaEleccion.current) return;
+    setPantalla(siguiente);
+    if (siguiente.tipo === 'tablero') void guardar(siguiente.resultado, eleccion, false);
   }
+
+  function reemplazarElGuardado() {
+    if (pantalla.tipo !== 'tablero') return;
+    setPantalla({ ...pantalla, guardado: 'guardando' });
+    void guardar(pantalla.resultado, pantalla.eleccion, true);
+  }
+
+  function conservarElGuardado() {
+    if (pantalla.tipo !== 'tablero') return;
+    setPantalla({ ...pantalla, guardado: 'conservado' });
+  }
+
+  const hayGuardado = pantalla.tipo === 'tablero';
 
   return (
     <main>
@@ -48,6 +93,12 @@ export function App() {
         {textos.elegirCsv}
         <input type="file" accept=".csv,text/csv" onChange={alElegir} />
       </label>
+      <AvisoDeGuardado
+        mes={hayGuardado ? pantalla.resultado.mes : null}
+        estado={hayGuardado ? pantalla.guardado : null}
+        alReemplazar={reemplazarElGuardado}
+        alConservar={conservarElGuardado}
+      />
       {pantalla.tipo === 'rechazado' && <Rechazo motivo={pantalla.motivo} />}
       {pantalla.tipo === 'ilegible' && (
         <p role="alert" className="rechazo">
@@ -58,13 +109,33 @@ export function App() {
         <Confirmacion
           invalidas={pantalla.resultado.invalidas.length}
           validas={pantalla.resultado.transacciones.length}
-          alConfirmar={() => setPantalla({ ...pantalla, tipo: 'tablero' })}
+          alConfirmar={() => {
+            setPantalla({ ...pantalla, tipo: 'tablero', guardado: 'guardando' });
+            void guardar(pantalla.resultado, pantalla.eleccion, false);
+          }}
           alCancelar={() => setPantalla(INICIAL)}
         />
       )}
-      {pantalla.tipo === 'tablero' && (
-        <Tablero key={pantalla.eleccion} resultado={pantalla.resultado} />
-      )}
+      <div role="group" aria-label={textos.vistas.nombre} className="vistas">
+        {(['tablero', 'historial'] as const).map((destino) => (
+          <button
+            key={destino}
+            type="button"
+            aria-pressed={vista === destino}
+            onClick={() => setVista(destino)}
+          >
+            {textos.vistas[destino]}
+          </button>
+        ))}
+      </div>
+      <div hidden={vista !== 'tablero'}>
+        {pantalla.tipo === 'tablero' && (
+          <Tablero key={pantalla.eleccion} resultado={pantalla.resultado} />
+        )}
+      </div>
+      <div hidden={vista !== 'historial'}>
+        <HistorialDeMeses listado={listado} />
+      </div>
     </main>
   );
 }

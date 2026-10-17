@@ -5,10 +5,11 @@ import { App } from '../../src/cliente/App';
 import { textos } from '../../src/cliente/textos';
 import invalidas from '../fixtures/a-mano/invalidas.csv?raw';
 import { archivoCsv, csv, elegir, gastosDeJulio, hayTablero } from './ayudas';
+import { crearHistorialFalso } from './historial-falso';
 
 describe('confirmación con más del 5 % de filas inválidas (R-05)', () => {
   it('dice qué proporción es inválida y no muestra el tablero hasta que el analista confirma', async () => {
-    render(<App />);
+    render(<App historial={crearHistorialFalso()} />);
 
     await elegir(archivoCsv(invalidas));
 
@@ -18,7 +19,7 @@ describe('confirmación con más del 5 % de filas inválidas (R-05)', () => {
   });
 
   it('al confirmar muestra el resumen con las filas inválidas y el tablero', async () => {
-    render(<App />);
+    render(<App historial={crearHistorialFalso()} />);
     const usuario = await elegir(archivoCsv(invalidas));
 
     await usuario.click(await screen.findByRole('button', { name: textos.confirmacion.confirmar }));
@@ -31,7 +32,7 @@ describe('confirmación con más del 5 % de filas inválidas (R-05)', () => {
   });
 
   it('al cancelar vuelve al estado inicial sin KPIs y deja elegir el mismo archivo otra vez', async () => {
-    render(<App />);
+    render(<App historial={crearHistorialFalso()} />);
     const archivo = archivoCsv(invalidas);
     const usuario = await elegir(archivo);
 
@@ -52,7 +53,7 @@ describe('confirmación con más del 5 % de filas inválidas (R-05)', () => {
     const filas = gastosDeJulio(40);
     filas[0] = '2026-07-01 08:00:00,abc,Gasto 1';
     filas[1] = '2026-07-01 08:00:00,abc,Gasto 2';
-    render(<App />);
+    render(<App historial={crearHistorialFalso()} />);
 
     await elegir(archivoCsv(csv('fecha,monto,concepto', filas)));
 

@@ -291,3 +291,32 @@ td {
   width: 8.5rem;
   white-space: nowrap;
 }
+
+.aviso-guardado {
+  margin: 1rem 0 0;
+}
+
+.aviso-guardado:empty {
+  margin: 0;
+}
+
+.vistas {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.vistas button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #1d4ed8;
+  border-radius: 0.375rem;
+  background: #fff;
+  color: #1d4ed8;
+  font: inherit;
+  cursor: pointer;
+}
+
+.vistas button[aria-pressed='true'] {
+  background: #1d4ed8;
+  color: #fff;
+}
