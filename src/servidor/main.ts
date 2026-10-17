@@ -23,6 +23,7 @@ function buildBundle(): Promise<number> {
 
 start({
   env: process.env,
+  root,
   bundleDirectory,
   readTimes: () =>
     readTimes({ root, bundleFile: join('dist', 'index.html'), sources: sourceEntries }),

@@ -1,4 +1,4 @@
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import type { Server } from 'node:http';
 import { createServer } from 'node:net';
 import { tmpdir } from 'node:os';
@@ -6,17 +6,19 @@ import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { start, type StartupDeps } from '../../src/servidor/startup';
 import { StartupFailure } from '../../src/servidor/startup-failure';
-import { cerrar, pedir, puertoDe } from './ayudas';
+import { cerrar, pedir, puertoDe, transaccionesDelFixture, JULIO } from './ayudas';
 
 const PAGINA = '<!doctype html><title>tablero</title>';
 
 let carpeta: string;
+let raiz: string;
 let servidores: Server[];
 let ocupantes: ReturnType<typeof createServer>[];
 
 function dependencias(cambios: Partial<StartupDeps> = {}): StartupDeps {
   return {
     env: { TABLERO_PUERTO: '0', TABLERO_SIN_NAVEGADOR: '1' },
+    root: raiz,
     bundleDirectory: carpeta,
     readTimes: () => Promise.resolve({ bundle: 300, sources: [100] }),
     buildBundle: () => Promise.resolve(0),
@@ -53,6 +55,7 @@ beforeEach(() => {
   servidores = [];
   ocupantes = [];
   carpeta = mkdtempSync(join(tmpdir(), 'tablero-arranque-'));
+  raiz = mkdtempSync(join(tmpdir(), 'tablero-raiz-'));
   writeFileSync(join(carpeta, 'index.html'), PAGINA);
 });
 
@@ -60,6 +63,7 @@ afterEach(async () => {
   await Promise.all(servidores.map(cerrar));
   await Promise.all(ocupantes.map((o) => new Promise((resolver) => o.close(resolver))));
   rmSync(carpeta, { recursive: true, force: true });
+  rmSync(raiz, { recursive: true, force: true });
 });
 
 describe('arranque: servir el bundle', () => {
@@ -211,5 +215,69 @@ describe('arranque: navegador', () => {
     const avisos = mensajesConFallo.slice(mensajesSinFallo.length);
     expect(avisos).not.toHaveLength(0);
     expect(avisos.every((aviso) => aviso.includes(url))).toBe(true);
+  });
+});
+
+describe('arranque: la API del historial', () => {
+  const PUT_JULIO = {
+    cuerpo: '',
+    encabezados: { 'content-type': 'application/json' },
+  };
+
+  async function guardarJulio(servidor: Server): Promise<number> {
+    const respuesta = await pedir(servidor, 'PUT', '/api/meses/2026-07', {
+      ...PUT_JULIO,
+      cuerpo: JSON.stringify(transaccionesDelFixture(JULIO)),
+    });
+    return respuesta.estado;
+  }
+
+  it('sirve la API con la carpeta de TABLERO_HISTORIAL y no escribe en historial/ de la raíz', async () => {
+    const elegida = join(raiz, 'elegida');
+    const servidor = await arrancar({
+      env: { TABLERO_PUERTO: '0', TABLERO_SIN_NAVEGADOR: '1', TABLERO_HISTORIAL: elegida },
+    });
+
+    expect(await guardarJulio(servidor)).toBe(201);
+
+    expect(readdirSync(elegida)).toEqual(['2026-07.json']);
+    expect(existsSync(join(raiz, 'historial'))).toBe(false);
+  });
+
+  it('sin TABLERO_HISTORIAL guarda en historial/ de la raíz que recibe', async () => {
+    const servidor = await arrancar();
+
+    expect(await guardarJulio(servidor)).toBe(201);
+
+    expect(readdirSync(join(raiz, 'historial'))).toEqual(['2026-07.json']);
+  });
+
+  it('los meses guardados siguen ahí al reiniciar con la misma carpeta', async () => {
+    const primero = await arrancar();
+    await guardarJulio(primero);
+    await cerrar(primero);
+    servidores.pop();
+
+    const segundo = await arrancar();
+    const lista = await pedir(segundo, 'GET', '/api/meses');
+
+    expect(
+      (JSON.parse(lista.cuerpo) as { mes: string; filas: number }[]).map((m) => m.mes),
+    ).toEqual(['2026-07']);
+  });
+
+  it('arrancar y listar sin guardar nada no crea la carpeta del historial', async () => {
+    const servidor = await arrancar();
+
+    const lista = await pedir(servidor, 'GET', '/api/meses');
+
+    expect(JSON.parse(lista.cuerpo)).toEqual([]);
+    expect(existsSync(join(raiz, 'historial'))).toBe(false);
+  });
+
+  it('la página del bundle sigue sirviéndose junto a la API', async () => {
+    const servidor = await arrancar();
+
+    expect((await pedir(servidor, 'GET', '/')).cuerpo).toBe(PAGINA);
   });
 });

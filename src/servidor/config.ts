@@ -1,3 +1,4 @@
+import { resolve } from 'node:path';
 import { StartupFailure } from './startup-failure';
 
 export type Env = Readonly<Record<string, string | undefined>>;
@@ -5,6 +6,7 @@ export type Env = Readonly<Record<string, string | undefined>>;
 export interface Config {
   port: number;
   openBrowser: boolean;
+  historyDirectory: string;
 }
 
 const DEFAULT_PORT = 4310;
@@ -21,9 +23,20 @@ function readPort(value: string | undefined): number {
   return port;
 }
 
-export function readConfig(env: Env): Config {
+function readHistoryDirectory(value: string | undefined, root: string): string {
+  if (value === undefined) return resolve(root, 'historial');
+  if (value === '') {
+    throw new StartupFailure(
+      'TABLERO_HISTORIAL debe ser la ruta de una carpeta; se recibió un valor vacío.',
+    );
+  }
+  return resolve(root, value);
+}
+
+export function readConfig(env: Env, root: string): Config {
   return {
     port: readPort(env['TABLERO_PUERTO']),
     openBrowser: env['TABLERO_SIN_NAVEGADOR'] !== '1',
+    historyDirectory: readHistoryDirectory(env['TABLERO_HISTORIAL'], root),
   };
 }
