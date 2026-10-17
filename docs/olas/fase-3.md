@@ -18,8 +18,8 @@
 | # | Grupo (change · tareas) | Rama | Estado |
 |---|---|---|---|
 | #25 | `fase-3-historial-y-comparacion` · 1.1–1.3 | `feat/fase-3-domain-schema-compare` | mergeada — 0 mecánicas · 1 ronda · 0 por corrección (+ pasada final de comentarios con pasada corta) |
-| — | `fase-3-historial-y-comparacion` · 2.1–2.4 | `feat/fase-3-server-history-api` | pendiente |
-| — | `fase-3-historial-y-comparacion` · 3.1–3.2 | `feat/fase-3-charts-compare` | pendiente |
+| #27 | `fase-3-historial-y-comparacion` · 2.1–2.4 | `feat/fase-3-server-history-api` | mergeada — 0 mecánicas · 0 rondas · 0 por corrección (+ pasada final trivial, solo tests) |
+| #26 | `fase-3-historial-y-comparacion` · 3.1–3.2 | `feat/fase-3-charts-compare` | en revisión (ronda 1 corregida en `569f56a`, pasada 2 del crítico en curso) |
 | — | `fase-3-historial-y-comparacion` · 4.1–4.4 | `feat/fase-3-client-save-history` | pendiente |
 | — | `fase-3-historial-y-comparacion` · 5.1–5.4 | `feat/fase-3-client-compare-system` | pendiente |
 
@@ -34,12 +34,19 @@
 - **Ronda de #25 (clase: juicio del crítico):** ningún test cambiaba el `mes` de `leerMesGuardado`; el mutante «validar contra el mes de la primera transacción» sobrevivía. En la misma ronda entraron tres NO BLOQUEA de código (`slice(0, 7)`, `CAMPOS` atado a `keyof Transaccion`, tests de `latitud: 0` y de una lista real de `parsearCsv`).
 - **Fila del total de `Comparacion` con `nombre: 'Total'` (PR #25):** se queda como clave de datos; los grupos 4 y 5 toman el rótulo de `src/cliente/textos.ts` y no pintan `total.nombre`. Descartado: dejar `nombre` vacío en el dominio.
 - **Pasada final de #25 con pasada corta del crítico:** solo comentarios, pero en archivos de producto (§2.10, salida (a)); se repitió `sistema`.
+- **Grupos 2 y 3 en paralelo** tras #25, en worktrees disjuntos (`f3-g2`: `src/servidor/`, `tests/servidor/`; `f3-g3`: `src/graficas/`, `tests/graficas/`). Revisión y merge en serie: #27 primero (LISTA a la primera); #26 se rebasa sobre ella antes de mergear. El grupo 4 no se lanza hasta mergear #26, para que el relevo de las 3 PRs caiga en frontera limpia. Descartado: lanzar el 4 con #26 en ronda (dejaría un implementador en vuelo en el relevo).
+- **Capturas del grupo 3 contra `npm run dev` del worktree** (`127.0.0.1:5173`, con candado), levantado solo mientras el implementador capturaba; el par antes/después de la misma corrida con recarga en caliente.
+- **API del grupo 2 (PR #27):** `readConfig(env, root)` da `historyDirectory`; `startStaticServer({ directory, port, api? })` con la API opcional para no tocar `tests/servidor/static-server.test.ts`; almacén con `writeFile` inyectable solo para provocar el fallo de escritura; límite de 64 MB inyectable (`maxBodyBytes`). `total` de la lista sin redondear (`metricas(tx).gastoTotal`, el mismo número que el KPI); los tests lo comparan con `toBeCloseTo(…, 2)`. Descartado: redondear el total en el servidor (el redondeo es solo al mostrar, *Casos borde*).
+- **`Host` estricto (PR #27):** solo `127.0.0.1:<puerto>` y `localhost:<puerto>` en minúsculas; `[::1]` y `LOCALHOST` dan 403. Aceptado con el crítico: el servidor no escucha en `::1` y los navegadores mandan el host en minúsculas.
+- **Mutante «sin `sort`» de la lista (PR #27):** equivalente en Linux (libuv ordena `scandir`); aceptado con el crítico.
+- **Pasada final de #27 trivial, sin otra pasada del crítico:** solo tests unitarios; `sistema` no se repitió (código de producto idéntico a `e7d1e61`).
 
 ## Deuda
 
 Issues deshabilitadas en el repositorio: la deuda vive aquí y en la PR de ola.
 
 - Mecánica (no producto): en los worktrees montados, `.claude/da/da` queda con modo 644 y `da en <wt> -- .claude/da/da citas` falla con `EACCES`; se corre `node .claude/da/da citas`. Candidato a arreglo del gancho `preparar`.
+- Mecánica (no producto): el crítico de #27 restauró un mutante una vez con `git checkout --` (escritura de git que no le toca); el archivo quedó igual a `e7d1e61`. En los encargos siguientes se le pide restaurar desde copias.
 - Mecánica (no producto): el PM corrió una vez `npx --version` por error al commitear el registro de arranque (binario local, sin descarga).
 
 ## Se coló
