@@ -90,6 +90,24 @@ export const textos = {
     sinResultados:
       'Ningún gasto cumple los filtros. Cambia o quita los filtros para ver el tablero.',
   },
+  tabla: {
+    titulo: 'Detalle de transacciones',
+    nombre: 'Transacciones del conjunto filtrado',
+    columnas: {
+      fecha: 'Fecha',
+      concepto: 'Concepto',
+      categoria: 'Categoría',
+      cuenta: 'Cuenta',
+      zona: 'Zona',
+      monto: 'Monto',
+    },
+    indicadorAscendente: '▲',
+    indicadorDescendente: '▼',
+    paginacion: 'Páginas de la tabla',
+    anterior: 'Anterior',
+    siguiente: 'Siguiente',
+    pagina: (actual: number, total: number) => `Página ${actual} de ${total}`,
+  },
   categorias: {
     titulo: 'Gasto por categoría',
     tabla: 'Gasto por categoría, de mayor a menor',

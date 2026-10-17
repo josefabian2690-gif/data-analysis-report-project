@@ -44,9 +44,9 @@ Depende del grupo 1. Área: `src/cliente/`, `tests/cliente/`. Spec `filtros-del-
 
 Depende del grupo 3. Área: `src/cliente/`, `tests/cliente/`. Spec `detalle-de-transacciones`; `design.md` D7. Antes de escribir código, leer `node_modules/@tanstack/react-table/skills/getting-started/SKILL.md` y `node_modules/@tanstack/react-table/skills/table-state/SKILL.md`.
 
-- [ ] 4.1 Tests de componente primero: una fila por transacción filtrada con fecha y monto en R-17, una fila sin hora sin hora inventada, orden inicial por fecha y hora; luego la tabla con `useTable` de TanStack Table 9; verificar que la tabla sigue al filtro del grupo 3
-- [ ] 4.2 Tests primero del orden por columna (monto descendente pone primero el mayor, `aria-sort` anuncia el orden, fecha ascendente pone la fila sin hora antes que las de su día); luego los controles de orden; verificar que invertir la comparación hace fallar el test
-- [ ] 4.3 Tests primero de la paginación (50 por página, «página X de Y», anterior y siguiente, volver a la 1 al cambiar el filtro desde la 3); luego la paginación; verificar con una mutación que no vuelva a la 1 y dejar captura de la tabla ordenada por monto
+- [x] 4.1 Tests de componente primero: una fila por transacción filtrada con fecha y monto en R-17, una fila sin hora sin hora inventada, orden inicial por fecha y hora; luego la tabla con `useTable` de TanStack Table 9; verificar que la tabla sigue al filtro del grupo 3
+- [x] 4.2 Tests primero del orden por columna (monto descendente pone primero el mayor, `aria-sort` anuncia el orden, fecha ascendente pone la fila sin hora antes que las de su día); luego los controles de orden; verificar que invertir la comparación hace fallar el test
+- [x] 4.3 Tests primero de la paginación (50 por página, «página X de Y», anterior y siguiente, volver a la 1 al cambiar el filtro desde la 3); luego la paginación; verificar con una mutación que no vuelva a la 1 y dejar captura de la tabla ordenada por monto
 
 ## 5. Cliente: las gráficas nuevas y el flujo de sistema
 
