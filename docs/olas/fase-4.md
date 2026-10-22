@@ -18,7 +18,7 @@
 |---|---|---|---|
 | #36 | fase-4-mapa-y-hallazgos · 1.1–1.4 | `feat/fase-4-domain-findings` | mergeada (`87db854`) — 0 mecánicas · 1 ronda · 0 por corrección; NO LISTA en la pasada 1 (1 BLOQUEA de test: la mezcla de umbrales parciales sin proteger, más 3 NO BLOQUEA corregidos en la ronda), LISTA en la pasada 2 con 2 NO BLOQUEA aceptados |
 | #37 | fase-4-mapa-y-hallazgos · 2.1–2.2 | `feat/fase-4-map-chart` | mergeada (`71c7d79`) — 1 mecánica (texto visible de los ejes en `graficas`) · 0 rondas · 0 por corrección; LISTA en la pasada 1 con 4 NO BLOQUEA: 2 cerrados en la pasada final (`1caee13`, paleta a 3:1 y un comentario) con pasada corta LISTA, 2 aceptados |
-| #38 | fase-4-mapa-y-hallazgos · 3.1 | `feat/fase-4-client-findings-panel` | en revisión |
+| #38 | fase-4-mapa-y-hallazgos · 3.1 | `feat/fase-4-client-findings-panel` | mergeada (`8f479c3`) — 0 mecánicas · 1 ronda · 0 por corrección; NO LISTA en la pasada 1 (1 BLOQUEA de test: quincena y fin de semana sin aserción de su evidencia, más 4 NO BLOQUEA corregidos en la ronda, entre ellos la redacción «veces más», que era falsa), LISTA en la pasada 2 con 2 NO BLOQUEA aceptados |
 | — | fase-4-mapa-y-hallazgos · 4.1–4.3 | `feat/fase-4-client-thresholds` | pendiente |
 | — | fase-4-mapa-y-hallazgos · 5.1–5.2 | `feat/fase-4-client-map-system` | pendiente |
 
@@ -43,6 +43,8 @@
 
 Issues deshabilitadas en el repositorio: la deuda vive aquí y en la PR de ola.
 
+- **Estilo del panel de hallazgos y su captura en contexto (#38, crítico pasada 1 NO BLOQUEA 4 y pasada 2 NO BLOQUEA 1).** El panel es una lista con viñetas sin estilo bajo las tarjetas de los KPIs, y `imgs/screenshots/38/panel-hallazgos-contexto-despues.png` quedó mal encuadrada en la retoma (corta el panel). Pasa al grupo 4, que toca `estilos.css` y debe capturar el panel completo, con controles, entre los KPIs y «Gasto por categoría».
+
 - **Margen del encuadre recortado por el extent (#37, crítico NO BLOQUEA 1).** `src/graficas/mapa.ts:23-28`: con la semilla 1, CDMX es el extremo este y sur de todos los puntos, y ECharts recorta la ventana al extent de los datos en esos dos bordes. Impacto hoy: los puntos más al este y al sur pueden quedar pegados al borde. Se juzga en la captura del mapa del grupo 5; si se ve cortado, entra ahí.
 
 - **Docstring de `hallazgos` (#36, crítico pasada 2, Comentarios y citas 1).** `src/dominio/hallazgos.ts:170-171` dice «sin él, el mes de las transacciones»; para `viajes` sin periodo son todas las transacciones. Por R-08 es lo mismo; no es falso. Impacto hoy: ninguno. Si no se hace: una lectura futura puede suponer un recorte que no ocurre.
@@ -58,7 +60,6 @@ Issues deshabilitadas en el repositorio: la deuda vive aquí y en la PR de ola.
 ## Entorno vivo
 
 - Worktree del PM `/home/fabs/da-wt/tablero-gastos/pm` (`ola/fase-4`).
-- Worktree del grupo 3 `/home/fabs/da-wt/tablero-gastos/f4-g3` (`feat/fase-4-client-findings-panel`).
 
 ## Coste
 
@@ -66,4 +67,16 @@ Issues deshabilitadas en el repositorio: la deuda vive aquí y en la PR de ola.
 
 ## Handover
 
-- —
+- **Estado estable:** #38 mergeada (`8f479c3`) y registro al día; nada en vuelo: sin implementadores ni críticos activos, sin servidores, candado de `pesado` libre, sin worktrees de grupo.
+- **Hecho:** grupos 1 (#36), 2 (#37) y 3 (#38) mergeados en `ola/fase-4`; casillas 1.1–1.4, 2.1–2.2 y 3.1 marcadas (7/12).
+- **Lo que queda en orden:** grupo 4 (umbrales desde la pantalla y su almacén, 4.1–4.3, rama `feat/fase-4-client-thresholds`, área `src/cliente/`, `tests/cliente/`, `tests/sistema/umbrales.spec.ts`), y después el grupo 5 (mapa en la página y flujo de sistema, 5.1–5.2, `feat/fase-4-client-map-system`), que depende del 2 y del 4. Los dos desde `ola/fase-4`, en serie. Luego el cierre (§5) con la plantilla B y la PR `ola/fase-4 → master`.
+- **Avisos para los encargos:**
+  - Contrato del dominio: `Hallazgo` unión por `tipo`; `hallazgos(tx, umbrales?, periodo?)` mezcla `Partial<Umbrales>` ignorando `undefined`; `leerUmbral(clave, texto)` → `{ valido: true, valor } | { valido: false }` (la dominante en % → proporción); `leerUmbralesGuardados(valor: unknown)` → `Umbrales`. Todo en `src/dominio/hallazgos.ts`.
+  - El panel es `src/cliente/PanelDeHallazgos.tsx` con props `transacciones`, `periodo`, `umbrales?`; `Tablero` aún no recibe umbrales. Textos en `textos.hallazgos`.
+  - Grupo 4 hereda: dar estilo al panel en `estilos.css` y capturar el panel completo en contexto (deuda de #38).
+  - Grupo 5: `mapaDeGasto(metricas, ejes)` en `src/graficas/mapa.ts` exige los nombres de los ejes desde `textos.ts`; registrar en `src/cliente/echarts.ts` `ScatterChart`, `DataZoomComponent` (inside) y `TooltipComponent` (la opción lleva `tooltip`). En la captura del mapa, juzgar el margen del encuadre (deuda de #37) y el contraste de los puntos.
+  - Worktrees: `.claude/da/da worktree montar <ruta> --rama <rama> --desde ola/fase-4` funciona (el `npm ci` de `preparar` va bien). Capturas: el PM levanta `npm run dev` del worktree con `setsid nohup <wt-pm>/.claude/da/da en <wt> -- <wt-pm>/.claude/da/da pesado -- npm run dev`, y lo para con `pkill -f "<wt>.*vite"` antes de cualquier `verify`. Las capturas se apartan del worktree antes de `verify` (si no, el SHA sale `+sucio`).
+  - `gh pr edit` no funciona: cuerpos por `gh api -X PATCH repos/<repo>/pulls/<n> --input <json>`. Tras un rebase con commit de capturas, los permalinks del cuerpo se actualizan al SHA nuevo.
+  - graft indexa el checkout principal (en `master` antiguo): los encargos dicen que no refleja la rama.
+- **Pendiente con el Team Manager o el usuario:** nada.
+- **Por qué paro:** 3 PRs internas mergeadas (§6).
