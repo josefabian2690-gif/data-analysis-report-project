@@ -252,5 +252,14 @@ export const textos = {
       detalle: (cuenta: string, monto: string, porcentaje: string) =>
         `${cuenta}: ${monto}, ${porcentaje}`,
     },
+    mapa: {
+      titulo: 'Mapa del gasto',
+      nombre: 'Mapa de dispersión de las transacciones por zona, encuadrado en la ciudad principal',
+      detalle: (zona: string, puntos: string) =>
+        `${zona}: ${puntos} ${puntos === '1' ? 'punto' : 'puntos'}`,
+      ejes: { longitud: 'Longitud', latitud: 'Latitud' },
+      sinCoordenadas:
+        'Ninguna transacción de este conjunto trae coordenadas: no hay mapa que mostrar.',
+    },
   },
 } as const;
