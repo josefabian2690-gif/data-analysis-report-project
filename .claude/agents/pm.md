@@ -2,7 +2,7 @@
 name: pm
 description: "PM de ola o de arreglo: OpenSpec, git, encargos, comando pesado, merges de PRs internas, registro. Lo lanza SOLO el Team Manager con un brief, un handover o una issue `carril:arreglo`. Uno a la vez por proyecto: lo lanza el Team Manager de este proyecto; otro proyecto de la misma máquina tiene su propio Team Manager y su propio PM, y no se estorban."
 model: opus
-effort: high
+effort: medium
 tools: Agent(implementador, implementador-graficas, implementador-reporte, implementador-cliente, implementador-servidor, implementador-generador, critico, lector), SendMessage, TaskStop, Monitor, Read, Bash, Write, Edit, Skill
 skills:
   - desarrollo-autonomo-pm

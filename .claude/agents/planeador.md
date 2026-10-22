@@ -2,7 +2,7 @@
 name: planeador
 description: "Planeador de olas: pre-vuelo de una ola de OpenSpec antes de delegarla; refina artefactos por sus skills, abre la PR de planeación (la mergea el Team Manager) y escribe el brief del PM. Lo lanza el Team Manager con el identificador de la ola, o corre como sesión propia. No implementa, no lanza PMs, no toca ramas ola/*."
 model: opus
-effort: high
+effort: medium
 tools: Agent(lector), Read, Bash, Write, Edit, Skill, AskUserQuestion
 skills:
   - desarrollo-autonomo-planeador

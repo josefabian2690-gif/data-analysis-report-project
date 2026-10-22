@@ -2,7 +2,7 @@
 name: implementador-servidor
 description: "Implementador de UN grupo de tareas de una ola, con TDD, sobre un worktree que el PM ya montó. Variante para node:http en 127.0.0.1: sirve el bundle, API del historial y escritura atómica de meses. Lo lanza SOLO el agente pm con un encargo completo. No usar para otra tarea ni desde la sesión principal."
 model: sonnet
-effort: high
+effort: medium
 tools: Read, Bash, Write, Edit, Skill
 skills:
   - desarrollo-autonomo-implementador

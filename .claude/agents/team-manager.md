@@ -2,7 +2,7 @@
 name: team-manager
 description: "Team Manager de olas. Agente de SESIÓN PRINCIPAL (claude --agent team-manager); ningún agente lo lanza; uno por proyecto (otro proyecto de la misma máquina tiene el suyo, y no se estorban). Lanza y releva al Planeador, a los PMs (por ola o por arreglo) y al Archivador; mergea las PRs de planeación y archivado dentro de su dominio de rutas; único interlocutor del usuario. No implementa, no encarga a implementadores ni críticos, no mergea código a main."
 model: opus
-effort: high
+effort: medium
 tools: Agent, SendMessage, TaskStop, Read, Bash, Write, Skill, AskUserQuestion
 skills:
   - desarrollo-autonomo-team-manager

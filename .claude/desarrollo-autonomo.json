@@ -243,5 +243,22 @@
   },
   "git": {
     "merge": "squash"
+  },
+  "roles": {
+    "team-manager": {
+      "esfuerzo": "medium"
+    },
+    "planeador": {
+      "esfuerzo": "medium"
+    },
+    "pm": {
+      "esfuerzo": "medium"
+    },
+    "implementador": {
+      "esfuerzo": "medium"
+    },
+    "critico": {
+      "esfuerzo": "medium"
+    }
   }
 }
