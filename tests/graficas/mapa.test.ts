@@ -7,6 +7,7 @@ import { describe, expect, it } from 'vitest';
 import { parsearCsv } from '../../src/dominio/carga';
 import { metricas, type Metricas } from '../../src/dominio/metricas';
 import { ciudadDeZona } from '../../src/dominio/zonas';
+import { PALETA_CATEGORICA } from '../../src/graficas/estilo';
 import { mapaDeGasto } from '../../src/graficas/mapa';
 import { METRICAS_VACIAS } from './metricas-de-prueba';
 
@@ -134,6 +135,30 @@ describe('mapaDeGasto: color y forma por zona', () => {
     expect(formas.every((f) => f !== undefined)).toBe(true);
     expect(new Set(combinaciones(20)).size).toBe(20);
   });
+});
+
+function luminancia(hex: string): number {
+  const [r, g, b] = [1, 3, 5].map((i) => {
+    const canal = parseInt(hex.slice(i, i + 2), 16) / 255;
+    return canal <= 0.03928 ? canal / 12.92 : ((canal + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * r! + 0.7152 * g! + 0.0722 * b!;
+}
+
+function contraste(a: string, b: string): number {
+  const [claro, oscuro] = [luminancia(a), luminancia(b)].sort((x, y) => y - x);
+  return (claro! + 0.05) / (oscuro! + 0.05);
+}
+
+describe('mapaDeGasto: legibilidad de los puntos', () => {
+  it.each(['#ffffff', '#f1f5f9'])(
+    'cada tono de la paleta tiene al menos 3:1 de contraste contra el fondo %s',
+    (fondo) => {
+      const flojos = PALETA_CATEGORICA.filter((tono) => contraste(tono, fondo) < 3);
+
+      expect(flojos).toEqual([]);
+    },
+  );
 });
 
 describe('mapaDeGasto: encuadre en la ciudad principal', () => {

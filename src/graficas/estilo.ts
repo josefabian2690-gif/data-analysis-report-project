@@ -42,16 +42,16 @@ export const MARCA_HORIZONTAL: Marca = {
 /** Paleta categórica de ocho tonos, en orden fijo; el de cada zona lo da su posición. */
 export const PALETA_CATEGORICA = [
   '#2a78d6',
-  '#eb6834',
-  '#1baf7a',
-  '#eda100',
-  '#e87ba4',
+  '#e66633',
+  '#19a170',
+  '#be8100',
+  '#ce6d92',
   '#008300',
   '#6250d6',
   '#e34948',
 ];
 
-/** Siete formas de punto de ECharts; con ocho colores, la pareja se repite recién a las 56 zonas. */
+/** Siete formas de punto de ECharts; con ocho colores, la pareja se repite cada 56 zonas. */
 export const FORMAS_DE_PUNTO = [
   'circle',
   'rect',
