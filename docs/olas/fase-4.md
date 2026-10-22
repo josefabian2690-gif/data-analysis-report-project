@@ -35,6 +35,9 @@
 - **graft.** El grafo se reconstruye sobre el checkout principal, que sigue en `master` antiguo (no se cambia su rama): no refleja `ola/fase-4`. Los encargos piden leer el código del worktree, no graft.
 - **Grupos 2 y 3 en paralelo** tras #36, en worktrees disjuntos (`f4-g2`: `src/dominio/metricas.ts`, `src/graficas/`, `tests/graficas/`, test nuevo del mapa en `tests/dominio/`; `f4-g3`: `src/cliente/`, `tests/cliente/`). Revisión y merge en serie. El grupo 4 no se lanza hasta mergear el 3; el relevo de las 3 PRs cae tras el segundo de estos merges.
 - El grupo 1 (~650 líneas estimadas) pasa un poco del objetivo de 600; no se parte: la ola ya está en el tope de 5 PRs y el pre-vuelo lo aceptó. Descartado: partirlo y escalar por una sexta PR.
+- **Corte por límite de uso de la API (HTTP 429), 2026-10-21/22.** Cortó al crítico de la #37 (grupo 2) en su primera pasada; no lo paró el usuario. Al reanudar: sin servidores ni candado de `pesado` colgados (comprobado con `pgrep` y una toma del candado con `DA_LOCK_TIMEOUT=5`), y el mismo crítico reanudado por `SendMessage`, sin instancia nueva. No cuenta como pasada ni como ronda.
+- **Panel de hallazgos como lista llana (grupo 3).** Las `<section>` vecinas tampoco tienen estilo propio (medido en el DOM); la tarjeta de los KPIs viene de `.dato`. Se acepta la lista sin CSS en el grupo 3; el grupo 4 añade controles dentro del panel y toca `estilos.css`. Descartado: devolver el grupo 3 por estilo.
+- **Segunda literal de `Metricas` (grupo 2).** `tests/graficas/por-categoria.test.ts` también tenía una literal de `Metricas` que el pre-vuelo no contó; gana solo los 3 campos nuevos. Descartado: tratarlo como cambio fuera de alcance.
 
 ## Deuda
 
