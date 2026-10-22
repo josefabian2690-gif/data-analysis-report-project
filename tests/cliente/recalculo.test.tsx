@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { App } from '../../src/cliente/App';
 import { textos } from '../../src/cliente/textos';
 import { elegir, kpi, valorDe } from './ayudas';
+import { crearHistorialFalso } from './historial-falso';
 import {
   casillasDe,
   casillasMarcadas,
@@ -25,7 +26,7 @@ async function tablaDeCategorias(): Promise<string[][]> {
 }
 
 async function conElMesCargado() {
-  render(<App />);
+  render(<App historial={crearHistorialFalso()} />);
   const usuario = await elegir(gastosDeJulioConDimensiones());
   await screen.findByRole('group', { name: textos.kpis.gastoTotal });
   return usuario;

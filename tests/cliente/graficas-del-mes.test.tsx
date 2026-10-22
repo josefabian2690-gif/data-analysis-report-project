@@ -5,6 +5,7 @@ import { App } from '../../src/cliente/App';
 import { textos } from '../../src/cliente/textos';
 import semilla1 from '../fixtures/generador/2026-07-semilla-1.csv?raw';
 import { archivoCsv, elegir } from './ayudas';
+import { crearHistorialFalso } from './historial-falso';
 import { gastosDeJulioConDimensiones } from './ayudas-filtros';
 
 const { graficas } = textos;
@@ -33,7 +34,7 @@ async function descripcionDe(nombre: string): Promise<string> {
 }
 
 async function conLaSemilla() {
-  render(<App />);
+  render(<App historial={crearHistorialFalso()} />);
   await elegir(archivoCsv(semilla1));
 }
 
@@ -178,7 +179,7 @@ describe('fin de semana en la gráfica por día de la semana (R-14)', () => {
 
 describe('las gráficas se recalculan con el filtro', () => {
   it('elegir una categoría deja en las cinco gráficas solo los gastos de esa categoría', async () => {
-    render(<App />);
+    render(<App historial={crearHistorialFalso()} />);
     const usuario = await elegir(gastosDeJulioConDimensiones());
     await grafica(graficas.porDia.nombre);
 
@@ -205,7 +206,7 @@ describe('las gráficas se recalculan con el filtro', () => {
   });
 
   it('un rango de fechas deja en la gráfica por día solo los días del periodo', async () => {
-    render(<App />);
+    render(<App historial={crearHistorialFalso()} />);
     const usuario = await elegir(gastosDeJulioConDimensiones());
     await grafica(graficas.porDia.nombre);
 

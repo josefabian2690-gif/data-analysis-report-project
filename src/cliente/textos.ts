@@ -57,6 +57,60 @@ export const textos = {
     confirmar: 'Cargar de todos modos',
     cancelar: 'Cancelar',
   },
+  guardado: {
+    region: 'Estado del guardado en el historial',
+    tituloDeLaPregunta: 'Confirma el reemplazo',
+    guardando: (mes: string) => `Guardando el mes ${mes} en el historial…`,
+    guardado: (mes: string) => `El mes ${mes} quedó guardado en el historial.`,
+    pregunta: (mes: string) =>
+      `El mes ${mes} ya está guardado en el historial. ¿Quieres reemplazarlo con este archivo?`,
+    reemplazar: 'Reemplazar',
+    conservar: 'Conservar el guardado',
+    reemplazado: (mes: string) => `El mes ${mes} se reemplazó en el historial.`,
+    conservado: (mes: string) => `Se conservó el mes ${mes} que ya estaba guardado.`,
+    fallido: (mes: string) =>
+      `No se pudo guardar el mes ${mes} en el historial. El tablero sigue disponible.`,
+  },
+  vistas: {
+    nombre: 'Vistas de la página',
+    tablero: 'Tablero del mes',
+    historial: 'Historial',
+  },
+  historial: {
+    titulo: 'Historial de meses',
+    tabla: 'Transacciones y gasto total de cada mes guardado',
+    columnas: { mes: 'Mes', transacciones: 'Transacciones', total: 'Gasto total' },
+    vacio: 'Todavía no hay meses guardados. Carga un CSV y quedará aquí.',
+    noDisponible:
+      'No se pudo obtener la lista de meses guardados. Puedes seguir cargando archivos CSV.',
+  },
+  comparacion: {
+    titulo: 'Comparación de meses',
+    faltanMeses: 'Hacen falta al menos dos meses guardados para compararlos.',
+    mesBase: 'Mes base',
+    mesAComparar: 'Mes a comparar',
+    mismoMes: 'Elige dos meses distintos: un mes no se compara consigo mismo.',
+    cargando: 'Cargando la comparación…',
+    fallo:
+      'No se pudo obtener alguno de los dos meses guardados. Elige otros meses o inténtalo de nuevo más tarde.',
+    tabla: (anterior: string, posterior: string) =>
+      `Gasto por categoría de ${anterior} a ${posterior}, con la diferencia del segundo mes respecto del primero`,
+    columnas: { categoria: 'Categoría', diferencia: 'Diferencia', proporcion: 'Diferencia %' },
+    total: 'Gasto total',
+    sinProporcion: 'Sin gasto en el mes anterior',
+    grafica: {
+      titulo: 'Gasto por categoría en los dos meses',
+      nombre: (anterior: string, posterior: string) =>
+        `Gráfico de columnas del gasto por categoría en ${anterior} y en ${posterior}`,
+      detalle: (
+        categoria: string,
+        anterior: string,
+        montoAnterior: string,
+        posterior: string,
+        montoPosterior: string,
+      ) => `${categoria}, ${anterior} ${montoAnterior} y ${posterior} ${montoPosterior}`,
+    },
+  },
   resumen: {
     titulo: 'Resumen de la carga',
     mes: 'Mes',
@@ -116,7 +170,6 @@ export const textos = {
     columnaPorcentaje: 'Porcentaje del gasto',
     dominante: 'Dominante',
     nombreGrafica,
-    descripcionGrafica: (detalle: string) => `${nombreGrafica}. ${detalle}.`,
     detalleDeCategoria: (categoria: string, monto: string, porcentaje: string) =>
       `${categoria}, ${monto}, ${porcentaje}`,
   },

@@ -7,6 +7,7 @@ import { App } from '../../src/cliente/App';
 import { textos } from '../../src/cliente/textos';
 import semilla1 from '../fixtures/generador/2026-07-semilla-1.csv?raw';
 import { archivoCsv, csv, elegir, gastosDeJulio } from './ayudas';
+import { crearHistorialFalso } from './historial-falso';
 
 const DESCRIPCION = new RegExp(`^${textos.categorias.nombreGrafica}`);
 
@@ -16,7 +17,7 @@ async function contenedorDeLaGrafica(): Promise<HTMLElement> {
 
 describe('gráfica del gasto por categoría', () => {
   it('su descripción accesible recorre las categorías en orden con monto y porcentaje legibles', async () => {
-    render(<App />);
+    render(<App historial={crearHistorialFalso()} />);
 
     await elegir(archivoCsv(semilla1));
 
@@ -26,7 +27,7 @@ describe('gráfica del gasto por categoría', () => {
   });
 
   it('se monta como una gráfica SVG en su contenedor, con su descripción accesible', async () => {
-    render(<App />);
+    render(<App historial={crearHistorialFalso()} />);
 
     await elegir(archivoCsv(csv('fecha,monto,concepto', gastosDeJulio(3))));
 
@@ -36,7 +37,7 @@ describe('gráfica del gasto por categoría', () => {
   });
 
   it('se libera cuando el analista deja el tablero', async () => {
-    const { unmount } = render(<App />);
+    const { unmount } = render(<App historial={crearHistorialFalso()} />);
     await elegir(archivoCsv(csv('fecha,monto,concepto', gastosDeJulio(3))));
     const contenedor = await contenedorDeLaGrafica();
     expect(getInstanceByDom(contenedor)).toBeDefined();
@@ -49,7 +50,7 @@ describe('gráfica del gasto por categoría', () => {
   it('en StrictMode queda una sola gráfica viva, no una liberada ni dos', async () => {
     render(
       <StrictMode>
-        <App />
+        <App historial={crearHistorialFalso()} />
       </StrictMode>,
     );
 
@@ -63,7 +64,7 @@ describe('gráfica del gasto por categoría', () => {
   });
 
   it('al cambiar de archivo la gráfica muestra el nuevo y no se acumula otra', async () => {
-    render(<App />);
+    render(<App historial={crearHistorialFalso()} />);
     await elegir(
       archivoCsv(csv('fecha,monto,concepto,categoria', ['2026-07-03 10:00:00,100,Café,Comida'])),
     );

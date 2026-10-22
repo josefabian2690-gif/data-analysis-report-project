@@ -6,6 +6,7 @@ import { textos } from '../../src/cliente/textos';
 import type { MotivoInvalido } from '../../src/dominio/carga';
 import semilla1 from '../fixtures/generador/2026-07-semilla-1.csv?raw';
 import { archivoCsv, csv, elegir, gastosDeJulio, hayTablero, valorDe } from './ayudas';
+import { crearHistorialFalso } from './historial-falso';
 
 function filasDeLaTabla(tabla: HTMLElement): string[][] {
   return within(tabla)
@@ -20,7 +21,7 @@ function filasDeLaTabla(tabla: HTMLElement): string[][] {
 
 describe('resumen de validación', () => {
   it('con el fixture de semilla 1 dice julio de 2026, 2,000 válidas, 0 inválidas y muestra el tablero', async () => {
-    render(<App />);
+    render(<App historial={crearHistorialFalso()} />);
 
     await elegir(archivoCsv(semilla1));
 
@@ -36,7 +37,7 @@ describe('resumen de validación', () => {
     const filas = gastosDeJulio(40);
     filas[2] = '2026-07-01 08:00:00,abc,Gasto 3';
     filas[7] = '2026-08-05 08:00:00,10.00,Gasto 8';
-    render(<App />);
+    render(<App historial={crearHistorialFalso()} />);
 
     await elegir(archivoCsv(csv('fecha,monto,concepto', filas)));
 
@@ -67,7 +68,7 @@ describe('resumen de validación', () => {
     motivos.forEach((motivo, i) => {
       filas[20 + i] = lineaPorMotivo[motivo];
     });
-    render(<App />);
+    render(<App historial={crearHistorialFalso()} />);
 
     await elegir(archivoCsv(csv('id_transaccion,fecha,monto,concepto', filas)));
 

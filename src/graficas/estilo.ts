@@ -19,13 +19,15 @@ export const MARCA_DIAGONAL: Marca = {
   rotation: Math.PI / 4,
 };
 
-/** Puntos. */
+/** Puntos gruesos escalonados: cada fila queda a media separación de la anterior. */
 export const MARCA_DE_PUNTOS: Marca = {
   symbol: 'circle',
-  symbolSize: 0.8,
   color: TRAZO_DE_MARCA,
-  dashArrayX: [[4, 4], [0]],
-  dashArrayY: [3, 3],
+  dashArrayX: [
+    [4, 4],
+    [0, 4, 4, 0],
+  ],
+  dashArrayY: [4, 2],
 };
 
 /** Rayas horizontales. */
