@@ -61,7 +61,7 @@ El periodo SHALL ser el rango de fechas del filtro recortado al mes; sin rango d
 - **THEN** el periodo va del `2026-07-20` al `2026-07-31`
 
 ### Requirement: Todo el dashboard se recalcula
-Al cambiar un filtro, la página SHALL recalcular los KPIs, todas las gráficas y la tabla sobre las transacciones filtradas; el resumen de validación de la carga SHALL no cambiar.
+Al cambiar un filtro, la página SHALL recalcular los KPIs, todas las gráficas, el mapa, los hallazgos y la tabla sobre las transacciones filtradas; el resumen de validación de la carga SHALL no cambiar.
 
 #### Scenario: Filtrar por categoría en la página
 - **WHEN** el analista carga `tests/fixtures/generador/2026-07-semilla-1.csv` y elige solo la categoría Compras
@@ -70,6 +70,10 @@ Al cambiar un filtro, la página SHALL recalcular los KPIs, todas las gráficas 
 #### Scenario: Quitar los filtros
 - **WHEN** el analista quita todos los filtros
 - **THEN** vuelve a ver 2 000 transacciones y `$1,689,470.67`
+
+#### Scenario: Mapa y hallazgos siguen al filtro
+- **WHEN** el analista carga la semilla 1 y elige solo la categoría Compras
+- **THEN** el mapa tiene 404 puntos, la categoría dominante es Compras con 100 % y no hay hallazgo de zona favorita
 
 ### Requirement: Otro archivo empieza sin filtros
 Al cargar otro CSV, el filtro SHALL volver a vacío y sus opciones SHALL ser las del mes nuevo.
@@ -86,8 +90,8 @@ Los controles del rango de fechas SHALL mostrar los días con el formato de R-17
 - **THEN** las opciones van de `01/07/2026` a `31/07/2026`
 
 ### Requirement: Filtro que deja 0 filas
-Cuando el filtro deja 0 transacciones, la página SHALL mostrar un mensaje de estado en lugar de los KPIs, las gráficas y la tabla, sin errores ni valores no numéricos, y SHALL dejar cambiar o quitar los filtros.
+Cuando el filtro deja 0 transacciones, la página SHALL mostrar un mensaje de estado en lugar de los KPIs, los hallazgos, las gráficas, el mapa y la tabla, sin errores ni valores no numéricos, y SHALL dejar cambiar o quitar los filtros.
 
 #### Scenario: Monto imposible en la página
 - **WHEN** el analista pone monto mínimo 1000 y máximo 10
-- **THEN** ve el mensaje de que ningún gasto cumple los filtros, ningún `NaN`, y puede quitar los filtros
+- **THEN** ve el mensaje de que ningún gasto cumple los filtros, ningún `NaN`, ni hallazgos ni mapa, y puede quitar los filtros
