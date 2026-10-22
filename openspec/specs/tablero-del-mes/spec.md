@@ -7,7 +7,7 @@ La página donde el analista elige un CSV del mes y ve, sin red y en español de
 ## Requirements
 
 ### Requirement: Elegir un CSV
-La página SHALL ofrecer un control accesible para elegir un archivo CSV del disco, y SHALL leerlo y procesarlo en el navegador, sin enviarlo a ningún servidor.
+La página SHALL ofrecer un control accesible para elegir un archivo CSV del disco, y SHALL leerlo y procesarlo en el navegador, sin enviar el archivo a ningún servidor. Lo único que sale de la página tras una carga aceptada son las transacciones del mes, hacia el historial del servidor local en 127.0.0.1.
 
 #### Scenario: Estado inicial
 - **WHEN** el analista abre la página
@@ -15,7 +15,7 @@ La página SHALL ofrecer un control accesible para elegir un archivo CSV del dis
 
 #### Scenario: El archivo no sale del navegador
 - **WHEN** el analista elige un CSV
-- **THEN** ninguna petición lleva el contenido del archivo
+- **THEN** ninguna petición lleva el texto del archivo, y la única petición con cuerpo es la que guarda las transacciones del mes en `http://127.0.0.1:<puerto>/api/meses/AAAA-MM`
 
 ### Requirement: Rechazo visible
 Cuando la carga se rechaza, la página SHALL mostrar el motivo en es-MX, nombrando las columnas que faltan si es el caso, y SHALL permitir elegir otro archivo.
@@ -61,11 +61,11 @@ La página SHALL mostrar el gasto por categoría en una gráfica y en una lista 
 - **THEN** la primera categoría de la lista es Compras, destacada, con su monto y su porcentaje
 
 ### Requirement: Flujo principal en la suite de sistema
-La suite de sistema SHALL recorrer el flujo contra `npm start`: elegir el fixture de semilla `2026-07` con filas inválidas añadidas en memoria (menos del 5 %), ver esas filas en el resumen de validación, los KPIs y la categoría dominante de su `*.esperado.json`, sin peticiones fuera de 127.0.0.1.
+La suite de sistema SHALL recorrer el flujo contra `npm start`: elegir el fixture de semilla `2026-07` con filas inválidas añadidas en memoria (menos del 5 %), ver esas filas en el resumen de validación, los KPIs y la categoría dominante de su `*.esperado.json`, esperar a que termine el intento de guardado (el aviso de guardado o, si otra prueba ya guardó ese mes en el mismo servidor, la pregunta de reemplazo) y comprobar que solo la petición de guardado lleva cuerpo, sin peticiones fuera de 127.0.0.1.
 
 #### Scenario: Cargar y ver el mes de punta a punta
 - **WHEN** la prueba de sistema elige el fixture de semilla `2026-07` con tres filas inválidas añadidas
-- **THEN** la página lista esas tres filas con su motivo, muestra 2 000 transacciones y pone primero la `categoriaDominante` del esperado, y ninguna petición salió de 127.0.0.1
+- **THEN** la página lista esas tres filas con su motivo, muestra 2 000 transacciones y pone primero la `categoriaDominante` del esperado, anuncia el resultado del guardado, ninguna petición lleva el texto del archivo ni un trozo suyo en la URL, y ninguna petición salió de 127.0.0.1
 
 ### Requirement: Gráficas por día, hora, día de la semana, zona y cuenta
 Tras una carga aceptada, la página SHALL mostrar una gráfica por cada serie (día del periodo, hora, día de la semana, zona y cuenta), cada una con su título y una descripción accesible con sus valores en el formato de R-17.
