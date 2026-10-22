@@ -1,6 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
+import type { Almacen } from './almacen-de-umbrales';
 import { crearHistorial } from './historial';
 import { textos } from './textos';
 import './estilos.css';
@@ -14,8 +15,17 @@ document.title = textos.titulo;
 
 const historial = crearHistorial((url, init) => fetch(url, init));
 
+function almacenDelNavegador(): Almacen | undefined {
+  try {
+    return window.localStorage;
+  } catch {
+    // El acceso a `localStorage` puede lanzar: sin almacén, los umbrales viven en memoria.
+    return undefined;
+  }
+}
+
 createRoot(raiz).render(
   <StrictMode>
-    <App historial={historial} />
+    <App historial={historial} almacen={almacenDelNavegador()} />
   </StrictMode>,
 );

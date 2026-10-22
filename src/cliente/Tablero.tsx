@@ -11,10 +11,17 @@ import { PanelDeHallazgos } from './PanelDeHallazgos';
 import { Resumen } from './Resumen';
 import { TablaDeTransacciones } from './TablaDeTransacciones';
 import { textos } from './textos';
+import type { AjusteDeUmbrales } from './usar-umbrales';
 
 const SIN_FILTRO: Filtro = {};
 
-export function Tablero({ resultado }: { resultado: ResultadoCarga }) {
+export function Tablero({
+  resultado,
+  ajuste,
+}: {
+  resultado: ResultadoCarga;
+  ajuste: AjusteDeUmbrales;
+}) {
   const [filtro, setFiltro] = useState<Filtro>(SIN_FILTRO);
   const opciones = useMemo(() => opcionesDeFiltro(resultado.transacciones), [resultado]);
   const filtradas = useMemo(() => filtrar(resultado.transacciones, filtro), [resultado, filtro]);
@@ -36,7 +43,12 @@ export function Tablero({ resultado }: { resultado: ResultadoCarga }) {
       {!sinResultados && (
         <>
           <Kpis metricas={metricas} />
-          <PanelDeHallazgos transacciones={filtradas} periodo={periodo} />
+          <PanelDeHallazgos
+            transacciones={filtradas}
+            periodo={periodo}
+            umbrales={ajuste.umbrales}
+            ajuste={ajuste}
+          />
           <GastoPorCategoria metricas={metricas} />
           <GraficasDelPeriodo metricas={metricas} />
           <TablaDeTransacciones transacciones={filtradas} />
