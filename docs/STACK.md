@@ -43,7 +43,7 @@ Opciones de servidor y almacenamiento:
   - Lectura del CSV con Papa Parse, en el dominio y a partir de un string.
   - Historial en `historial/AAAA-MM.json`, servido por `node:http` en 127.0.0.1.
   - El navegador se abre con el paquete `open`.
-- **Mapa:** ECharts con un scatter de longitud/latitud sobre ejes cartesianos, o con un GeoJSON local incluido en el repo (ver Pendientes de PLAN). Nunca teselas en línea.
+- **Mapa:** ECharts con un scatter de longitud/latitud sobre ejes cartesianos, sin contorno ni GeoJSON (decidido el 2026-10-21, ver Pendientes de PLAN). Nunca teselas en línea.
 - **Tests:** Vitest (con Testing Library y jsdom para `cliente`). La suite de sistema usa Playwright.
 - **Tipos:** `tsc --noEmit`.
 - **Lint:** ESLint + typescript-eslint + `import/no-restricted-paths`, que hace cumplir la tabla de capas.
