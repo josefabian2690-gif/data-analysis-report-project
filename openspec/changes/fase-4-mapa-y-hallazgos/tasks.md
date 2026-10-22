@@ -38,7 +38,7 @@ Depende del grupo 1. Área: `src/dominio/metricas.ts`, `tests/dominio/` (archivo
 
 Depende del grupo 1. Área: `src/cliente/`, `tests/cliente/`. Spec `hallazgos-automaticos` («Panel de hallazgos en la página») y `filtros-del-tablero` («Todo el dashboard se recalcula», la parte de hallazgos); `design.md` D6 y D10. Textos visibles solo en `src/cliente/textos.ts`.
 
-- [ ] 3.1 Tests de componente primero del panel con la semilla 1: sección con nombre accesible tras los KPIs y antes de «Gasto por categoría»; un elemento por hallazgo con su texto y evidencia en R-17 (Compras con 48.2 %, `Centro Histórico, CDMX`, viaje del 24/07/2026 al 26/07/2026, 2 atípicos con el mayor en `$10,795.88`); al filtrar solo Compras, dominante al 100 % y sin zona favorita; mensaje cuando ningún hallazgo supera su umbral (con unos `Umbrales` pasados al componente); luego el panel y sus textos; verificar con una mutación que calcule los hallazgos sobre el mes sin filtrar y dejar captura del panel
+- [x] 3.1 Tests de componente primero del panel con la semilla 1: sección con nombre accesible tras los KPIs y antes de «Gasto por categoría»; un elemento por hallazgo con su texto y evidencia en R-17 (Compras con 48.2 %, `Centro Histórico, CDMX`, viaje del 24/07/2026 al 26/07/2026, 2 atípicos con el mayor en `$10,795.88`); al filtrar solo Compras, dominante al 100 % y sin zona favorita; mensaje cuando ningún hallazgo supera su umbral (con unos `Umbrales` pasados al componente); luego el panel y sus textos; verificar con una mutación que calcule los hallazgos sobre el mes sin filtrar y dejar captura del panel
 
 ## 4. Cliente: umbrales desde la pantalla, conservados en el navegador
 

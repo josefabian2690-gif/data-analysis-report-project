@@ -128,6 +128,22 @@ export const textos = {
     mediana: 'Mediana',
     gastoPromedioPorDia: 'Gasto promedio por día',
   },
+  hallazgos: {
+    titulo: 'Hallazgos',
+    ninguno: 'Ningún patrón supera su umbral.',
+    categoriaDominante: (categoria: string, proporcion: string, monto: string) =>
+      `${categoria} concentra ${proporcion} del gasto (${monto}).`,
+    zonaFavorita: (zona: string, proporcion: string, monto: string) =>
+      `Tu zona favorita para comer y divertirte es ${zona}: ${proporcion} de ese gasto (${monto}).`,
+    quincena: (razon: string, promedioQuincena: string, promedioResto: string) =>
+      `En quincena gastas ${razon} veces lo de los demás días: ${promedioQuincena} por día frente a ${promedioResto}.`,
+    finDeSemana: (razon: string, promedioFinDeSemana: string, promedioResto: string) =>
+      `En fin de semana gastas ${razon} veces lo de lunes a jueves: ${promedioFinDeSemana} por día frente a ${promedioResto}.`,
+    viaje: (destino: string, desde: string, hasta: string, monto: string) =>
+      `Viaje a ${destino} del ${desde} al ${hasta}, con ${monto} de gasto.`,
+    atipicos: (cantidad: string, mayor: string) =>
+      `${cantidad} gastos atípicos; el mayor es de ${mayor}.`,
+  },
   filtros: {
     titulo: 'Filtros',
     fechas: 'Fechas',
