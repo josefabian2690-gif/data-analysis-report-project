@@ -196,6 +196,20 @@ describe('mapaDeGasto: encuadre en la ciudad principal', () => {
     expect(fuera.filter(dentro)).toEqual([]);
   });
 
+  it('los ejes no rotulan los extremos de la ventana, que son valores crudos con muchos decimales', () => {
+    const { xAxis, yAxis } = mapaDeGasto(m, EJES) as {
+      xAxis: { axisLabel?: { showMinLabel?: boolean; showMaxLabel?: boolean } };
+      yAxis: { axisLabel?: { showMinLabel?: boolean; showMaxLabel?: boolean } };
+    };
+
+    expect(
+      [xAxis, yAxis].map((eje) => [eje.axisLabel?.showMinLabel, eje.axisLabel?.showMaxLabel]),
+    ).toEqual([
+      [false, false],
+      [false, false],
+    ]);
+  });
+
   it('los ejes no fijan mínimo ni máximo: alejarse alcanza a Monterrey', () => {
     const { xAxis, yAxis } = mapaDeGasto(m, EJES) as {
       xAxis: { min?: number; max?: number };

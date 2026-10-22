@@ -1,7 +1,7 @@
 import { BarChart, ScatterChart } from 'echarts/charts';
 import {
   AriaComponent,
-  DataZoomComponent,
+  DataZoomInsideComponent,
   GridComponent,
   LegendComponent,
   TooltipComponent,
@@ -15,7 +15,7 @@ use([
   GridComponent,
   AriaComponent,
   LegendComponent,
-  DataZoomComponent,
+  DataZoomInsideComponent,
   TooltipComponent,
   SVGRenderer,
 ]);

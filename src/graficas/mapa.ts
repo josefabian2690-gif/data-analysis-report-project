@@ -7,6 +7,7 @@ import { estiloDeZona } from './estilo';
 const MARGEN_PROPORCIONAL = 0.1;
 const MARGEN_MINIMO_EN_GRADOS = 0.005;
 const TAMANO_DE_PUNTO = 8;
+const SIN_ROTULOS_EXTREMOS = { showMinLabel: false, showMaxLabel: false } as const;
 
 function serieDeZona({ zona, puntos }: PuntosDeZona, posicion: number): ScatterSeriesOption {
   const { color, forma } = estiloDeZona(posicion);
@@ -55,8 +56,8 @@ export function mapaDeGasto(metricas: Metricas, ejes: NombresDeEjes): EChartsOpt
     aria: { enabled: true },
     legend: { data: metricas.puntosDelMapa.map(({ zona }) => zona) },
     tooltip: { trigger: 'item' },
-    xAxis: { type: 'value', name: ejes.longitud, scale: true },
-    yAxis: { type: 'value', name: ejes.latitud, scale: true },
+    xAxis: { type: 'value', name: ejes.longitud, scale: true, axisLabel: SIN_ROTULOS_EXTREMOS },
+    yAxis: { type: 'value', name: ejes.latitud, scale: true, axisLabel: SIN_ROTULOS_EXTREMOS },
     dataZoom: [zoom('xAxisIndex', 'longitud'), zoom('yAxisIndex', 'latitud')],
     series: metricas.puntosDelMapa.map(serieDeZona),
   };

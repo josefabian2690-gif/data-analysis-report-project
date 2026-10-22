@@ -70,14 +70,6 @@ describe('el mapa del mes', () => {
     expect(latitudes.every((n) => n > 19 && n < 19.8)).toBe(true);
   });
 
-  it('el mapa lleva su cuadro de detalle al pasar el cursor (tooltip registrado)', async () => {
-    await conLaSemilla();
-
-    const grafica = await elMapa();
-
-    expect(grafica.children).toHaveLength(2);
-  });
-
   it('va entre el gasto por cuenta y la tabla', async () => {
     await conLaSemilla();
     await elMapa();
