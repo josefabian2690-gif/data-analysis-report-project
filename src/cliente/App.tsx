@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState, type ChangeEvent } from 'react';
 
 import { pideConfirmacion, type MotivoRechazo, type ResultadoCarga } from '../dominio/carga';
+import type { Almacen } from './almacen-de-umbrales';
 import { AvisoDeGuardado } from './AvisoDeGuardado';
 import { leerArchivo, type EstadoDeCarga } from './cargar';
 import { Confirmacion } from './Confirmacion';
@@ -12,6 +13,7 @@ import { recordarMeses } from './meses-pedidos';
 import { Rechazo } from './Rechazo';
 import { Tablero } from './Tablero';
 import { textos } from './textos';
+import { usarUmbrales } from './usar-umbrales';
 
 type Pantalla =
   | { tipo: 'inicial' }
@@ -38,7 +40,8 @@ function pantallaDe(carga: EstadoDeCarga, eleccion: number): Pantalla {
     : { tipo: 'tablero', resultado, eleccion, guardado: 'guardando' };
 }
 
-export function App({ historial }: { historial: Historial }) {
+export function App({ historial, almacen }: { historial: Historial; almacen?: Almacen }) {
+  const ajusteDeUmbrales = usarUmbrales(almacen);
   const [pantalla, setPantalla] = useState<Pantalla>(INICIAL);
   const [vista, setVista] = useState<Vista>('tablero');
   const { listado, recargar } = useListado(historial);
@@ -138,7 +141,11 @@ export function App({ historial }: { historial: Historial }) {
       </div>
       <div hidden={vista !== 'tablero'}>
         {pantalla.tipo === 'tablero' && (
-          <Tablero key={pantalla.eleccion} resultado={pantalla.resultado} />
+          <Tablero
+            key={pantalla.eleccion}
+            resultado={pantalla.resultado}
+            ajuste={ajusteDeUmbrales}
+          />
         )}
       </div>
       <div hidden={vista !== 'historial'}>

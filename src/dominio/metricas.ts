@@ -11,6 +11,7 @@ import {
   type TipoDeDia,
 } from './calendario';
 import type { Transaccion } from './esquema';
+import { ciudadPrincipal } from './zonas';
 
 export interface GastoDeCategoria {
   categoria: string;
@@ -63,6 +64,17 @@ export interface GastoDeDiaDeLaSemana {
   finDeSemana: boolean;
 }
 
+export interface PuntoDelMapa {
+  longitud: number;
+  latitud: number;
+  monto: number;
+}
+
+export interface PuntosDeZona {
+  zona: string;
+  puntos: PuntoDelMapa[];
+}
+
 export interface Metricas {
   gastoTotal: number;
   numeroDeTransacciones: number;
@@ -86,6 +98,12 @@ export interface Metricas {
   transaccionesSinHora: number;
   /** Siete elementos, de lunes a domingo. */
   gastoPorDiaDeLaSemana: GastoDeDiaDeLaSemana[];
+  /** Mismo orden que `gastoPorZona`; solo las zonas con al menos una transacción con coordenadas (R-07). */
+  puntosDelMapa: PuntosDeZona[];
+  /** Las que no tienen longitud y latitud (R-02) no entran en `puntosDelMapa`. */
+  transaccionesSinCoordenadas: number;
+  /** La ciudad con más gasto del conjunto; `undefined` si ninguna zona tiene ciudad. */
+  ciudadPrincipal: string | undefined;
 }
 
 const HORAS_DEL_DIA = 24;
@@ -163,6 +181,28 @@ function gastoPorHora(tx: Transaccion[]): { horas: GastoDeHora[]; sinHora: numbe
   return { horas, sinHora };
 }
 
+function puntosPorZona(
+  tx: Transaccion[],
+  zonas: string[],
+): { grupos: PuntosDeZona[]; sinCoordenadas: number } {
+  const porZona = new Map<string, PuntoDelMapa[]>();
+  let sinCoordenadas = 0;
+  for (const { zona, monto, latitud, longitud } of tx) {
+    if (latitud === null || longitud === null) {
+      sinCoordenadas += 1;
+      continue;
+    }
+    const puntos = porZona.get(zona) ?? [];
+    puntos.push({ longitud, latitud, monto });
+    porZona.set(zona, puntos);
+  }
+  const grupos = zonas.flatMap((zona) => {
+    const puntos = porZona.get(zona);
+    return puntos === undefined ? [] : [{ zona, puntos }];
+  });
+  return { grupos, sinCoordenadas };
+}
+
 function gastoPorDiaDeLaSemana(porDia: GastoDeDia[]): GastoDeDiaDeLaSemana[] {
   return DIAS_DE_LA_SEMANA.map((dia) => {
     const delDia = porDia.filter((d) => diaDeLaSemana(d.dia) === dia);
@@ -184,6 +224,14 @@ export function metricas(tx: Transaccion[], periodo?: Periodo): Metricas {
   const dias = delPeriodo === undefined ? 0 : diasDelPeriodo(delPeriodo);
   const porDia = gastoPorDia(tx, delPeriodo);
   const { horas, sinHora } = gastoPorHora(tx);
+  const porZona = desglosarPor(tx, (t) => t.zona, gastoTotal).map(({ nombre, ...resto }) => ({
+    zona: nombre,
+    ...resto,
+  }));
+  const mapa = puntosPorZona(
+    tx,
+    porZona.map((z) => z.zona),
+  );
   return {
     gastoTotal,
     numeroDeTransacciones: tx.length,
@@ -193,10 +241,7 @@ export function metricas(tx: Transaccion[], periodo?: Periodo): Metricas {
     gastoPorCategoria: desglosarPor(tx, (t) => t.categoria, gastoTotal).map(
       ({ nombre, ...resto }) => ({ categoria: nombre, ...resto }),
     ),
-    gastoPorZona: desglosarPor(tx, (t) => t.zona, gastoTotal).map(({ nombre, ...resto }) => ({
-      zona: nombre,
-      ...resto,
-    })),
+    gastoPorZona: porZona,
     gastoPorCuenta: desglosarPor(tx, (t) => t.cuenta, gastoTotal).map(({ nombre, ...resto }) => ({
       cuenta: nombre,
       ...resto,
@@ -205,5 +250,8 @@ export function metricas(tx: Transaccion[], periodo?: Periodo): Metricas {
     gastoPorHora: horas,
     transaccionesSinHora: sinHora,
     gastoPorDiaDeLaSemana: gastoPorDiaDeLaSemana(porDia),
+    puntosDelMapa: mapa.grupos,
+    transaccionesSinCoordenadas: mapa.sinCoordenadas,
+    ciudadPrincipal: ciudadPrincipal(tx),
   };
 }

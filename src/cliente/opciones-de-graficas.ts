@@ -3,13 +3,14 @@ import type { EChartsOption } from 'echarts';
 import type { Comparacion } from '../dominio/comparacion';
 import { formatearFecha, formatearMonto, formatearProporcion } from '../dominio/formato';
 import type { Metricas } from '../dominio/metricas';
+import { mapaDeGasto } from '../graficas/mapa';
 import { porComparacion } from '../graficas/por-comparacion';
 import { porCuenta } from '../graficas/por-cuenta';
 import { porDia } from '../graficas/por-dia';
 import { porDiaDeLaSemana } from '../graficas/por-dia-de-la-semana';
 import { porHora } from '../graficas/por-hora';
 import { porZona } from '../graficas/por-zona';
-import { formatearMes } from './presentacion';
+import { formatearConteo, formatearMes } from './presentacion';
 import { textos } from './textos';
 
 const { graficas } = textos;
@@ -80,4 +81,11 @@ export function opcionPorComparacion(comparacion: Comparacion): EChartsOption {
     grafica.nombre(anterior, posterior),
     entradas,
   );
+}
+
+export function opcionDelMapa(metricas: Metricas): EChartsOption {
+  const entradas = metricas.puntosDelMapa.map(({ zona, puntos }) =>
+    graficas.mapa.detalle(zona, formatearConteo(puntos.length)),
+  );
+  return conDescripcion(mapaDeGasto(metricas, graficas.mapa.ejes), graficas.mapa.nombre, entradas);
 }

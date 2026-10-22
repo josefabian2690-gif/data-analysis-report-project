@@ -128,6 +128,37 @@ export const textos = {
     mediana: 'Mediana',
     gastoPromedioPorDia: 'Gasto promedio por día',
   },
+  hallazgos: {
+    titulo: 'Hallazgos',
+    ninguno: 'Ningún patrón supera su umbral.',
+    umbrales: {
+      nombre: 'Umbrales de los hallazgos',
+      controles: {
+        categoriaDominante: 'Categoría dominante (% del gasto)',
+        quincena: 'Quincena (veces el resto)',
+        finDeSemana: 'Fin de semana (veces lunes a jueves)',
+        diasDeViaje: 'Días máximos de un viaje',
+        factorDeAtipicos: 'Atípicos (veces el percentil 99)',
+      },
+      restablecer: 'Restablecer umbrales',
+      invalido: {
+        porcentaje: 'Escribe un porcentaje mayor que 0 y hasta 100.',
+        numero: 'Escribe un número mayor que 0.',
+      },
+    },
+    categoriaDominante: (categoria: string, proporcion: string, monto: string) =>
+      `${categoria} concentra ${proporcion} del gasto (${monto}).`,
+    zonaFavorita: (zona: string, proporcion: string, monto: string) =>
+      `Tu zona favorita para comer y divertirte es ${zona}: ${proporcion} de ese gasto (${monto}).`,
+    quincena: (razon: string, promedioQuincena: string, promedioResto: string) =>
+      `En quincena gastas ${razon} veces lo de los demás días: ${promedioQuincena} por día frente a ${promedioResto}.`,
+    finDeSemana: (razon: string, promedioFinDeSemana: string, promedioResto: string) =>
+      `En fin de semana gastas ${razon} veces lo de lunes a jueves: ${promedioFinDeSemana} por día frente a ${promedioResto}.`,
+    viaje: (destino: string, desde: string, hasta: string, monto: string) =>
+      `Viaje a ${destino} del ${desde} al ${hasta}, con ${monto} de gasto.`,
+    atipicos: (cantidad: string, mayor: string) =>
+      `${cantidad} gastos atípicos; el mayor es de ${mayor}.`,
+  },
   filtros: {
     titulo: 'Filtros',
     fechas: 'Fechas',
@@ -220,6 +251,15 @@ export const textos = {
       nombre: 'Gráfico de barras del gasto por cuenta, de mayor a menor',
       detalle: (cuenta: string, monto: string, porcentaje: string) =>
         `${cuenta}: ${monto}, ${porcentaje}`,
+    },
+    mapa: {
+      titulo: 'Mapa del gasto',
+      nombre: 'Mapa de dispersión de las transacciones por zona, encuadrado en la ciudad principal',
+      detalle: (zona: string, puntos: string) =>
+        `${zona}: ${puntos} ${puntos === '1' ? 'punto' : 'puntos'}`,
+      ejes: { longitud: 'Longitud', latitud: 'Latitud' },
+      sinCoordenadas:
+        'Ninguna transacción de este conjunto trae coordenadas: no hay mapa que mostrar.',
     },
   },
 } as const;

@@ -6,21 +6,28 @@ import { metricas as calcularMetricas } from '../dominio/metricas';
 import { GastoPorCategoria } from './GastoPorCategoria';
 import { GraficasDelPeriodo } from './GraficasDelPeriodo';
 import { Kpis } from './Kpis';
+import { MapaDelGasto } from './MapaDelGasto';
 import { PanelDeFiltros } from './PanelDeFiltros';
+import { PanelDeHallazgos } from './PanelDeHallazgos';
 import { Resumen } from './Resumen';
 import { TablaDeTransacciones } from './TablaDeTransacciones';
 import { textos } from './textos';
+import type { AjusteDeUmbrales } from './usar-umbrales';
 
 const SIN_FILTRO: Filtro = {};
 
-export function Tablero({ resultado }: { resultado: ResultadoCarga }) {
+export function Tablero({
+  resultado,
+  ajuste,
+}: {
+  resultado: ResultadoCarga;
+  ajuste: AjusteDeUmbrales;
+}) {
   const [filtro, setFiltro] = useState<Filtro>(SIN_FILTRO);
   const opciones = useMemo(() => opcionesDeFiltro(resultado.transacciones), [resultado]);
   const filtradas = useMemo(() => filtrar(resultado.transacciones, filtro), [resultado, filtro]);
-  const metricas = useMemo(
-    () => calcularMetricas(filtradas, periodoDelFiltro(resultado.mes, filtro)),
-    [filtradas, resultado.mes, filtro],
-  );
+  const periodo = useMemo(() => periodoDelFiltro(resultado.mes, filtro), [resultado.mes, filtro]);
+  const metricas = useMemo(() => calcularMetricas(filtradas, periodo), [filtradas, periodo]);
   const sinResultados = filtradas.length === 0;
   return (
     <>
@@ -37,8 +44,15 @@ export function Tablero({ resultado }: { resultado: ResultadoCarga }) {
       {!sinResultados && (
         <>
           <Kpis metricas={metricas} />
+          <PanelDeHallazgos
+            transacciones={filtradas}
+            periodo={periodo}
+            umbrales={ajuste.umbrales}
+            ajuste={ajuste}
+          />
           <GastoPorCategoria metricas={metricas} />
           <GraficasDelPeriodo metricas={metricas} />
+          <MapaDelGasto metricas={metricas} />
           <TablaDeTransacciones transacciones={filtradas} />
         </>
       )}
