@@ -37,5 +37,6 @@ export function porComparacion(
     categorias: categorias.map((fila) => fila.nombre),
     series,
     leyenda: nombres,
+    rotulosCompletos: true,
   });
 }

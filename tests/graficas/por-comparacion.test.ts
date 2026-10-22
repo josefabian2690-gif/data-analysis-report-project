@@ -84,6 +84,14 @@ describe('porComparacion', () => {
     expect(leyenda.data).toEqual(['Julio de 2026', 'Agosto de 2026']);
   });
 
+  it('muestra todas las categorías en el eje, inclinadas, para que ninguna se oculte', () => {
+    const { opcion } = dibujar();
+    const rotulos = (opcion.xAxis as { axisLabel: { interval: number; rotate: number } }).axisLabel;
+
+    expect(rotulos.interval).toBe(0);
+    expect(rotulos.rotate).toBeGreaterThan(0);
+  });
+
   it('acota el grosor de las barras', () => {
     const { series } = dibujar();
 

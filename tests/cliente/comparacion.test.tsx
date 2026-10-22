@@ -275,6 +275,31 @@ describe('R-15: los meses se piden al historial y se recuerdan', () => {
     );
   });
 
+  it('reemplazar un mes desde la pregunta, sin salir de Historial, actualiza la comparación', async () => {
+    const historial = crearHistorialFalso({ [JULIO]: JULIO_A_MANO, [AGOSTO]: AGOSTO_A_MANO });
+    render(<App historial={historial} />);
+    const usuario = await elegir(
+      archivoCsv(csv('fecha,monto,concepto,categoria', ['2026-07-05 10:00:00,999,Café,Comida'])),
+    );
+    await screen.findByRole('button', { name: textos.guardado.reemplazar });
+    await usuario.click(screen.getByRole('button', { name: textos.vistas.historial }));
+    const antes = await tablaDeLaComparacion(JULIO_ROTULO, AGOSTO_ROTULO);
+    expect(filaDe(antes, 'Comida')[1]).toBe('$100.00');
+
+    await usuario.click(screen.getByRole('button', { name: textos.guardado.reemplazar }));
+
+    await waitFor(() =>
+      expect(
+        filaDe(
+          screen.getByRole('table', {
+            name: textos.comparacion.tabla(JULIO_ROTULO, AGOSTO_ROTULO),
+          }),
+          'Comida',
+        )[1],
+      ).toBe('$999.00'),
+    );
+  });
+
   it('un fallo pasajero al pedir un mes no se recuerda: al volver a elegir se pide otra vez', async () => {
     const historial = crearHistorialFalso(MESES_A_MANO);
     const obtener = historial.obtener;
