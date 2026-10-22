@@ -77,6 +77,10 @@ Las filas inválidas SHALL excluirse de las transacciones sin bloquear la carga,
 - **WHEN** una fila tiene el `concepto` vacío
 - **THEN** la fila es inválida y su motivo nombra `concepto`
 
+#### Scenario: Fila mal formada
+- **WHEN** una fila tiene más o menos campos que el encabezado (por ejemplo, el monto `1,234.50` sin comillas)
+- **THEN** la fila es inválida con el motivo de fila mal formada y no entra con los valores desplazados
+
 ### Requirement: Confirmación con más del 5 % de inválidas (R-05)
 Cuando las filas inválidas son más del 5 % de las filas de datos del archivo, la carga SHALL pedir confirmación antes de usarse. Con el 5 % exacto o menos, no SHALL pedirla.
 

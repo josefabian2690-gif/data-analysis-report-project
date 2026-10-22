@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const origen = 'http://127.0.0.1:4173';
+const puerto = '4173';
+const origen = `http://127.0.0.1:${puerto}`;
 
 export default defineConfig({
   testDir: 'tests/sistema',
@@ -8,7 +9,8 @@ export default defineConfig({
   use: { baseURL: origen },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
-    command: './node_modules/.bin/vite preview',
+    command: 'npm start',
+    env: { TABLERO_SIN_NAVEGADOR: '1', TABLERO_PUERTO: puerto },
     url: origen,
     reuseExistingServer: false,
   },
