@@ -57,11 +57,11 @@ Los ocho flujos son MVP; el orden lo fija la tabla de fases.
 | 1 | Cargar y ver el mes | `npm start` abre el navegador. Al subir el fixture de semilla se ven la validación con las filas inválidas, los KPIs y el gasto por categoría (la dominante salta a la vista). | Filtros, historial, el resto de las gráficas | DOMINIO R-01 a R-08, R-11, R-12, R-17 |
 | 2 | Dashboard completo, filtros y tabla | Gráficas por día, hora, día de la semana, zona y cuenta. Filtros (R-10). Tabla ordenable. En la demo se ven la quincena y el fin de semana. | Historial, mapa, hallazgos | R-10, R-13, R-14 |
 | 3 | Historial y comparación | Se guardan 2 o 3 meses (semillas distintas), se reinicia y siguen ahí. Comparación por categoría y totales. Reemplazar un mes pide confirmación (409). | Mapa, hallazgos, exportar | R-09, R-15, API y almacenamiento |
-| 4 | Mapa y hallazgos | Mapa local por latitud y longitud con color por zona. Panel de hallazgos. El test de semillas pasa contra `esperado.json`. | Exportar, contorno o GeoJSON del mapa | Umbrales de R-16, ajustables desde la pantalla; mapa solo de puntos |
+| 4 | Mapa y hallazgos | Mapa local por latitud y longitud con color por zona. Panel de hallazgos. El test de semillas pasa contra `esperado.json`. | Exportar, contorno o GeoJSON del mapa | Umbrales de R-16, ajustables desde la pantalla y conservados en el navegador; mapa solo de puntos |
 | 5 | Exportar reporte | Un botón genera un HTML autocontenido sin URLs externas, que se abre sin conexión y se imprime a PDF. | Importar bancos, edición, presupuestos | Formato de exportación |
 
 ## Pendientes
 
 - Decidido el 2026-10-21: el mapa de la fase 4 dibuja solo puntos coloreados por zona, sin contorno de CDMX/México ni GeoJSON. El contorno queda como posible mejora futura, fuera de la fase 4.
-- Decidido el 2026-10-21: los umbrales de los hallazgos (R-16) se ajustan desde la pantalla, no solo desde la configuración.
+- Decidido el 2026-10-21: los umbrales de los hallazgos (R-16) se ajustan desde la pantalla, no solo desde la configuración, y los ajustados se conservan en el navegador (`localStorage`): sobreviven a recargar la página y a reiniciar, solo en ese navegador; no se guardan en el servidor.
 - Decidido el 2026-10-15: se commitean 3 fixtures del generador de ~2 000 filas cada uno (~250 KB), con semillas distintas y de meses distintos. Sirven a los tests y a la demo del historial de la fase 3.
