@@ -11,3 +11,10 @@ export function formatearMes(mes: string): string {
   const [anio = '', numero = ''] = mes.split('-');
   return `${textos.meses[Number(numero) - 1] ?? ''} de ${anio}`;
 }
+
+const RAZON = new Intl.NumberFormat('es-MX', { maximumFractionDigits: 1 });
+
+/** Cuántas veces es un grupo del otro (`1.73` → `1.7`); un decimal, como las proporciones de R-17. */
+export function formatearRazon(razon: number): string {
+  return RAZON.format(razon);
+}
