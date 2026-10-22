@@ -1,0 +1,18 @@
+{
+  "semilla": 1,
+  "mes": "2026-07",
+  "registros": 2000,
+  "categoriaDominante": "Compras",
+  "zonaFavorita": "Centro Histórico, CDMX",
+  "casa": "Polanco, CDMX",
+  "trabajo": "Coyoacán, CDMX",
+  "viaje": {
+    "destino": "Monterrey, N.L.",
+    "desde": "2026-07-24",
+    "hasta": "2026-07-26"
+  },
+  "quincenas": [
+    15,
+    31
+  ]
+}

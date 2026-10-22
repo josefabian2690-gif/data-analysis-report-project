@@ -1,0 +1,93 @@
+# Ola fase-0 — Andamiaje y mecánica
+
+**Rama:** `ola/fase-0` (desde `chore/fase-0-planning` @ `7598242`) · **Changes:** `fase-0-andamiaje` · **Abierta:** 2026-10-15
+
+## Arranque
+
+- Cierre (2026-10-16), sobre `ola/fase-0` @ `f747a28`: `verify` verde (166 tests, 5 archivos), `sistema` 1/1, `doctor` 41 OK · 0 FALLA · 1 AVISO, `openspec instructions apply`: 12/12, `all_done`.
+- `preflight`: 4/4 OK (`gh auth` con scopes `repo` y `workflow`, remoto y ramas `ola/*` sin otra ola activa, `openspec`, `graft`).
+- `verify` sobre la base (`chore/fase-0-planning` @ `7598242`): **rojo por diseño**, no heredado. No hay `package.json` hasta el grupo 1 (`npm ERR! enoent ... package.json`). Estado de partida, no fallo.
+- `sistema` sobre la base: no existe hasta el grupo 2. Sin specs heredados inestables.
+- `openspec validate fase-0-andamiaje --strict`: válido. `instructions apply`: `state: ready`, 0/12, sin `context` ni `operationGuidance`.
+- `.claude/da/da doctor`: 41 OK · 0 FALLA · 1 AVISO.
+- Diseño contrastado con el código y el registro de npm (2026-10-15):
+  - `generar_transacciones.py:24` importa `configuracion` como hermano; `:451` escribe en `output/` relativo al cwd; `:405-412` `--mes` por defecto es el mes anterior; `:369-392` `-v` imprime texto. Existe `--salida` (`args.salida`, `:451`).
+  - `.venv/bin/python` de la raíz principal: Python 3.14.4 con Faker 40.43.0. **No existe dentro de los worktrees**: el grupo 3 pasa `PYTHON=<raíz principal>/.venv/bin/python`.
+  - Versiones de D1 resueltas en el registro: vite 8.3.4 (node `>=22.12`), vitest 5.0.5 (peer vite `^6.4‖^7‖^8`), `@vitejs/plugin-react` 6.1.2 (peer vite `^8`), jsdom 29.1.1 (node `^22.13`), typescript 5.9.3, typescript-eslint 8.71.2 (peer ts `<6.1`, eslint `^9`), eslint-plugin-import 2.32.0 (eslint `^9`), `@testing-library/jest-dom` 7.0.1 (node `>=22`), `@playwright/test` 1.64.1. Node 22.22.1, npm 9.2.0: compatibles.
+  - Bibliotecas de Chromium que faltan por `ldconfig -p`: `libnss3`, `libnspr4` (dependencia de la anterior) y `libasound`. El resto (atk, cups, drm, gbm, xkbcommon, pango, cairo, X11…) está.
+- Alcanzabilidad: grupo 1 alcanzable tras la instalación del usuario; grupo 2 tras el 1 y los navegadores; grupo 3 tras el 1 (su test corre en Vitest). Grafo: 1 → {2, 3}.
+
+## PRs
+
+| # | Grupo (change · tareas) | Rama | Estado |
+|---|---|---|---|
+| #5 | fase-0-andamiaje · 1.1–1.5 | `feat/fase-0-node-scaffold` | mergeada (`19e964b`) — 1 mecánica · 1 ronda · 1 por corrección (pasada final con pasada corta del crítico) |
+| #6 | fase-0-andamiaje · 2.1–2.2 | `test/fase-0-system-suite` | mergeada (`1e7a171`) — 0 mecánicas · 0 rondas · 0 por corrección (pasada final con pasada corta del crítico) |
+| #7 | fase-0-andamiaje · 3.1–3.5 | `chore/fase-0-generator-fixtures` | mergeada (`f747a28`) — 0 mecánicas · 1 ronda · 1 por corrección |
+
+## Decisiones del PM
+
+- **D-TM1 (Team Manager).** `master` frente a `main`: opción (c). En la fase 0 no se toca la mecánica; el PM pasa siempre `--desde` explícito al montar worktrees. Renombre o `proyecto.ramaPrincipal` se plantean al usuario entre olas. Descartadas: (a) renombrar a `main`, (b) declarar `ramaPrincipal: master`.
+- **D-TM2 (Team Manager).** La fase 0 incluye la suite de sistema mínima (grupo 2). Descartado: dejarla para la fase 1.
+- **D-TM3 (Team Manager).** Se instala ahora todo el stack de `docs/STACK.md` (D1). Descartado: instalar por fase.
+- **D-TM4 (Team Manager).** La corrección del `[PENDIENTE]` de fixtures de `docs/PLAN.md` va en la PR #4, aparte; la ola trata el fixture como decidido según el brief.
+- **Excepción de montaje (D2).** El worktree del PM (`ola/fase-0`) y el del grupo 1 se crean con `git worktree add`, no con `.claude/da/da worktree montar`: su gancho `preparar` (`npm ci`) falla sin `package-lock.json`. La comprobación L0 del grupo 1 se hace a mano tras la instalación. Descartado: montar con la mecánica (falla).
+- **El grupo 3 no arranca antes de mergear el 1.** El Team Manager sugirió adelantarlo si el grafo lo permitía; `tasks.md` declara que depende del 1 (su test corre en Vitest). Descartado: encargar 3.1, 3.2 y 3.4 antes y rebasar luego (paralelismo que el grafo no declara).
+- **El proyecto no lleva `"type": "module"`** (PR #5). Con él, Node carga como ESM el lanzador CommonJS sin extensión `.claude/da/da` y toda la mecánica cae (`require is not defined in ES module scope`). Configuraciones ESM con `.mjs`/`.mts`. `tasks.md` 1.1 y `design.md` D2 revisados por `openspec-update-change` (`798152e`). Descartado: `.claude/da/package.json` con `"type": "commonjs"` o renombrar el lanzador (tocan la mecánica, D-TM1). Para el usuario entre olas.
+- **Worktrees de implementación fuera de OneDrive**, en `/home/fabs/da-wt/tablero-gastos/<grupo>` (PR #5). Los ganchos `worktree.preparar` y `worktree.comprobar` del perfil sustituyen `{wt}` sin comillas y la ruta del repo tiene un espacio (`Claudios Room`): `verify` daba `enlaces del worktree: FUERA` con todos los pasos en verde. Fuera de `/mnt/c` además los tests bajan de ~27 s a ~1 s. El worktree del grupo 1 se desmontó y se volvió a montar con `.claude/da/da worktree montar` (su `npm ci` desde el lockfile del usuario pasó). Descartado: entrecomillar `{wt}` en `.claude/desarrollo-autonomo.json` (mecánica, D-TM1). Para el usuario entre olas.
+- **En esos worktrees el lanzador se invoca con `node ./.claude/da/da`**: git guarda `.claude/da/da` como 100644 y fuera de NTFS no es ejecutable (lo encontró el crítico de #5).
+- **NB «`<title>` vacío» de #5 aceptado sin acción**: el título sale del catálogo `textos.ts` por `document.title`; `index.html` no lleva texto visible propio. Descartado: duplicar el texto en el HTML.
+- **NB de #5 pasados a otros grupos**: `README.md` fuera de `.prettierignore` (grupo 3), `playwright.config.ts` dentro de `tsc` (grupo 2).
+- **Mutaciones de la suite de sistema** (PR #6): las aplica el implementador en su árbol y las corre el PM con `.claude/da/da sistema` (comando pesado). Descartado: que el PM edite código para mutar.
+- **NB de la pasada corta de #6 a deuda, sin otra vuelta** (import por defecto de `@playwright/test`, paquete `playwright/test`). Descartado: otra pasada final por NO BLOQUEA que salen de la propia pasada corta.
+- **El PM registra el modo ejecutable** de `generador/fixtures.sh` con `git update-index --chmod=+x` (PR #7): el repo tiene `core.fileMode=false` y los implementadores no tocan git. Descartado: dejarlo 100644 y documentar `bash generador/fixtures.sh`.
+- **El PM cierra la ola sin relevo pese a las 3 PRs internas mergeadas** (§6): no quedaba ningún grupo, solo el cierre, y el contexto estaba por debajo del umbral. Descartado: handover para que otro PM solo abra la PR de ola.
+- **Grupos 2 y 3 en paralelo tras mergear el 1**, con revisión y merge en serie (2 primero). El grafo los declara independientes y sus áreas son disjuntas (2: `playwright.config.ts`, `tests/sistema/`, script `test:sistema`; 3: `generador/`, `tests/fixtures/`, `README.md`, `.gitattributes`); el test de integridad entra por el `include` de Vitest del grupo 1 sin tocar su configuración. Si un encargo necesita tocar un archivo del otro, se para y se serializa. Descartado: en serie (más tiempo de reloj sin reducir riesgo).
+
+## Deuda
+
+- Mecánica (no producto): `.claude/da/da medir` falla con esta versión de `gh` (`Unknown JSON field: "closingIssuesReferences"`); el bloque *Coste* de abajo sale en ceros y se completa a mano desde este registro.
+- #6, `eslint.config.mjs:87-95`: la regla que obliga a importar `test` de `tests/sistema/sin-red.ts` no ve `import pw from '@playwright/test'` (import por defecto) ni `import { test } from 'playwright/test'`; una spec así correría sin vigilancia de red. Arreglo: `importNames: ['test', 'default']` y una segunda entrada en `paths`, con sus casos en `tests/arquitectura/sistema.test.ts`. Mientras, el comentario de `sin-red.ts:13` se queda corto. Para la primera spec de sistema de la fase 1.
+- #6, `tests/sistema/sin-red.ts:20-22`: la vigilancia no ve WebSockets (no emiten `request` en el contexto), posiblemente tampoco `preconnect`/`dns-prefetch`, ni peticiones posteriores al cuerpo del test (telemetría diferida, `sendBeacon`). Hoy no son vía real; revisar cuando el `webServer` pase a `npm start` (fase 1).
+- #6, spec `sin-red` requisito 1: ningún test protege «escuchando **únicamente** en 127.0.0.1» (con `host: '0.0.0.0'` la suite pasa). El escenario se cumple. Lo decide el servidor propio de la fase 1.
+- Mecánica (no producto), para entre olas, sin issue (issues deshabilitadas en el repo): (1) lanzador `.claude/da/da` CommonJS sin extensión, incompatible con `"type": "module"` en la raíz; (2) ganchos del perfil con `{wt}` sin comillas; (3) `.claude/da/da` con modo 100644 en git.
+
+## Se coló
+
+- Ninguno.
+
+## Lo que queda fuera
+
+- Nada del change: 12/12 tareas. La corrección del `[PENDIENTE]` de fixtures en `docs/PLAN.md` va en la PR #4, aparte (D-TM4).
+
+## Entorno vivo
+
+- Worktree del PM: `.claude/worktrees/pm-fase-0` (`ola/fase-0`). Se mantiene hasta que el usuario mergee la PR de ola (es la rama de ola; no se puede quitar sin perder el sitio desde el que el Team Manager rebasará).
+- Worktree de cierre: `/home/fabs/da-wt/tablero-gastos/cierre-fase-0` (lectura de `origin/ola/fase-0`), se quita al abrir la PR de ola.
+- Ningún servidor ni contenedor arriba.
+
+## Coste
+
+Salida de `.claude/da/da medir fase-0` (falló al consultar `gh`; ver *Deuda*):
+
+```
+da medir: gh pr list falló -- Unknown JSON field: "closingIssuesReferences"
+| PRs a GitHub | 0 | · | Pasadas de crítico | 0 | · | BLOQUEA en veredictos | 0 |   (todas las filas en 0)
+```
+
+Completado desde este registro y los hilos de #5, #6 y #7:
+
+| Métrica | Valor |
+| --- | --- |
+| PRs internas | 3 (#5, #6, #7), todas mergeadas |
+| Pasadas de crítico | 7 (#5: 3 · #6: 2 · #7: 2) |
+| BLOQUEA en veredictos | 3 (#5: 2 · #7: 1) |
+| Rondas | 2 (#5: 1 · #7: 1) |
+| Devoluciones mecánicas | 1 (#5) |
+| Se coló | 0 |
+| BLOQUEA de código | 3 (reglas de pureza, zonas de capas, modo de `fixtures.sh`) |
+| `sistema` al cierre | 1/1 sobre `f747a28` |
+
+## Handover
+
+- —
