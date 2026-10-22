@@ -21,7 +21,7 @@
 | #27 | `fase-3-historial-y-comparacion` · 2.1–2.4 | `feat/fase-3-server-history-api` | mergeada — 0 mecánicas · 0 rondas · 0 por corrección (+ pasada final trivial, solo tests) |
 | #26 | `fase-3-historial-y-comparacion` · 3.1–3.2 | `feat/fase-3-charts-compare` | mergeada — 0 mecánicas · 1 ronda · 0 por corrección (+ pasada final con pasada corta y una línea trivial) |
 | #28 | `fase-3-historial-y-comparacion` · 4.1–4.4 | `feat/fase-3-client-save-history` | mergeada — 1 mecánica (PM: capturas ajenas) · 1 ronda · 0 por corrección (+ pasada final con pasada corta) |
-| — | `fase-3-historial-y-comparacion` · 5.1–5.4 | `feat/fase-3-client-compare-system` | pendiente |
+| #29 | `fase-3-historial-y-comparacion` · 5.1–5.4 | `feat/fase-3-client-compare-system` | mergeada — 0 mecánicas · 1 ronda · 0 por corrección (pasada final: sin hallazgos) |
 
 ## Decisiones del PM
 
@@ -54,6 +54,13 @@
 - **Carpeta del historial de la suite (PR #28):** `playwright.config.ts` crea con `mkdtemp` una carpeta por corrida en la primera evaluación, la anota en `TABLERO_HISTORIAL_SISTEMA` (los workers la heredan) y la borra al salir. NO BLOQUEA aceptado sin acción con el crítico: en `--ui`/watch el proceso principal reutilizaría la carpeta sin vaciarla; la mecánica corre la suite con `da sistema`, un proceso nuevo por corrida.
 - **Comprobación de «el archivo no sale del navegador» (PR #28):** se buscan las líneas crudas del CSV (encabezado incluido) en cada cuerpo y URL, no ids ni conceptos, que el `PUT` lleva legítimamente como campos. El PM corrió la mutación «el concepto de la primera transacción del `PUT` es el texto del archivo»: `flujo-principal` en rojo con «peticiones que llevan el encabezado o una línea del archivo».
 - **Pasada final de #28:** `6cd16a4` con pasada corta del crítico (tocó `AvisoDeGuardado.tsx`, `estilos.css` y un comentario de producto); `sistema` 3/3 sobre `6cd16a4`; la punta `11b1a4b` solo rehace una captura.
+- **Relevo de PM (2026-10-21)** con #29 abierta y sin veredicto: el PM entrante retomó por §1b; las PRs mandaron sobre el *Handover* (decía 9/17 y el grupo 4 pendiente; #28 ya estaba mergeada). No quedaba implementador ni crítico vivo; se relanzaron instancias nuevas (nadie los paró).
+- **Ronda de #29 (clase: juicio del crítico):** la gráfica de la comparación solo rotulaba una categoría de cada dos (ECharts oculta rótulos y no hay tooltip): Compras, Comida, Salud, Vivienda y Suscripciones no se leían. Corregido con `rotulosCompletos: true` en `src/graficas/por-comparacion.ts` y su test. En la misma ronda, un NO BLOQUEA de código: test de reemplazar desde la pregunta del 409 sin salir de Historial (la dependencia `meses` del efecto no la protegía nada).
+- **Corrección de #29 en `src/graficas/` dentro de la PR del grupo 5:** el requisito «Gráfica de la comparación» es de este change y su captura es de 5.2; declarado en el triage y visto por el crítico. Descartado: una PR `fix/…` aparte antes del cierre (un ciclo más para una línea).
+- **Rótulos «Mes base» / «Mes a comparar» (NO BLOQUEA de #29, aceptado sin acción con el crítico):** con la base posterior al comparado, la tabla va igual en orden cronológico (R-15) y el título lo dice; D9 nombra así los selectores. Descartado: rótulos neutros («Un mes» / «Otro mes»), que es cambio de diseño.
+- **Caché de un 404 en `src/cliente/meses-pedidos.ts` y calma de 1 s en `tests/sistema/sin-red.ts` (NO BLOQUEA de #29):** aceptados sin acción con el crítico (una pestaña, un usuario; D11 solo exige esperar con tope).
+- **Captura de #29 con la pregunta del 409 a la vista** (`comparacion-julio-agosto-despues.png`, el guion cargó agosto dos veces): aceptada como contexto honesto, NO BLOQUEA del crítico sin acción.
+- **Evidencia de #29:** `verify` y `sistema` 4/4 sobre `cdfd50a`; la punta `4792223` solo rehace dos capturas; mutaciones M-a a M-d de 5.3 y 5.4 corridas por el PM anterior sobre `c0a1df2`.
 
 ## Deuda
 
@@ -62,6 +69,7 @@ Issues deshabilitadas en el repositorio: la deuda vive aquí y en la PR de ola.
 - Mecánica (no producto): en los worktrees montados, `.claude/da/da` queda con modo 644 y `da en <wt> -- .claude/da/da citas` falla con `EACCES`; se corre `node .claude/da/da citas`. Candidato a arreglo del gancho `preparar`.
 - Mecánica (no producto): el crítico de #27 restauró un mutante una vez con `git checkout --` (escritura de git que no le toca); el archivo quedó igual a `e7d1e61`. En los encargos siguientes se le pide restaurar desde copias.
 - Mecánica (no producto): el PM corrió una vez `npx --version` por error al commitear el registro de arranque (binario local, sin descarga).
+- Mecánica (no producto): `.claude/da/da medir fase-3` falla con `gh` 2.46.0 (`Unknown JSON field: "closingIssuesReferences"`) y deja las tablas en cero; el *Coste* de esta ola no tiene cifras de la herramienta.
 
 ## Se coló
 
@@ -74,27 +82,48 @@ Issues deshabilitadas en el repositorio: la deuda vive aquí y en la PR de ola.
 
 ## Entorno vivo
 
-- Worktree del PM: `/home/fabs/da-wt/tablero-gastos/pm` (`ola/fase-3` @ `6361ab5` antes de este commit). Sin worktrees de grupo, sin servidores, sin implementadores ni críticos en vuelo.
+- Worktree del PM: `/home/fabs/da-wt/tablero-gastos/pm` (`ola/fase-3`), se conserva hasta el merge de la PR de ola por si hay que corregir. Sin worktrees de grupo, sin servidores, sin implementadores ni críticos en vuelo.
 
 ## Coste
 
-- —
+Salida de `.claude/da/da medir fase-3`, tal cual (falló la consulta a `gh`; ver *Deuda*):
+
+```
+da medir: gh pr list falló -- Unknown JSON field: "closingIssuesReferences"
+```
+
+### Mecánica
+
+| Métrica | Valor |
+| --- | --- |
+| PRs a GitHub | 0 |
+| Merges a main — cierre o arreglo | 0 |
+| Merges a main — planeación y archivado | 0 |
+| Horas de espera (promedio) — cierre o arreglo | 0.0 |
+| Horas de espera (promedio) — planeación y archivado | 0.0 |
+| Corridas de evidencia | 0 |
+| Pasadas de crítico | 0 |
+| BLOQUEA en veredictos | 0 |
+| NO BLOQUEA en veredictos | 0 |
+
+### Trabajo
+
+| PR | Caché leída/línea (producto) | Horas/línea (producto) | Caché leída/línea (test) | Horas/línea (test) |
+| --- | --- | --- | --- | --- |
+
+### Guardas
+
+| Guarda | Valor |
+| --- | --- |
+| Se coló | ninguno (ver *Se coló*) |
+| BLOQUEA de código | rondas por juicio del crítico en #25, #26, #28 y #29; #27 LISTA a la primera |
+| sistema al cierre | 4/4 sobre `64843f7` |
 
 ## Handover
 
-- **Estado estable:** tres PRs internas mergeadas (#25, #27, #26) a `ola/fase-3`; nada en vuelo. OpenSpec 9/17 (1.1–1.3, 2.1–2.4, 3.1–3.2).
-- **Hecho:** grupo 1 (dominio: `esMes`, `leerMesGuardado`, `comparar`, formatos con signo), grupo 2 (almacén y API del historial), grupo 3 (`porComparacion` y marca de post-quincena).
-- **Lo que queda en orden:** grupo 4 (`implementador-cliente`; tareas 4.1–4.4; rama `feat/fase-3-client-save-history` desde `ola/fase-3`), después grupo 5 (5.1–5.4; rama `feat/fase-3-client-compare-system`). El 5 depende del 4 y del 3; en serie.
-- **Avisos para los encargos:**
-  - El rótulo de la fila del total de la comparación sale de `src/cliente/textos.ts`; no se pinta `total.nombre` (`'Total'` es clave de datos del dominio).
-  - `porComparacion(c, rotulos)` exige un rótulo por mes (`Record<'AAAA-MM', string>`) y exactamente dos meses; lanza si no.
-  - `GET /api/meses` devuelve `total` sin redondear (`1689470.6699999995` para julio): el cliente formatea con `formatearMonto`; los tests de componente comparan el texto formateado (`$1,689,470.67`).
-  - La API exige `Host` `127.0.0.1:<puerto>` o `localhost:<puerto>`; `PUT` con `Content-Type: application/json`; 409 sin `?reemplazar=1`.
-  - Arranque: `readConfig(env, root)` y `StartupDeps.root`; `TABLERO_HISTORIAL` relativa se resuelve contra la raíz.
-  - Capturas del grupo 4: contra `npm start` del worktree con `TABLERO_HISTORIAL` temporal y `TABLERO_PUERTO` propio (no `npm run dev`, que no sirve `/api/`), levantado con candado solo mientras el implementador captura.
-  - La R-09 «se pregunta si se reemplaza» aún no tiene test que la nombre (el de `esquema.test.ts` cubre «los meses nunca se mezclan»): es del grupo 4.
-  - En los worktrees, `.claude/da/da` queda sin bit de ejecución: `.claude/da/da en <wt> -- node .claude/da/da citas <rutas>`.
-  - A los críticos: restaurar mutantes desde copias, nunca con `git checkout`.
-  - Tras cada `verify` y `sistema`, `git status --ignored` del worktree no debe mostrar `historial/`.
-- **Pendiente con el Team Manager o el usuario:** nada.
-- **Por qué paro:** tres PRs internas mergeadas (§6).
+- **Estado estable:** ola cerrada. Cinco PRs internas mergeadas (#25, #27, #26, #28, #29) a `ola/fase-3`; OpenSpec 17/17; `verify` (849 tests) y `sistema` 4/4 sobre `64843f7`.
+- **Hecho:** grupos 1 a 5; PR de ola abierta contra `chore/fase-3-planning`.
+- **Lo que queda en orden:** merge del usuario de la cadena; después, el Archivador (`team-manager` §7).
+- **Avisos para los encargos:** los del relevo anterior siguen valiendo para un `fix/…` sobre esta ola.
+- **Pendiente con el Team Manager o el usuario:** confirmar o revertir las decisiones en la PR de ola.
+- **Por qué paro:** misión cumplida (cierre, §5).
