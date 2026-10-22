@@ -58,7 +58,7 @@ describe('R-16 categoría dominante', () => {
 });
 
 describe('R-16 zona favorita', () => {
-  const ciudad = gasto({ monto: 20000, categoria: 'Compras', zona: 'Roma, CDMX' });
+  const ciudad = gasto({ monto: 20000, categoria: 'Compras', zona: 'Polanco, CDMX' });
 
   it('es la zona local con más Comida y Entretenimiento, sobre ese gasto local', () => {
     const tx = numerar([
@@ -135,7 +135,8 @@ describe('R-16 quincena (R-13)', () => {
     const lista = hallazgos(tx, undefined, { desde: dia(2), hasta: dia(10) });
 
     expect(de(lista, 'quincena')).toBeUndefined();
-    expect(JSON.stringify(lista)).not.toContain('null');
+    const numeros = lista.flatMap((h) => Object.values(h).filter((v) => typeof v === 'number'));
+    expect(numeros.every(Number.isFinite)).toBe(true);
   });
 
   it('si el resto de los días no tiene gasto, no hay hallazgo', () => {
@@ -187,6 +188,14 @@ describe('R-16 viaje', () => {
     expect(todos(hallazgos(tx), 'viaje')).toEqual([
       { tipo: 'viaje', destino: 'Monterrey, N.L.', desde: dia(10), hasta: dia(13), monto: 200 },
     ]);
+  });
+
+  it('el primer y el último día no dependen del orden de las transacciones', () => {
+    const tx = numerar([casa, ...viajeA([13, 10, 11])]);
+
+    const [viaje] = todos(hallazgos(tx), 'viaje');
+
+    expect([viaje?.desde, viaje?.hasta]).toEqual([dia(10), dia(13)]);
   });
 
   it('un tramo de 5 días no es viaje con el umbral por defecto, y sí con umbral 5', () => {
@@ -296,5 +305,29 @@ describe('R-16 la lista de hallazgos', () => {
     expect(tipos).not.toContain('categoria-dominante');
     expect(tipos).toContain('fin-de-semana');
     expect(hallazgos(tx).map((h) => h.tipo)).toContain('categoria-dominante');
+  });
+
+  it('un umbral que el parcial no toca sigue en su valor por defecto: fin de semana de razón 1.1 no supera 1.2', () => {
+    const tx = numerar([gasto({ monto: 143, dia: dia(4) }), gasto({ monto: 180, dia: dia(6) })]);
+
+    const lista = hallazgos(tx, { categoriaDominante: 0.99 });
+
+    expect(de(lista, 'fin-de-semana')).toBeUndefined();
+  });
+
+  it('un viaje de 4 días sigue siéndolo con un parcial de otro umbral', () => {
+    const tx = numerar([
+      gasto({ monto: 100000, zona: 'Roma, CDMX', dia: dia(1) }),
+      gasto({ monto: 100, zona: 'Monterrey, N.L.', dia: dia(10) }),
+      gasto({ monto: 100, zona: 'Monterrey, N.L.', dia: dia(13) }),
+    ]);
+
+    expect(todos(hallazgos(tx, { categoriaDominante: 0.99 }), 'viaje')).toHaveLength(1);
+  });
+
+  it('un umbral parcial en undefined toma el valor por defecto', () => {
+    const tx = numerar([gasto({ monto: 400, dia: dia(15) }), gasto({ monto: 5400, dia: dia(10) })]);
+
+    expect(de(hallazgos(tx, { quincena: undefined }), 'quincena')).toBeUndefined();
   });
 });

@@ -1,4 +1,4 @@
-import { diasDelPeriodo, periodoDelMes, type Periodo } from './calendario';
+import { diasDelPeriodo, type Periodo } from './calendario';
 import type { Transaccion } from './esquema';
 import { metricas } from './metricas';
 import { ciudadDeZona, ciudadPrincipal } from './zonas';
@@ -32,11 +32,6 @@ export type Hallazgo =
 
 const CATEGORIAS_DE_LA_ZONA_FAVORITA = ['Comida', 'Entretenimiento'];
 const PERCENTIL_DE_ATIPICOS = 99;
-
-function periodoDelMesDe(tx: Transaccion[]): Periodo | undefined {
-  const primera = tx[0];
-  return primera === undefined ? undefined : periodoDelMes(primera.dia.slice(0, 7));
-}
 
 function sumar(montos: number[]): number {
   return montos.reduce((suma, monto) => suma + monto, 0);
@@ -167,6 +162,10 @@ function atipicos(tx: Transaccion[], factor: number): Hallazgo[] {
   return [{ tipo: 'atipicos', transacciones: fuera }];
 }
 
+function sinIndefinidos(umbrales: Partial<Umbrales>): Partial<Umbrales> {
+  return Object.fromEntries(Object.entries(umbrales).filter(([, valor]) => valor !== undefined));
+}
+
 /**
  * Los patrones de R-16 que superan su umbral, en el orden de R-16 y, los viajes, de mayor a
  * menor monto. `periodo` es el de las métricas: sin él, el mes de las transacciones.
@@ -176,16 +175,14 @@ export function hallazgos(
   umbrales: Partial<Umbrales> = {},
   periodo?: Periodo,
 ): Hallazgo[] {
-  if (tx.length === 0) return [];
-  const u = { ...UMBRALES_POR_DEFECTO, ...umbrales };
+  const u = { ...UMBRALES_POR_DEFECTO, ...sinIndefinidos(umbrales) };
   const ciudad = ciudadPrincipal(tx);
-  const delPeriodo = periodo ?? periodoDelMesDe(tx);
   return [
-    ...dominante(tx, delPeriodo, u.categoriaDominante),
+    ...dominante(tx, periodo, u.categoriaDominante),
     ...zonaFavorita(tx, ciudad),
-    ...quincena(tx, delPeriodo, u.quincena),
-    ...finDeSemana(tx, delPeriodo, u.finDeSemana),
-    ...viajes(tx, delPeriodo, ciudad, u.diasDeViaje),
+    ...quincena(tx, periodo, u.quincena),
+    ...finDeSemana(tx, periodo, u.finDeSemana),
+    ...viajes(tx, periodo, ciudad, u.diasDeViaje),
     ...atipicos(tx, u.factorDeAtipicos),
   ];
 }
