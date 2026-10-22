@@ -132,15 +132,41 @@ La sección de hallazgos SHALL ofrecer un control con nombre accesible por umbra
 - **THEN** cada control vuelve a su valor por defecto y la categoría dominante reaparece
 
 ### Requirement: Umbral inválido
-Un valor de umbral vacío, no numérico, menor o igual que 0, o mayor que 100 en el porcentaje de la dominante, SHALL no aplicarse: el control SHALL marcarse inválido con un mensaje y los hallazgos SHALL seguir con el último valor válido.
+Un valor de umbral vacío, no numérico, menor o igual que 0, o mayor que 100 en el porcentaje de la dominante, SHALL no aplicarse ni guardarse: el control SHALL marcarse inválido con un mensaje y los hallazgos SHALL seguir con el último valor válido.
 
 #### Scenario: Umbral vacío
 - **WHEN** el analista borra el umbral de fin de semana
-- **THEN** el control se marca inválido, ve el mensaje y el hallazgo de fin de semana sigue como estaba
+- **THEN** el control se marca inválido, ve el mensaje, el hallazgo de fin de semana sigue como estaba y el valor guardado no cambia
 
-### Requirement: Los umbrales duran la sesión
-Los umbrales ajustados SHALL conservarse al cargar otro CSV mientras la página siga abierta, y SHALL volver a los valores por defecto al recargarla; no se guardan en disco ni en el navegador.
+### Requirement: Los umbrales se conservan en el navegador
+Los umbrales ajustados SHALL guardarse en el almacenamiento local del navegador al cambiar o restablecerse, y SHALL leerse de ahí al abrir la página: sobreviven a cargar otro CSV, a recargar la página y a reiniciar el servidor, solo en ese navegador. Ninguna petición SHALL llevarlos.
 
 #### Scenario: Otro CSV conserva los umbrales
 - **WHEN** el analista sube el umbral de la dominante a 50 y carga `2026-08-semilla-2.csv`
 - **THEN** el control sigue en 50 y Entretenimiento, con 54.8 %, aparece como dominante
+
+#### Scenario: Recargar la página conserva los umbrales
+- **WHEN** el analista sube el umbral de la dominante a 50, recarga la página y vuelve a cargar la semilla 1
+- **THEN** el control sigue en 50, no hay hallazgo de categoría dominante y ninguna petición llevó los umbrales
+
+#### Scenario: Restablecer también se guarda
+- **WHEN** el analista restablece los umbrales y recarga la página
+- **THEN** los controles muestran los valores por defecto
+
+### Requirement: Umbrales guardados inválidos
+Al leer los umbrales guardados, cada umbral ausente, de otro tipo o fuera de rango SHALL tomar su valor por defecto, y los válidos SHALL conservarse; un valor guardado que no se puede leer SHALL dar todos los valores por defecto, sin errores.
+
+#### Scenario: Guardado ilegible
+- **WHEN** lo guardado no es JSON
+- **THEN** los controles muestran los valores por defecto y la página funciona
+
+#### Scenario: Un umbral guardado fuera de rango
+- **WHEN** lo guardado trae fin de semana -1 y quincena 2
+- **THEN** fin de semana vale 1.2 y quincena 2
+
+### Requirement: Navegador sin almacenamiento
+Si el almacenamiento local no está disponible o falla al leer o escribir, la página SHALL funcionar igual, con los umbrales ajustables durante la sesión, sin mostrar errores.
+
+#### Scenario: Escritura que falla
+- **WHEN** el almacenamiento rechaza la escritura y el analista sube el umbral de la dominante a 50
+- **THEN** el hallazgo de categoría dominante desaparece y no hay ningún error en la página
