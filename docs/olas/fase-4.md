@@ -19,7 +19,7 @@
 | #36 | fase-4-mapa-y-hallazgos · 1.1–1.4 | `feat/fase-4-domain-findings` | mergeada (`87db854`) — 0 mecánicas · 1 ronda · 0 por corrección; NO LISTA en la pasada 1 (1 BLOQUEA de test: la mezcla de umbrales parciales sin proteger, más 3 NO BLOQUEA corregidos en la ronda), LISTA en la pasada 2 con 2 NO BLOQUEA aceptados |
 | #37 | fase-4-mapa-y-hallazgos · 2.1–2.2 | `feat/fase-4-map-chart` | mergeada (`71c7d79`) — 1 mecánica (texto visible de los ejes en `graficas`) · 0 rondas · 0 por corrección; LISTA en la pasada 1 con 4 NO BLOQUEA: 2 cerrados en la pasada final (`1caee13`, paleta a 3:1 y un comentario) con pasada corta LISTA, 2 aceptados |
 | #38 | fase-4-mapa-y-hallazgos · 3.1 | `feat/fase-4-client-findings-panel` | mergeada (`8f479c3`) — 0 mecánicas · 1 ronda · 0 por corrección; NO LISTA en la pasada 1 (1 BLOQUEA de test: quincena y fin de semana sin aserción de su evidencia, más 4 NO BLOQUEA corregidos en la ronda, entre ellos la redacción «veces más», que era falsa), LISTA en la pasada 2 con 2 NO BLOQUEA aceptados |
-| — | fase-4-mapa-y-hallazgos · 4.1–4.3 | `feat/fase-4-client-thresholds` | pendiente |
+| #39 | fase-4-mapa-y-hallazgos · 4.1–4.3 | `feat/fase-4-client-thresholds` | mergeada (`55c4ba7`) — 1 mecánica (dos comentarios con cita que no decía lo afirmado, panel pegado a los KPIs, captura «antes» recortada) · 1 ronda · 0 por corrección; NO LISTA en la pasada 1 (1 BLOQUEA de test: tres de los cinco controles podían dejar de recalcular con la suite en verde, más 5 NO BLOQUEA corregidos en la ronda), LISTA en la pasada 2 con 1 NO BLOQUEA aceptado |
 | — | fase-4-mapa-y-hallazgos · 5.1–5.2 | `feat/fase-4-client-map-system` | pendiente |
 
 ## Decisiones del PM
@@ -39,11 +39,17 @@
 - **Panel de hallazgos como lista llana (grupo 3).** Las `<section>` vecinas tampoco tienen estilo propio (medido en el DOM); la tarjeta de los KPIs viene de `.dato`. Se acepta la lista sin CSS en el grupo 3; el grupo 4 añade controles dentro del panel y toca `estilos.css`. Descartado: devolver el grupo 3 por estilo.
 - **Segunda literal de `Metricas` (grupo 2).** `tests/graficas/por-categoria.test.ts` también tenía una literal de `Metricas` que el pre-vuelo no contó; gana solo los 3 campos nuevos. Descartado: tratarlo como cambio fuera de alcance.
 
+- **Relevo del PM (2026-10-22).** Entra un PM nuevo por §1b sobre `9fcd292`; estado verificado contra las PRs (#36–#38 mergeadas, 7/12, sin PRs abiertas).
+- **Texto inválido de un umbral al remontar (#39, crítico pasada 1 NO BLOQUEA 3).** Si un control queda inválido y se carga otro CSV o se filtra hasta 0 filas, el control vuelve al último valor válido y pierde el texto y la marca. Aceptado: nunca muestra un valor distinto del vigente. Descartado: subir el texto de cada control a `App`.
+- **Desviación de TDD declarada (#39).** Los tests de la cáscara del almacén se escribieron junto con su implementación mínima, sin rojo previo; la mitigan los mutantes por test (crítico, pasada 1 NO BLOQUEA 6). Descartado: rehacerlos.
+- **«Antes» del panel en #39.** Se usa la captura de `imgs/screenshots/38/` como «antes»; la del implementador salió recortada y el servidor de desarrollo ya servía el código nuevo. Descartado: montar otra rama solo para retomarla.
+- **Comentario de `marcaDeHallazgo` (#39, pasada 2 NO BLOQUEA 1).** Aceptado sin acción: es cierto hoy y una colisión deja los tests en rojo, no en verde falso.
+
 ## Deuda
 
 Issues deshabilitadas en el repositorio: la deuda vive aquí y en la PR de ola.
 
-- **Estilo del panel de hallazgos y su captura en contexto (#38, crítico pasada 1 NO BLOQUEA 4 y pasada 2 NO BLOQUEA 1).** El panel es una lista con viñetas sin estilo bajo las tarjetas de los KPIs, y `imgs/screenshots/38/panel-hallazgos-contexto-despues.png` quedó mal encuadrada en la retoma (corta el panel). Pasa al grupo 4, que toca `estilos.css` y debe capturar el panel completo, con controles, entre los KPIs y «Gasto por categoría».
+- ~~**Estilo del panel de hallazgos y su captura en contexto (#38).**~~ Cerrada en #39: tarjeta con controles y captura completa entre los KPIs y «Gasto por categoría» (`imgs/screenshots/39/umbrales-por-defecto-despues.png`).
 
 - **Margen del encuadre recortado por el extent (#37, crítico NO BLOQUEA 1).** `src/graficas/mapa.ts:23-28`: con la semilla 1, CDMX es el extremo este y sur de todos los puntos, y ECharts recorta la ventana al extent de los datos en esos dos bordes. Impacto hoy: los puntos más al este y al sur pueden quedar pegados al borde. Se juzga en la captura del mapa del grupo 5; si se ve cortado, entra ahí.
 
