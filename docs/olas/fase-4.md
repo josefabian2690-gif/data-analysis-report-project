@@ -17,8 +17,8 @@
 | # | Grupo (change · tareas) | Rama | Estado |
 |---|---|---|---|
 | #36 | fase-4-mapa-y-hallazgos · 1.1–1.4 | `feat/fase-4-domain-findings` | mergeada (`87db854`) — 0 mecánicas · 1 ronda · 0 por corrección; NO LISTA en la pasada 1 (1 BLOQUEA de test: la mezcla de umbrales parciales sin proteger, más 3 NO BLOQUEA corregidos en la ronda), LISTA en la pasada 2 con 2 NO BLOQUEA aceptados |
-| — | fase-4-mapa-y-hallazgos · 2.1–2.2 | `feat/fase-4-map-chart` | en curso |
-| — | fase-4-mapa-y-hallazgos · 3.1 | `feat/fase-4-client-findings-panel` | en curso |
+| #37 | fase-4-mapa-y-hallazgos · 2.1–2.2 | `feat/fase-4-map-chart` | mergeada (`71c7d79`) — 1 mecánica (texto visible de los ejes en `graficas`) · 0 rondas · 0 por corrección; LISTA en la pasada 1 con 4 NO BLOQUEA: 2 cerrados en la pasada final (`1caee13`, paleta a 3:1 y un comentario) con pasada corta LISTA, 2 aceptados |
+| #38 | fase-4-mapa-y-hallazgos · 3.1 | `feat/fase-4-client-findings-panel` | en revisión |
 | — | fase-4-mapa-y-hallazgos · 4.1–4.3 | `feat/fase-4-client-thresholds` | pendiente |
 | — | fase-4-mapa-y-hallazgos · 5.1–5.2 | `feat/fase-4-client-map-system` | pendiente |
 
@@ -43,6 +43,8 @@
 
 Issues deshabilitadas en el repositorio: la deuda vive aquí y en la PR de ola.
 
+- **Margen del encuadre recortado por el extent (#37, crítico NO BLOQUEA 1).** `src/graficas/mapa.ts:23-28`: con la semilla 1, CDMX es el extremo este y sur de todos los puntos, y ECharts recorta la ventana al extent de los datos en esos dos bordes. Impacto hoy: los puntos más al este y al sur pueden quedar pegados al borde. Se juzga en la captura del mapa del grupo 5; si se ve cortado, entra ahí.
+
 - **Docstring de `hallazgos` (#36, crítico pasada 2, Comentarios y citas 1).** `src/dominio/hallazgos.ts:170-171` dice «sin él, el mes de las transacciones»; para `viajes` sin periodo son todas las transacciones. Por R-08 es lo mismo; no es falso. Impacto hoy: ninguno. Si no se hace: una lectura futura puede suponer un recorte que no ocurre.
 
 ## Se coló
@@ -56,7 +58,6 @@ Issues deshabilitadas en el repositorio: la deuda vive aquí y en la PR de ola.
 ## Entorno vivo
 
 - Worktree del PM `/home/fabs/da-wt/tablero-gastos/pm` (`ola/fase-4`).
-- Worktree del grupo 2 `/home/fabs/da-wt/tablero-gastos/f4-g2` (`feat/fase-4-map-chart`).
 - Worktree del grupo 3 `/home/fabs/da-wt/tablero-gastos/f4-g3` (`feat/fase-4-client-findings-panel`).
 
 ## Coste
