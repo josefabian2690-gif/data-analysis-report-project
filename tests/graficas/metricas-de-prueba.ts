@@ -14,4 +14,7 @@ export const METRICAS_VACIAS: Metricas = {
   gastoPorHora: [],
   transaccionesSinHora: 0,
   gastoPorDiaDeLaSemana: [],
+  puntosDelMapa: [],
+  transaccionesSinCoordenadas: 0,
+  ciudadPrincipal: undefined,
 };

@@ -38,3 +38,36 @@ export const MARCA_HORIZONTAL: Marca = {
   dashArrayY: [2, 4],
   rotation: 0,
 };
+
+/** Paleta categórica de ocho tonos, en orden fijo; el de cada zona lo da su posición. */
+export const PALETA_CATEGORICA = [
+  '#2a78d6',
+  '#eb6834',
+  '#1baf7a',
+  '#eda100',
+  '#e87ba4',
+  '#008300',
+  '#6250d6',
+  '#e34948',
+];
+
+/** Siete formas de punto de ECharts; con ocho colores, la pareja se repite recién a las 56 zonas. */
+export const FORMAS_DE_PUNTO = [
+  'circle',
+  'rect',
+  'triangle',
+  'diamond',
+  'roundRect',
+  'pin',
+  'arrow',
+] as const;
+
+export function estiloDeZona(posicion: number): {
+  color: string;
+  forma: (typeof FORMAS_DE_PUNTO)[number];
+} {
+  return {
+    color: PALETA_CATEGORICA[posicion % PALETA_CATEGORICA.length] ?? COLOR_BASE,
+    forma: FORMAS_DE_PUNTO[posicion % FORMAS_DE_PUNTO.length] ?? 'circle',
+  };
+}
