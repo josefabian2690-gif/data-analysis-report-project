@@ -1,4 +1,4 @@
-import { useRef, useState, type ChangeEvent } from 'react';
+import { useMemo, useRef, useState, type ChangeEvent } from 'react';
 
 import { pideConfirmacion, type MotivoRechazo, type ResultadoCarga } from '../dominio/carga';
 import { AvisoDeGuardado } from './AvisoDeGuardado';
@@ -8,6 +8,7 @@ import { cambiaElHistorial, guardarMes, type EstadoDeGuardado } from './guardado
 import type { Historial } from './historial';
 import { HistorialDeMeses } from './HistorialDeMeses';
 import { useListado } from './listado';
+import { recordarMeses } from './meses-pedidos';
 import { Rechazo } from './Rechazo';
 import { Tablero } from './Tablero';
 import { textos } from './textos';
@@ -41,6 +42,7 @@ export function App({ historial }: { historial: Historial }) {
   const [pantalla, setPantalla] = useState<Pantalla>(INICIAL);
   const [vista, setVista] = useState<Vista>('tablero');
   const { listado, recargar } = useListado(historial);
+  const pedidos = useMemo(() => recordarMeses(historial), [historial]);
   const ultimaEleccion = useRef(0);
 
   async function guardar(resultado: ResultadoCarga, eleccion: number, reemplazar: boolean) {
@@ -50,7 +52,10 @@ export function App({ historial }: { historial: Historial }) {
       resultado.transacciones,
       reemplazar,
     );
-    if (cambiaElHistorial(guardado)) recargar();
+    if (cambiaElHistorial(guardado)) {
+      pedidos.olvidar(resultado.mes);
+      recargar();
+    }
     if (eleccion !== ultimaEleccion.current) return;
     setPantalla((actual) =>
       actual.tipo === 'tablero' && actual.eleccion === eleccion ? { ...actual, guardado } : actual,
@@ -137,7 +142,7 @@ export function App({ historial }: { historial: Historial }) {
         )}
       </div>
       <div hidden={vista !== 'historial'}>
-        <HistorialDeMeses listado={listado} />
+        <HistorialDeMeses listado={listado} pedidos={pedidos} visible={vista === 'historial'} />
       </div>
     </main>
   );

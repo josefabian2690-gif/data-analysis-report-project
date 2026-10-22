@@ -1,17 +1,24 @@
 import type { EChartsOption } from 'echarts';
 
+import type { Comparacion } from '../dominio/comparacion';
 import { formatearFecha, formatearMonto, formatearProporcion } from '../dominio/formato';
 import type { Metricas } from '../dominio/metricas';
+import { porComparacion } from '../graficas/por-comparacion';
 import { porCuenta } from '../graficas/por-cuenta';
 import { porDia } from '../graficas/por-dia';
 import { porDiaDeLaSemana } from '../graficas/por-dia-de-la-semana';
 import { porHora } from '../graficas/por-hora';
 import { porZona } from '../graficas/por-zona';
+import { formatearMes } from './presentacion';
 import { textos } from './textos';
 
 const { graficas } = textos;
 
-function conDescripcion(opcion: EChartsOption, nombre: string, entradas: string[]): EChartsOption {
+export function conDescripcion(
+  opcion: EChartsOption,
+  nombre: string,
+  entradas: string[],
+): EChartsOption {
   const descripcion = graficas.descripcion(nombre, entradas.join('; '));
   return { ...opcion, aria: { ...opcion.aria, label: { description: descripcion } } };
 }
@@ -58,4 +65,19 @@ export function opcionPorCuenta(metricas: Metricas): EChartsOption {
     graficas.porCuenta.detalle(cuenta, formatearMonto(monto), formatearProporcion(proporcion)),
   );
   return conDescripcion(porCuenta(metricas), graficas.porCuenta.nombre, entradas);
+}
+
+export function opcionPorComparacion(comparacion: Comparacion): EChartsOption {
+  const { meses, categorias } = comparacion;
+  const [anterior = '', posterior = ''] = meses.map(formatearMes);
+  const rotulos = Object.fromEntries(meses.map((mes) => [mes, formatearMes(mes)]));
+  const { grafica } = textos.comparacion;
+  const entradas = categorias.map(({ nombre, montos: [antes = 0, despues = 0] }) =>
+    grafica.detalle(nombre, anterior, formatearMonto(antes), posterior, formatearMonto(despues)),
+  );
+  return conDescripcion(
+    porComparacion(comparacion, rotulos),
+    grafica.nombre(anterior, posterior),
+    entradas,
+  );
 }
