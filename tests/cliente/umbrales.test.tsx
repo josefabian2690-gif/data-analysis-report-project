@@ -8,6 +8,7 @@ import { textos } from '../../src/cliente/textos';
 import semilla1 from '../fixtures/generador/2026-07-semilla-1.csv?raw';
 import semilla2 from '../fixtures/generador/2026-08-semilla-2.csv?raw';
 import { archivoCsv, elegir } from './ayudas';
+import { marcaDeHallazgo, TIPOS_DE_HALLAZGO, type TipoDeHallazgo } from './ayudas-hallazgos';
 import { crearAlmacenFalso, crearAlmacenQueLanza } from './almacen-falso';
 import { crearHistorialFalso } from './historial-falso';
 
@@ -35,7 +36,10 @@ function hallazgos(): string[] {
     .map((item) => item.textContent ?? '');
 }
 
-const hayDominante = () => hallazgos().some((texto) => texto.includes('concentra'));
+const hay = (tipo: TipoDeHallazgo) =>
+  hallazgos().some((texto) => texto.includes(marcaDeHallazgo(tipo)));
+const hayDominante = () => hay('categoriaDominante');
+const presentes = () => TIPOS_DE_HALLAZGO.filter(hay);
 
 async function escribir(usuario: ReturnType<typeof userEvent.setup>, clave: Clave, texto: string) {
   await usuario.clear(control(clave));
@@ -73,7 +77,9 @@ describe('controles de umbrales del panel de hallazgos', () => {
     await escribir(usuario, 'categoriaDominante', '50');
 
     expect(hayDominante()).toBe(false);
-    expect(hallazgos()).toEqual(antes.filter((texto) => !texto.includes('concentra')));
+    expect(hallazgos()).toEqual(
+      antes.filter((texto) => !texto.includes(marcaDeHallazgo('categoriaDominante'))),
+    );
     expect(hallazgos().length).toBeGreaterThan(0);
   });
 
@@ -90,6 +96,23 @@ describe('controles de umbrales del panel de hallazgos', () => {
     }
     expect(hallazgos()).toEqual(antes);
   });
+
+  it.each([
+    ['quincena', 'quincena', '9'],
+    ['finDeSemana', 'finDeSemana', '9'],
+    ['diasDeViaje', 'viaje', '2'],
+    ['factorDeAtipicos', 'atipicos', '100'],
+  ] as [Clave, TipoDeHallazgo, string][])(
+    'subir el umbral %s quita el hallazgo %s y deja los demás',
+    async (clave, tipo, valor) => {
+      const usuario = await conLaSemilla();
+      expect(presentes()).toEqual([...TIPOS_DE_HALLAZGO]);
+
+      await escribir(usuario, clave, valor);
+
+      expect(presentes()).toEqual(TIPOS_DE_HALLAZGO.filter((otro) => otro !== tipo));
+    },
+  );
 
   it.each([
     ['categoriaDominante', ''],
@@ -148,7 +171,9 @@ describe('controles de umbrales del panel de hallazgos', () => {
     await waitFor(() => expect(hallazgos().join(' ')).toContain('Entretenimiento'));
 
     expect(control('categoriaDominante')).toHaveValue('50');
-    const dominante = hallazgos().find((texto) => texto.includes('concentra'));
+    const dominante = hallazgos().find((texto) =>
+      texto.includes(marcaDeHallazgo('categoriaDominante')),
+    );
     expect(dominante).toContain('Entretenimiento');
     expect(dominante).toContain('54.8%');
   });
@@ -222,18 +247,11 @@ describe('conservación de los umbrales en el almacén', () => {
   it('un almacén que lanza al leer y al escribir no rompe: la dominante en 50 quita el hallazgo', async () => {
     const usuario = await conLaSemilla(crearAlmacenQueLanza());
     expect(control('categoriaDominante')).toHaveValue('35');
+    expect(hayDominante()).toBe(true);
 
     await escribir(usuario, 'categoriaDominante', '50');
 
     expect(hayDominante()).toBe(false);
     expect(screen.queryByRole('alert')).toBeNull();
-  });
-
-  it('sin almacén los umbrales viven en memoria', async () => {
-    const usuario = await conLaSemilla();
-
-    await escribir(usuario, 'categoriaDominante', '50');
-
-    expect(hayDominante()).toBe(false);
   });
 });

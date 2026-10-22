@@ -6,6 +6,7 @@ import indexHtml from '../../index.html?raw';
 import { textos } from '../../src/cliente/textos';
 import semilla1 from '../fixtures/generador/2026-07-semilla-1.csv?raw';
 import { archivoCsv } from './ayudas';
+import { marcaDeHallazgo } from './ayudas-hallazgos';
 
 const control = textos.hallazgos.umbrales.controles.categoriaDominante;
 
@@ -45,8 +46,12 @@ it('si acceder a localStorage lanza, la página abre y los umbrales funcionan en
   });
   await import('../../src/cliente/main');
 
+  const usuario = userEvent.setup();
+  await usuario.upload(await screen.findByLabelText(textos.elegirCsv), archivoCsv(semilla1));
+  await screen.findByText(marcaDeHallazgo('categoriaDominante'), { exact: false });
+
   const campo = await ponerLaDominanteEn50();
 
   expect(campo).toHaveValue('50');
-  expect(screen.queryByText(/concentra/)).toBeNull();
+  expect(screen.queryByText(marcaDeHallazgo('categoriaDominante'), { exact: false })).toBeNull();
 });

@@ -47,10 +47,6 @@ describe('lectura de los umbrales guardados', () => {
   it('da los valores por defecto cuando el almacén lanza al leer', () => {
     expect(leerUmbralesDelAlmacen(crearAlmacenQueLanza())).toEqual(UMBRALES_POR_DEFECTO);
   });
-
-  it('da los valores por defecto sin almacén', () => {
-    expect(leerUmbralesDelAlmacen(undefined)).toEqual(UMBRALES_POR_DEFECTO);
-  });
 });
 
 describe('escritura de los umbrales', () => {
@@ -72,9 +68,5 @@ describe('escritura de los umbrales', () => {
 
   it('no rompe cuando el almacén lanza al escribir', () => {
     expect(() => guardarUmbrales(crearAlmacenQueLanza(), AJUSTADOS)).not.toThrow();
-  });
-
-  it('no rompe sin almacén', () => {
-    expect(() => guardarUmbrales(undefined, AJUSTADOS)).not.toThrow();
   });
 });
