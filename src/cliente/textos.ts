@@ -131,6 +131,21 @@ export const textos = {
   hallazgos: {
     titulo: 'Hallazgos',
     ninguno: 'Ningún patrón supera su umbral.',
+    umbrales: {
+      nombre: 'Umbrales de los hallazgos',
+      controles: {
+        categoriaDominante: 'Categoría dominante (% del gasto)',
+        quincena: 'Quincena (veces el resto)',
+        finDeSemana: 'Fin de semana (veces lunes a jueves)',
+        diasDeViaje: 'Días máximos de un viaje',
+        factorDeAtipicos: 'Atípicos (veces el percentil 99)',
+      },
+      restablecer: 'Restablecer umbrales',
+      invalido: {
+        porcentaje: 'Escribe un porcentaje mayor que 0 y hasta 100.',
+        numero: 'Escribe un número mayor que 0.',
+      },
+    },
     categoriaDominante: (categoria: string, proporcion: string, monto: string) =>
       `${categoria} concentra ${proporcion} del gasto (${monto}).`,
     zonaFavorita: (zona: string, proporcion: string, monto: string) =>

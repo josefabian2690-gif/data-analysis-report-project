@@ -9,8 +9,10 @@ import {
   type Hallazgo,
   type Umbrales,
 } from '../dominio/hallazgos';
+import { ControlesDeUmbrales } from './ControlesDeUmbrales';
 import { formatearConteo, formatearRazon } from './presentacion';
 import { textos } from './textos';
+import type { AjusteDeUmbrales } from './usar-umbrales';
 
 function descripcion(hallazgo: Hallazgo): string {
   const t = textos.hallazgos;
@@ -58,12 +60,14 @@ interface Props {
   transacciones: Transaccion[];
   periodo: Periodo;
   umbrales?: Umbrales;
+  ajuste?: Pick<AjusteDeUmbrales, 'cambiar' | 'restablecer'>;
 }
 
 export function PanelDeHallazgos({
   transacciones,
   periodo,
   umbrales = UMBRALES_POR_DEFECTO,
+  ajuste,
 }: Props) {
   const id = useId();
   const encontrados = useMemo(
@@ -71,12 +75,19 @@ export function PanelDeHallazgos({
     [transacciones, umbrales, periodo],
   );
   return (
-    <section aria-labelledby={id}>
+    <section aria-labelledby={id} className="panel-de-hallazgos">
       <h2 id={id}>{textos.hallazgos.titulo}</h2>
+      {ajuste && (
+        <ControlesDeUmbrales
+          umbrales={umbrales}
+          alCambiar={ajuste.cambiar}
+          alRestablecer={ajuste.restablecer}
+        />
+      )}
       {encontrados.length === 0 ? (
         <p>{textos.hallazgos.ninguno}</p>
       ) : (
-        <ul>
+        <ul className="hallazgos">
           {encontrados.map((hallazgo) => (
             <li key={hallazgo.tipo === 'viaje' ? `viaje-${hallazgo.destino}` : hallazgo.tipo}>
               {descripcion(hallazgo)}
