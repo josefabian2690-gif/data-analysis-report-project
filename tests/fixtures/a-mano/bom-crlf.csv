@@ -1,0 +1,3 @@
+﻿id_transaccion,fecha,monto,concepto,categoria,cuenta,zona,latitud,longitud
+TX000107,2026-07-03 09:15:00,120.50,Panadería Ñuñoa,Comida,Tarjeta de Crédito ****8072,"Roma Norte, CDMX",19.4195,-99.1627
+TX000108,2026-07-04 20:40:10,310.00,Cine Cuauhtémoc,Entretenimiento,Efectivo,"Condesa, CDMX",19.4115,-99.1731

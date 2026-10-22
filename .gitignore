@@ -2,6 +2,11 @@
 __pycache__/
 output/
 historial/
+node_modules/
+dist/
+dist-server/
+test-results/
+playwright-report/
 
 # graft's local graph cache — regenerable, not committed (run `graft build`).
 /graft/

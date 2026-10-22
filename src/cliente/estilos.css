@@ -1,0 +1,342 @@
+:root {
+  color-scheme: light;
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  color: #0f172a;
+  background: #f1f5f9;
+}
+
+body {
+  margin: 0;
+}
+
+main {
+  box-sizing: border-box;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem 1.5rem 3rem;
+}
+
+h1 {
+  margin: 0 0 1rem;
+  font-size: 1.75rem;
+}
+
+h2 {
+  margin: 2rem 0 0.75rem;
+  font-size: 1.15rem;
+}
+
+.selector {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
+}
+
+.rechazo {
+  margin: 1rem 0 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid #b91c1c;
+  border-radius: 0.5rem;
+  background: #fef2f2;
+  color: #7f1d1d;
+}
+
+.confirmacion {
+  margin-top: 1rem;
+  max-width: 40rem;
+  padding: 0.25rem 1.25rem 1.25rem;
+  border: 1px solid #b45309;
+  border-radius: 0.5rem;
+  background: #fffbeb;
+}
+
+.acciones {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.acciones button,
+.paginacion button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #1d4ed8;
+  border-radius: 0.375rem;
+  background: #1d4ed8;
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.acciones button.secundario {
+  background: #fff;
+  color: #1d4ed8;
+}
+
+.datos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.dato {
+  display: flex;
+  flex: 1 1 11rem;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  background: #fff;
+}
+
+.dato-etiqueta {
+  color: #475569;
+  font-size: 0.85rem;
+}
+
+.dato-valor {
+  font-size: 1.4rem;
+}
+
+table {
+  margin-top: 1rem;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+caption {
+  padding-bottom: 0.5rem;
+  text-align: left;
+  font-weight: 600;
+}
+
+th,
+td {
+  padding: 0.4rem 0.9rem;
+  border: 1px solid #cbd5e1;
+  text-align: left;
+}
+
+.numerico {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.categorias {
+  display: grid;
+  grid-template-columns: minmax(18rem, 1fr) minmax(480px, 1.5fr);
+  align-items: start;
+  gap: 1.5rem;
+}
+
+.categorias table {
+  margin-top: 0;
+}
+
+.dominante {
+  margin-left: 0.5rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.25rem;
+  background: #1d4ed8;
+  color: #fff;
+  font-size: 0.75rem;
+}
+
+.tarjeta-grafica {
+  box-sizing: border-box;
+  min-width: 480px;
+  padding: 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  background: #fff;
+}
+
+.grafica {
+  width: 100%;
+  height: 22rem;
+}
+
+.tarjeta-grafica {
+  overflow-x: auto;
+}
+
+.grafica-ancha .grafica {
+  min-width: 640px;
+}
+
+@media (max-width: 1000px) {
+  .categorias {
+    grid-template-columns: 1fr;
+  }
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.filtros fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0.5rem 0.9rem 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  background: #fff;
+}
+
+.filtros legend {
+  padding: 0 0.3rem;
+  font-weight: 600;
+}
+
+.campo-de-filtro {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.85rem;
+  color: #475569;
+}
+
+.campo-de-filtro select,
+.campo-de-filtro input {
+  padding: 0.3rem 0.4rem;
+  font: inherit;
+  color: #0f172a;
+}
+
+.casilla {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.quitar-filtros {
+  margin-top: 0.75rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #1d4ed8;
+  border-radius: 0.375rem;
+  background: #fff;
+  color: #1d4ed8;
+  font: inherit;
+  cursor: pointer;
+}
+
+.sin-resultados:empty {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.sin-resultados {
+  margin: 1.5rem 0 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid #b45309;
+  border-radius: 0.5rem;
+  background: #fffbeb;
+  color: #78350f;
+}
+
+.orden-de-columna {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.paginacion {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+.paginacion button:disabled {
+  border-color: #cbd5e1;
+  background: #e2e8f0;
+  color: #64748b;
+  cursor: not-allowed;
+}
+
+.tabla-de-transacciones {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.tabla-de-transacciones td {
+  overflow-wrap: anywhere;
+}
+
+.tabla-de-transacciones .columna-fecha {
+  width: 11.5rem;
+  white-space: nowrap;
+}
+
+.tabla-de-transacciones .columna-monto {
+  width: 8.5rem;
+  white-space: nowrap;
+}
+
+.aviso-guardado {
+  margin: 1rem 0 0;
+}
+
+.confirmacion .aviso-guardado {
+  margin: 1em 0;
+}
+
+.aviso-guardado:empty {
+  margin: 0;
+}
+
+.selectores-de-mes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.vistas {
+  display: inline-flex;
+  margin-top: 1.5rem;
+  border: 1px solid #94a3b8;
+  border-radius: 0.5rem;
+  background: #fff;
+  overflow: hidden;
+}
+
+.vistas button {
+  padding: 0.5rem 1.25rem;
+  border: 0;
+  border-right: 1px solid #94a3b8;
+  background: transparent;
+  color: #334155;
+  font: inherit;
+  cursor: pointer;
+}
+
+.vistas button:last-child {
+  border-right: 0;
+}
+
+.vistas button[aria-pressed='true'] {
+  background: #e0e7ff;
+  color: #1e3a8a;
+  font-weight: 700;
+  box-shadow: inset 0 -3px 0 #1d4ed8;
+}

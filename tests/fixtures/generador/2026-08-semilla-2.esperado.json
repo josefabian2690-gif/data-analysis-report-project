@@ -1,0 +1,18 @@
+{
+  "semilla": 2,
+  "mes": "2026-08",
+  "registros": 2000,
+  "categoriaDominante": "Entretenimiento",
+  "zonaFavorita": "Condesa, CDMX",
+  "casa": "Polanco, CDMX",
+  "trabajo": "Coyoacán, CDMX",
+  "viaje": {
+    "destino": "Puerto Vallarta, Jal.",
+    "desde": "2026-08-21",
+    "hasta": "2026-08-23"
+  },
+  "quincenas": [
+    15,
+    31
+  ]
+}

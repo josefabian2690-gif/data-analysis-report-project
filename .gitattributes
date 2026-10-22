@@ -1,0 +1,2 @@
+tests/fixtures/generador/*.csv -text
+tests/fixtures/a-mano/*.csv -text
