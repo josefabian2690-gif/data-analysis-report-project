@@ -6,6 +6,7 @@ import { metricas as calcularMetricas } from '../dominio/metricas';
 import { GastoPorCategoria } from './GastoPorCategoria';
 import { GraficasDelPeriodo } from './GraficasDelPeriodo';
 import { Kpis } from './Kpis';
+import { MapaDelGasto } from './MapaDelGasto';
 import { PanelDeFiltros } from './PanelDeFiltros';
 import { PanelDeHallazgos } from './PanelDeHallazgos';
 import { Resumen } from './Resumen';
@@ -51,6 +52,7 @@ export function Tablero({
           />
           <GastoPorCategoria metricas={metricas} />
           <GraficasDelPeriodo metricas={metricas} />
+          <MapaDelGasto metricas={metricas} />
           <TablaDeTransacciones transacciones={filtradas} />
         </>
       )}

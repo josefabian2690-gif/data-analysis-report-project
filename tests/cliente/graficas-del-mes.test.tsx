@@ -18,7 +18,7 @@ const NOMBRES = [
   graficas.porCuenta.nombre,
 ];
 
-const TODAS = [textos.categorias.nombreGrafica, ...NOMBRES];
+const TODAS = [textos.categorias.nombreGrafica, ...NOMBRES, graficas.mapa.nombre];
 
 /** Las barras con relleno de patrón: las de la leyenda llevan `transform` y no cuentan. */
 function barrasConMarca(dibujo: SVGElement | null): number {
@@ -69,6 +69,7 @@ describe('las gráficas del mes', () => {
       graficas.porHora.titulo,
       graficas.porZona.titulo,
       graficas.porCuenta.titulo,
+      graficas.mapa.titulo,
       textos.tabla.titulo,
     ]);
   });

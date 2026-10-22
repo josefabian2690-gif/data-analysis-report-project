@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 import { textos } from '../../src/cliente/textos';
+import { marcaDeHallazgo } from '../cliente/ayudas-hallazgos';
 import { expect, test } from './sin-red';
 
 const DIRECTORIO = resolve('tests/fixtures/generador');
@@ -12,6 +13,8 @@ const esperado = JSON.parse(
   readFileSync(resolve(DIRECTORIO, '2026-07-semilla-1.esperado.json'), 'utf8'),
 ) as {
   categoriaDominante: string;
+  zonaFavorita: string;
+  viaje: { destino: string };
 };
 
 const ZONA = '"Centro Histórico, CDMX"';
@@ -92,6 +95,20 @@ test('el CSV del generador con tres filas inválidas se convierte en el tablero 
     `${esperado.categoriaDominante}${textos.categorias.dominante}`,
   );
   await expect(primera.locator('mark')).toHaveText(textos.categorias.dominante);
+
+  const hallazgos = page.getByRole('region', { name: textos.hallazgos.titulo, exact: true });
+  const hallazgo = (tipo: Parameters<typeof marcaDeHallazgo>[0]) =>
+    hallazgos.getByRole('listitem').filter({ hasText: marcaDeHallazgo(tipo) });
+  await expect(hallazgo('categoriaDominante')).toContainText(esperado.categoriaDominante);
+  await expect(hallazgo('zonaFavorita')).toContainText(esperado.zonaFavorita);
+  await expect(hallazgo('viaje')).toContainText(esperado.viaje.destino);
+
+  const mapa = page.getByRole('region', { name: textos.graficas.mapa.titulo, exact: true });
+  await expect(mapa).toBeVisible();
+  await expect(
+    mapa.getByRole('img', { name: new RegExp(`^${textos.graficas.mapa.nombre}`) }),
+  ).toBeVisible();
+  await expect(page.getByText(textos.graficas.mapa.sinCoordenadas, { exact: true })).toHaveCount(0);
 
   await expect(
     page
