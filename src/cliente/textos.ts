@@ -136,9 +136,9 @@ export const textos = {
     zonaFavorita: (zona: string, proporcion: string, monto: string) =>
       `Tu zona favorita para comer y divertirte es ${zona}: ${proporcion} de ese gasto (${monto}).`,
     quincena: (razon: string, promedioQuincena: string, promedioResto: string) =>
-      `Gastas ${razon} veces más en quincena: ${promedioQuincena} por día frente a ${promedioResto} el resto del mes.`,
+      `En quincena gastas ${razon} veces lo de los demás días: ${promedioQuincena} por día frente a ${promedioResto}.`,
     finDeSemana: (razon: string, promedioFinDeSemana: string, promedioResto: string) =>
-      `Gastas ${razon} veces más en fin de semana: ${promedioFinDeSemana} por día frente a ${promedioResto} entre semana.`,
+      `En fin de semana gastas ${razon} veces lo de lunes a jueves: ${promedioFinDeSemana} por día frente a ${promedioResto}.`,
     viaje: (destino: string, desde: string, hasta: string, monto: string) =>
       `Viaje a ${destino} del ${desde} al ${hasta}, con ${monto} de gasto.`,
     atipicos: (cantidad: string, mayor: string) =>

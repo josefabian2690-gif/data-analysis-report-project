@@ -14,7 +14,7 @@ export function formatearMes(mes: string): string {
 
 const RAZON = new Intl.NumberFormat('es-MX', { maximumFractionDigits: 1 });
 
-/** Cuántas veces es un grupo del otro (`1.73` → `1.7`); un decimal, como las proporciones de R-17. */
+/** Cuántas veces es un grupo del otro (`1.73` → `1.7`), con un decimal. */
 export function formatearRazon(razon: number): string {
   return RAZON.format(razon);
 }

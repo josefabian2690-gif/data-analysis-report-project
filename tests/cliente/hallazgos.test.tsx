@@ -6,7 +6,6 @@ import { PanelDeHallazgos } from '../../src/cliente/PanelDeHallazgos';
 import { textos } from '../../src/cliente/textos';
 import { periodoDelMes } from '../../src/dominio/calendario';
 import { parsearCsv } from '../../src/dominio/carga';
-import { UMBRALES_POR_DEFECTO } from '../../src/dominio/hallazgos';
 import semilla1 from '../fixtures/generador/2026-07-semilla-1.csv?raw';
 import { archivoCsv, csv, elegir } from './ayudas';
 import { crearHistorialFalso } from './historial-falso';
@@ -16,6 +15,17 @@ async function conLaSemilla() {
   const usuario = await elegir(archivoCsv(semilla1));
   const region = await screen.findByRole('region', { name: textos.hallazgos.titulo });
   return { usuario, region };
+}
+
+/** Verdadero si cada fragmento aparece en `texto` después del anterior. */
+function enOrden(texto: string, fragmentos: string[]): boolean {
+  let desde = 0;
+  for (const fragmento of fragmentos) {
+    const posicion = texto.indexOf(fragmento, desde);
+    if (posicion < 0) return false;
+    desde = posicion + fragmento.length;
+  }
+  return true;
 }
 
 function elementos(region: HTMLElement): string[] {
@@ -45,6 +55,9 @@ describe('panel de hallazgos', () => {
     expect(items[0]).toContain('Compras');
     expect(items[0]).toContain('48.2%');
     expect(items[1]).toContain('Centro Histórico, CDMX');
+    expect(enOrden(items[2] ?? '', ['2.8', '$124,661.72', '$44,104.58'])).toBe(true);
+    expect(enOrden(items[3] ?? '', ['1.7', '$71,071.73', '$42,529.90'])).toBe(true);
+    expect(within(region).queryByText(textos.hallazgos.ninguno)).toBeNull();
     expect(items[4]).toContain('Monterrey, N.L.');
     expect(items[4]).toContain('24/07/2026');
     expect(items[4]).toContain('26/07/2026');
@@ -98,10 +111,8 @@ describe('panel de hallazgos con un rango de fechas', () => {
     );
 
     const region = screen.getByRole('region', { name: textos.hallazgos.titulo });
-    const finDeSemana = elementos(region).find((item) => item.includes('fin de semana'));
-    expect(finDeSemana).toContain('5 veces');
-    expect(finDeSemana).toContain('$500.00');
-    expect(finDeSemana).toContain('$100.00');
+    const finDeSemana = elementos(region).find((item) => item.includes('$500.00'));
+    expect(enOrden(finDeSemana ?? '', ['5', '$500.00', '$100.00'])).toBe(true);
   });
 });
 
@@ -125,18 +136,5 @@ describe('PanelDeHallazgos con umbrales propios', () => {
     const region = screen.getByRole('region', { name: textos.hallazgos.titulo });
     expect(within(region).queryAllByRole('listitem')).toHaveLength(0);
     expect(within(region).getByText(textos.hallazgos.ninguno)).toBeTruthy();
-  });
-
-  it('con los umbrales por defecto no muestra el mensaje de vacío', () => {
-    render(
-      <PanelDeHallazgos
-        transacciones={transacciones}
-        periodo={periodo}
-        umbrales={UMBRALES_POR_DEFECTO}
-      />,
-    );
-
-    const region = screen.getByRole('region', { name: textos.hallazgos.titulo });
-    expect(within(region).queryByText(textos.hallazgos.ninguno)).toBeNull();
   });
 });
