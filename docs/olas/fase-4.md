@@ -20,7 +20,7 @@
 | #37 | fase-4-mapa-y-hallazgos · 2.1–2.2 | `feat/fase-4-map-chart` | mergeada (`71c7d79`) — 1 mecánica (texto visible de los ejes en `graficas`) · 0 rondas · 0 por corrección; LISTA en la pasada 1 con 4 NO BLOQUEA: 2 cerrados en la pasada final (`1caee13`, paleta a 3:1 y un comentario) con pasada corta LISTA, 2 aceptados |
 | #38 | fase-4-mapa-y-hallazgos · 3.1 | `feat/fase-4-client-findings-panel` | mergeada (`8f479c3`) — 0 mecánicas · 1 ronda · 0 por corrección; NO LISTA en la pasada 1 (1 BLOQUEA de test: quincena y fin de semana sin aserción de su evidencia, más 4 NO BLOQUEA corregidos en la ronda, entre ellos la redacción «veces más», que era falsa), LISTA en la pasada 2 con 2 NO BLOQUEA aceptados |
 | #39 | fase-4-mapa-y-hallazgos · 4.1–4.3 | `feat/fase-4-client-thresholds` | mergeada (`55c4ba7`) — 1 mecánica (dos comentarios con cita que no decía lo afirmado, panel pegado a los KPIs, captura «antes» recortada) · 1 ronda · 0 por corrección; NO LISTA en la pasada 1 (1 BLOQUEA de test: tres de los cinco controles podían dejar de recalcular con la suite en verde, más 5 NO BLOQUEA corregidos en la ronda), LISTA en la pasada 2 con 1 NO BLOQUEA aceptado |
-| — | fase-4-mapa-y-hallazgos · 5.1–5.2 | `feat/fase-4-client-map-system` | pendiente |
+| #40 | fase-4-mapa-y-hallazgos · 5.1–5.2 | `feat/fase-4-client-map-system` | mergeada (`73c2be0`) — 0 mecánicas · 0 rondas · 0 por corrección; LISTA en la pasada 1 con 5 NO BLOQUEA: 4 cerrados en la pasada final (`b7cbc2f`: rótulos crudos de los ejes, test del tooltip acoplado, `DataZoomInsideComponent`, rótulo de una captura) con pasada corta LISTA y 2 NO BLOQUEA aceptados; 1 aceptado |
 
 ## Decisiones del PM
 
@@ -45,19 +45,30 @@
 - **«Antes» del panel en #39.** Se usa la captura de `imgs/screenshots/38/` como «antes»; la del implementador salió recortada y el servidor de desarrollo ya servía el código nuevo. Descartado: montar otra rama solo para retomarla.
 - **Comentario de `marcaDeHallazgo` (#39, pasada 2 NO BLOQUEA 1).** Aceptado sin acción: es cierto hoy y una colisión deja los tests en rojo, no en verde falso.
 
+- **`src/graficas/mapa.ts` en la pasada final de #40.** Los extremos de los ejes del mapa salían con el valor crudo del encuadre (`-99.18862999999999`), visibles en el demo; se corrigió en la pasada final, fuera del área del grupo 5, ocultando los rótulos extremos (redondear la ventana no bastaba: ECharts la reconvierte), con pasada corta del crítico. Descartado: dejarlo como deuda (las issues están deshabilitadas y el analista lo ve).
+- **Mutaciones de sistema corridas por el PM.** 4.3: con `main.tsx` sin pasar el almacén falla `tests/sistema/umbrales.spec.ts:37`. 5.2: con la dominante por defecto en 0.5 falla `tests/sistema/flujo-principal.spec.ts:102`. Ninguna se commiteó.
+
 ## Deuda
 
 Issues deshabilitadas en el repositorio: la deuda vive aquí y en la PR de ola.
 
 - ~~**Estilo del panel de hallazgos y su captura en contexto (#38).**~~ Cerrada en #39: tarjeta con controles y captura completa entre los KPIs y «Gasto por categoría» (`imgs/screenshots/39/umbrales-por-defecto-despues.png`).
 
-- **Margen del encuadre recortado por el extent (#37, crítico NO BLOQUEA 1).** `src/graficas/mapa.ts:23-28`: con la semilla 1, CDMX es el extremo este y sur de todos los puntos, y ECharts recorta la ventana al extent de los datos en esos dos bordes. Impacto hoy: los puntos más al este y al sur pueden quedar pegados al borde. Se juzga en la captura del mapa del grupo 5; si se ve cortado, entra ahí.
+- **Margen del encuadre recortado por el extent (#37, juzgado en #40).** `src/graficas/mapa.ts:23-28`: el 10 % de margen no se respeta al este ni al sur; el crítico midió unos 21 px entre el punto extremo y el borde. Ningún símbolo queda cortado y las zonas de CDMX se distinguen. Impacto hoy: estético. Si no se hace: con otros datos un punto extremo puede quedar más pegado al borde.
+
+- **Rótulos del mapa protegidos sobre la opción (#40, pasada corta NO BLOQUEA 1).** `tests/graficas/mapa.test.ts:199-211` afirma `showMinLabel`/`showMaxLabel: false`, no lo que se ve; en jsdom el contenedor mide 0 px y el SVG no dibuja los extremos. Impacto hoy: ninguno. Si no se hace: un rótulo intermedio crudo no lo detectaría ningún test.
+
+- **Tooltip del mapa sin test (#40, pasada corta NO BLOQUEA 2).** `TooltipComponent` está registrado en `src/cliente/echarts.ts`, pero ningún test lo protege: en jsdom no hay detección de impacto. Impacto hoy: ninguno. Si no se hace: quitar el registro dejaría el mapa sin cuadro de detalle sin que falle nada; se cubriría con un hover en la suite de sistema.
+
+- **Texto inválido de un umbral que se pierde al remontar (#39, pasada 1 NO BLOQUEA 3).** Ver *Decisiones*. Impacto hoy: tras cargar otro CSV o filtrar a 0 filas, un control inválido vuelve a su último valor válido.
+
+- **`.claude/da/da medir` no corre con `gh` 2.46.0.** Falla con `Unknown JSON field: "closingIssuesReferences"` (igual que en la fase 3); las tablas de *Coste* salen en cero. Impacto hoy: la ola no tiene cifras de coste automáticas. Si no se hace: tampoco las tendrán las siguientes; requiere actualizar `gh` (lo instala el usuario).
 
 - **Docstring de `hallazgos` (#36, crítico pasada 2, Comentarios y citas 1).** `src/dominio/hallazgos.ts:170-171` dice «sin él, el mes de las transacciones»; para `viajes` sin periodo son todas las transacciones. Por R-08 es lo mismo; no es falso. Impacto hoy: ninguno. Si no se hace: una lectura futura puede suponer un recorte que no ocurre.
 
 ## Se coló
 
-- —
+- Nada.
 
 ## Lo que queda fuera
 
@@ -65,24 +76,47 @@ Issues deshabilitadas en el repositorio: la deuda vive aquí y en la PR de ola.
 
 ## Entorno vivo
 
-- Worktree del PM `/home/fabs/da-wt/tablero-gastos/pm` (`ola/fase-4`).
+- Vacío: worktrees de grupo quitados, sin servidores y con el candado libre. El worktree del PM `/home/fabs/da-wt/tablero-gastos/pm` se quita al entregar.
 
 ## Coste
 
-- —
+Salida de `.claude/da/da medir fase-4`, tal cual (falló la consulta a `gh`; ver *Deuda*):
+
+```
+da medir: gh pr list falló -- Unknown JSON field: "closingIssuesReferences"
+```
+
+### Mecánica
+
+| Métrica | Valor |
+| --- | --- |
+| PRs a GitHub | 0 |
+| Merges a master — cierre o arreglo | 0 |
+| Merges a master — planeación y archivado | 0 |
+| Horas de espera (promedio) — cierre o arreglo | 0.0 |
+| Horas de espera (promedio) — planeación y archivado | 0.0 |
+| Corridas de evidencia | 0 |
+| Pasadas de crítico | 0 |
+| BLOQUEA en veredictos | 0 |
+| NO BLOQUEA en veredictos | 0 |
+| Actions — Citas | 2 min |
+
+### Trabajo
+
+| PR | Caché leída/línea (producto) | Horas/línea (producto) | Caché leída/línea (test) | Horas/línea (test) |
+| --- | --- | --- | --- | --- |
+
+### Guardas
+
+| Guarda | Valor |
+| --- | --- |
+| Se coló | 0 |
+| BLOQUEA de código | 0 (los 3 BLOQUEA de la ola fueron de test: #36, #38, #39) |
+| sistema al cierre | 5/5 sobre `73c2be0` |
 
 ## Handover
 
-- **Estado estable:** #38 mergeada (`8f479c3`) y registro al día; nada en vuelo: sin implementadores ni críticos activos, sin servidores, candado de `pesado` libre, sin worktrees de grupo.
-- **Hecho:** grupos 1 (#36), 2 (#37) y 3 (#38) mergeados en `ola/fase-4`; casillas 1.1–1.4, 2.1–2.2 y 3.1 marcadas (7/12).
-- **Lo que queda en orden:** grupo 4 (umbrales desde la pantalla y su almacén, 4.1–4.3, rama `feat/fase-4-client-thresholds`, área `src/cliente/`, `tests/cliente/`, `tests/sistema/umbrales.spec.ts`), y después el grupo 5 (mapa en la página y flujo de sistema, 5.1–5.2, `feat/fase-4-client-map-system`), que depende del 2 y del 4. Los dos desde `ola/fase-4`, en serie. Luego el cierre (§5) con la plantilla B y la PR `ola/fase-4 → master`.
-- **Avisos para los encargos:**
-  - Contrato del dominio: `Hallazgo` unión por `tipo`; `hallazgos(tx, umbrales?, periodo?)` mezcla `Partial<Umbrales>` ignorando `undefined`; `leerUmbral(clave, texto)` → `{ valido: true, valor } | { valido: false }` (la dominante en % → proporción); `leerUmbralesGuardados(valor: unknown)` → `Umbrales`. Todo en `src/dominio/hallazgos.ts`.
-  - El panel es `src/cliente/PanelDeHallazgos.tsx` con props `transacciones`, `periodo`, `umbrales?`; `Tablero` aún no recibe umbrales. Textos en `textos.hallazgos`.
-  - Grupo 4 hereda: dar estilo al panel en `estilos.css` y capturar el panel completo en contexto (deuda de #38).
-  - Grupo 5: `mapaDeGasto(metricas, ejes)` en `src/graficas/mapa.ts` exige los nombres de los ejes desde `textos.ts`; registrar en `src/cliente/echarts.ts` `ScatterChart`, `DataZoomComponent` (inside) y `TooltipComponent` (la opción lleva `tooltip`). En la captura del mapa, juzgar el margen del encuadre (deuda de #37) y el contraste de los puntos.
-  - Worktrees: `.claude/da/da worktree montar <ruta> --rama <rama> --desde ola/fase-4` funciona (el `npm ci` de `preparar` va bien). Capturas: el PM levanta `npm run dev` del worktree con `setsid nohup <wt-pm>/.claude/da/da en <wt> -- <wt-pm>/.claude/da/da pesado -- npm run dev`, y lo para con `pkill -f "<wt>.*vite"` antes de cualquier `verify`. Las capturas se apartan del worktree antes de `verify` (si no, el SHA sale `+sucio`).
-  - `gh pr edit` no funciona: cuerpos por `gh api -X PATCH repos/<repo>/pulls/<n> --input <json>`. Tras un rebase con commit de capturas, los permalinks del cuerpo se actualizan al SHA nuevo.
-  - graft indexa el checkout principal (en `master` antiguo): los encargos dicen que no refleja la rama.
-- **Pendiente con el Team Manager o el usuario:** nada.
-- **Por qué paro:** 3 PRs internas mergeadas (§6).
+- **Cierre (2026-10-22).** Las 5 PRs internas mergeadas (#36–#40) y 12/12 casillas (`openspec instructions apply`: `all_done`).
+- `verify` verde sobre `73c2be0` (64 archivos, 994 tests) y `sistema` 5/5 sobre `73c2be0`.
+- PR de ola `ola/fase-4 → master` abierta para el usuario; el post-merge (Archivador) es del Team Manager.
+- Pendiente con el Team Manager o el usuario: confirmar o revertir las decisiones de arriba en la PR de ola.
