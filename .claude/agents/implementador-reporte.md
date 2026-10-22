@@ -2,7 +2,7 @@
 name: implementador-reporte
 description: "Implementador de UN grupo de tareas de una ola, con TDD, sobre un worktree que el PM ya montó. Variante para HTML autocontenido del reporte como string. Puro, sin URLs externas. Lo lanza SOLO el agente pm con un encargo completo. No usar para otra tarea ni desde la sesión principal."
 model: sonnet
-effort: high
+effort: medium
 tools: Read, Bash, Write, Edit, Skill
 skills:
   - desarrollo-autonomo-implementador

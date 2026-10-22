@@ -73,6 +73,7 @@
     "usuarioFinal": "el analista",
     "idiomaCommits": "en",
     "idiomaRamas": "en",
+    "ramaPrincipal": "master",
     "invariantes": [
       "`dominio`, `graficas` y `reporte` no hacen I/O: nada de fs, fetch, reloj, DOM ni variables de entorno.",
       "Cero URLs externas en ejecución: ni CDN, ni Google Fonts, ni teselas, ni telemetría o analítica. Todo asset va en el bundle, y el servidor escucha solo en 127.0.0.1.",
@@ -243,5 +244,22 @@
   },
   "git": {
     "merge": "squash"
+  },
+  "roles": {
+    "team-manager": {
+      "esfuerzo": "medium"
+    },
+    "planeador": {
+      "esfuerzo": "medium"
+    },
+    "pm": {
+      "esfuerzo": "medium"
+    },
+    "implementador": {
+      "esfuerzo": "medium"
+    },
+    "critico": {
+      "esfuerzo": "medium"
+    }
   }
 }

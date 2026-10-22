@@ -2,7 +2,7 @@
 name: critico
 description: "Crítico de UNA PR interna de una ola: revisa código contra los criterios del grupo y devuelve LISTA o NO LISTA con hallazgos BLOQUEA o NO BLOQUEA, en 80 líneas o menos. Lo lanza SOLO el agente pm, una instancia por PR; las pasadas siguientes van a la MISMA instancia por SendMessage. No escribe código ni mergea."
 model: opus
-effort: xhigh
+effort: medium
 tools: Read, Bash, Edit, Skill
 skills:
   - desarrollo-autonomo-critico
