@@ -64,4 +64,4 @@ Los ocho flujos son MVP; el orden lo fija la tabla de fases.
 
 - [PENDIENTE] ¿El mapa dibuja un contorno de CDMX/México con un GeoJSON local incluido en el repo, o solo puntos coloreados por zona? Se decide en la fase 4.
 - [PENDIENTE] ¿Los umbrales de los hallazgos (R-16) se ajustan desde la interfaz o solo desde la configuración? Se decide en la fase 4.
-- [PENDIENTE] ¿Cuántos fixtures del generador se commitean y de qué tamaño? A 20 000 filas pesan ~2.5 MB cada uno; la alternativa es menos filas. Se decide en la fase 0.
+- Decidido el 2026-10-15: se commitean 3 fixtures del generador de ~2 000 filas cada uno (~250 KB), con semillas distintas y de meses distintos. Sirven a los tests y a la demo del historial de la fase 3.
