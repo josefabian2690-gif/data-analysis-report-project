@@ -56,18 +56,51 @@
 
 ## Entorno vivo
 
-- Worktree del PM `/home/fabs/da-wt/tablero-gastos/pm5` (`ola/fase-5` @ `8f47efb`). Worktrees de grupo quitados; servidor de desarrollo apagado; nada en vuelo.
+- Worktree del PM `/home/fabs/da-wt/tablero-gastos/pm5` (`ola/fase-5`): se quita tras abrir la PR de ola. El ensayo del demo corrió en `/home/fabs/da-wt/tablero-gastos/demo5`, ya quitado junto con su rama local; servidor apagado; nada en vuelo.
+- Ajeno a esta ola, sigue en `git worktree list`: `/home/fabs/tablero-demo-fase3` (demo de la fase 3, detached en `2700804`).
 
 ## Coste
 
-- `.claude/da/da medir` no corre con el `gh` 2.46.0 de la máquina (igual que en la fase 4): se rellena a mano al cierre desde la tabla de PRs.
+`.claude/da/da medir fase-5` sale con `gh pr list falló -- Unknown JSON field: "closingIssuesReferences"` (el `gh` 2.46.0 de la máquina no tiene ese campo) y deja en 0 todas las cifras de GitHub. Rellenado a mano desde `gh pr view 45|46|47 --json createdAt,mergedAt,files,comments` y los veredictos pegados en cada PR; lo único que el script sí midió es la fila de Actions.
+
+### Mecánica
+
+| Métrica | Valor |
+| --- | --- |
+| PRs a GitHub | 3 internas (#45, #46, #47) + la de ola |
+| Merges a main — cierre o arreglo | 0 (la de ola espera al usuario) |
+| Merges a main — planeación y archivado | 2 antes de la ola (#43 planeación, #44 decisiones) |
+| Horas de espera (promedio) — cierre o arreglo | — |
+| Horas de espera (promedio) — planeación y archivado | — (no medido) |
+| Corridas de evidencia | 8 en PRs (#45: 3, #46: 3, #47: 2) + `verify` y `sistema` al cierre |
+| Pasadas de crítico | 5 (#45: 2, #46: 2, #47: 1) |
+| BLOQUEA en veredictos | 3 (#45: 2, #46: 1) |
+| NO BLOQUEA en veredictos | 12 (#45: 4 + 1, #46: 3, #47: 4) |
+| Actions — Citas | 4 min (salida de `medir`) |
+
+### Trabajo
+
+Sin las transcripciones (`medir` no llega a leerlas) no hay caché leída; las horas son de apertura a merge de cada PR, y las líneas, las añadidas según `gh pr view --json files`.
+
+| PR | Caché leída/línea (producto) | Horas/línea (producto) | Caché leída/línea (test) | Horas/línea (test) |
+| --- | --- | --- | --- | --- |
+| #45 | — | 0.19 h / 142 líneas | — | 0.19 h / 276 líneas |
+| #46 | — | 0.16 h / 216 líneas | — | 0.16 h / 308 líneas |
+| #47 | — | 0.10 h / 59 líneas | — | 0.10 h / 171 líneas |
+
+### Guardas
+
+| Guarda | Valor |
+| --- | --- |
+| Se coló | 0 |
+| BLOQUEA de código | 0 (los 3 BLOQUEA fueron de test: #45, dominante y mensaje de ninguno sin afirmar; #46, tres KPIs sin valor afirmado) |
+| sistema al cierre | 6/6 sobre `6b5a5c4` |
 
 ## Handover
 
-- **Estado estable:** las 3 PRs internas mergeadas en `ola/fase-5` (#45, #46, #47), punta `8f47efb`; 7/7 casillas (`openspec instructions apply`). Nada en vuelo: ningún implementador ni crítico con trabajo pendiente, ningún comando pesado corriendo.
-- **Hecho:** grupos 1, 2 y 3 cerrados. `verify` verde sobre el último commit de cada grupo (`3f4856a`, `c7ae7f3`, `f46538f`: 1049 tests al final) y `sistema` 6/6 sobre `c7ab176` (código de producto idéntico a la punta de #47).
-- **Lo que queda en orden:** solo el cierre (§5): `verify` y `sistema` sobre `ola/fase-5` tras el último merge (worktree del PM ya montado en `/home/fabs/da-wt/tablero-gastos/pm5`, haz `git pull` antes); registro con la sección *Coste* a mano; PR `ola/fase-5 → master` con la plantilla B (no hay `Closes #N`: issues deshabilitadas); entregar al Team Manager el número, el enlace, el estado de CI y las instrucciones del demo.
-- **Instrucciones del demo (borrador verificado contra `package.json` y `src/servidor/config.ts`, `main.ts`):** `git -C <repo> fetch origin` · `git -C <repo> worktree add /home/fabs/tablero-demo-fase5 origin/ola/fase-5` (ruta sin espacios) · `cd /home/fabs/tablero-demo-fase5` · `npm ci` (lo corre el usuario) · `npm start` (compila el servidor, reconstruye el bundle si hace falta y abre el navegador en `http://127.0.0.1:4310`; `TABLERO_PUERTO` cambia el puerto, `TABLERO_SIN_NAVEGADOR=1` no abre navegador, el historial va a `historial/` del worktree) · elegir `tests/fixtures/generador/2026-07-semilla-1.csv` · pulsar «Exportar reporte» → descarga `reporte-2026-07.html` · desconectar la red y abrir el archivo con doble clic · Ctrl+P → «Guardar como PDF». Probar también con un filtro (solo Compras: gasto total `$814,566.30` y la línea del filtro en el encabezado). Al terminar: `git -C <repo> worktree remove /home/fabs/tablero-demo-fase5`.
-- **Avisos:** los worktrees van bajo `/home/fabs/da-wt/tablero-gastos/` (el gancho `preparar` falla con espacios); `gh pr edit` falla con `gh` 2.46.0, se usa `gh api -X PATCH repos/josefabian2690-gif/data-analysis-report-project/pulls/<n> -F body=@<archivo>`; `cuerpo-pr armar` se corre desde la raíz del repo principal (desde el worktree no ve el estado) y exige árbol limpio (sin `imgs/screenshots/pendiente/` sin trackear) para no marcar `+sucio`.
-- **Pendiente con el Team Manager o el usuario:** nada abierto. Las cinco decisiones de arranque y las del PM esperan confirmación del usuario en la PR de ola.
-- **Por qué paro:** relevo de §6 a las 3 PRs internas mergeadas (contexto en torno a 270 mil tokens, bajo el umbral).
+- **Estado estable:** ola cerrada. `verify` verde (1049 tests) y `sistema` 6/6 sobre `6b5a5c4`, la punta de `ola/fase-5` antes del commit de cierre, que solo toca este registro; PR de ola abierta contra `master`.
+- **Hecho:** grupos 1, 2 y 3 (#45, #46, #47) mergeados; 7/7 casillas; cierre de §5.
+- **Lo que queda en orden:** el merge del usuario y, tras él, el Archivador (`team-manager` §7).
+- **Demo ensayado de punta a punta** (worktree sin espacios, `TABLERO_SIN_NAVEGADOR=1`, `TABLERO_HISTORIAL` temporal, script de Playwright fuera del repositorio): semilla 1 → 2,000 transacciones y `$1,689,470.67`; «Exportar reporte» descarga `reporte-2026-07.html` (684,975 bytes); abierto por `file://` sin red: cinco KPIs, seis hallazgos, siete gráficas con ancho natural > 0, cero peticiones fuera de `file:`, PDF con cabecera `%PDF`. Con «Compras» marcada en *Categorías*: 404 transacciones, `$814,566.30`, encabezado «Categorías: Compras». `git worktree remove` sin `--force` acepta `node_modules/`, `dist/` y `dist-server/` dentro (están ignorados). Correcciones al borrador: el CSV se elige desde el navegador de Windows con la ruta `\\wsl.localhost\Ubuntu\…`; la segunda descarga sale con el mismo nombre (el navegador le añade ` (1)`); el servidor se apaga con Ctrl+C antes de quitar el worktree. Sin ensayar: que `open` abra el navegador de Windows desde WSL (el ensayo corrió sin navegador).
+- **Pendiente con el Team Manager o el usuario:** confirmar o revertir las decisiones en la PR de ola.
+- **Por qué paro:** misión cumplida (cierre).
