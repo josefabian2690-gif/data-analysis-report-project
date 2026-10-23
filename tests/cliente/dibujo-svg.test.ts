@@ -43,6 +43,7 @@ describe('dibujar una gráfica como SVG sin montarla', () => {
     const svg = dibujarComoSvg({ ...opcionPorDia(metricas), animation: true }, 720, 420);
 
     expect(svg).not.toContain('@keyframes');
+    expect(svg).not.toContain('<animate');
     expect(svg.match(/<path[^>]*ecmeta_series_index/g)?.length).toBeGreaterThanOrEqual(31);
   });
 

@@ -2,6 +2,15 @@ import { describe, expect, it } from 'vitest';
 
 import { armarContenidoDelReporte } from '../../src/cliente/contenido-del-reporte';
 import { describirHallazgo } from '../../src/cliente/descripcion-de-hallazgos';
+import {
+  opcionDeCategorias,
+  opcionDelMapa,
+  opcionPorCuenta,
+  opcionPorDia,
+  opcionPorDiaDeLaSemana,
+  opcionPorHora,
+  opcionPorZona,
+} from '../../src/cliente/opciones-de-graficas';
 import { textos } from '../../src/cliente/textos';
 import { parsearCsv } from '../../src/dominio/carga';
 import { filtrar, periodoDelFiltro, type Filtro } from '../../src/dominio/filtro';
@@ -49,6 +58,9 @@ describe('el contenido del reporte del mes completo (R-10, R-11, R-16, R-17)', (
     ]);
     expect(valorDe(contenido, textos.kpis.gastoTotal)).toBe('$1,689,470.67');
     expect(valorDe(contenido, textos.kpis.transacciones)).toBe('2,000');
+    expect(valorDe(contenido, textos.kpis.ticketPromedio)).toBe('$844.74');
+    expect(valorDe(contenido, textos.kpis.mediana)).toBe('$586.37');
+    expect(valorDe(contenido, textos.kpis.gastoPromedioPorDia)).toBe('$54,499.05');
   });
 
   it('pone Compras primera y dominante con 48.2% en la tabla de categorías', () => {
@@ -95,12 +107,28 @@ describe('el contenido del reporte del mes completo (R-10, R-11, R-16, R-17)', (
       graficas.porCuenta.titulo,
       graficas.mapa.titulo,
     ]);
-    for (const seccion of contenido.graficas) {
+    const resultado = parsearCsv(semilla1);
+    const metricas = calcularMetricas(resultado.transacciones, periodoDelFiltro(resultado.mes, {}));
+    const opciones = [
+      opcionDeCategorias(metricas),
+      opcionPorDia(metricas),
+      opcionPorDiaDeLaSemana(metricas),
+      opcionPorHora(metricas),
+      opcionPorZona(metricas),
+      opcionPorCuenta(metricas),
+      opcionDelMapa(metricas),
+    ];
+    contenido.graficas.forEach((seccion, posicion) => {
       expect(seccion).toMatchObject({
         svg: expect.stringContaining('<svg'),
-        descripcion: expect.any(String),
+        descripcion: opciones[posicion]?.aria?.label?.description,
       });
-    }
+      expect(opciones[posicion]?.aria?.label?.description).toBeTruthy();
+    });
+    expect(contenido.graficas[1]).toMatchObject({ svg: expect.stringContaining('>31/07/2026<') });
+    expect(contenido.graficas[6]).toMatchObject({
+      svg: expect.stringContaining('>Monterrey, N.L.<'),
+    });
     const [categorias] = contenido.graficas;
     expect(categorias).toMatchObject({
       descripcion: expect.stringContaining(
