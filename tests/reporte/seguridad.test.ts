@@ -107,7 +107,8 @@ describe('generarHtml: impresión', () => {
 
   it('en @media print evita partir gráficas, KPIs y hallazgos, con fondo blanco y texto oscuro', () => {
     const estilos = hoja();
-    const impresion = estilos.slice(estilos.indexOf('@media print'));
+    const abre = estilos.indexOf('{', estilos.indexOf('@media print')) + 1;
+    const impresion = estilos.slice(abre, estilos.lastIndexOf('}'));
     const reglaDelBody = impresion.match(/body\s*\{([^}]*)\}/)?.[1] ?? '';
     expect(reglaDelBody).toMatch(/background:\s*#fff/);
     expect(reglaDelBody).toMatch(/color:\s*#(0|1)[0-9a-f]{5}/i);
