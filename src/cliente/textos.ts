@@ -175,6 +175,14 @@ export const textos = {
     sinResultados:
       'Ningún gasto cumple los filtros. Cambia o quita los filtros para ver el tablero.',
   },
+  reporte: {
+    titulo: 'Reporte de gastos',
+    exportar: 'Exportar reporte',
+    periodo: (desde: string, hasta: string) => `Del ${desde} al ${hasta}`,
+    sinFiltros: 'Sin filtros',
+    filtro: (nombre: string, valor: string) => `${nombre}: ${valor}`,
+    graficaDeCategorias: 'Gráfica del gasto por categoría',
+  },
   tabla: {
     titulo: 'Detalle de transacciones',
     nombre: 'Transacciones del conjunto filtrado',

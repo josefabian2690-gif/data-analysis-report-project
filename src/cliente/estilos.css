@@ -78,6 +78,17 @@ h2 {
   color: #1d4ed8;
 }
 
+.exportar {
+  margin-top: 1.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #1d4ed8;
+  border-radius: 0.375rem;
+  background: #1d4ed8;
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
 .datos {
   display: flex;
   flex-wrap: wrap;
