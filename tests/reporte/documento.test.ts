@@ -32,6 +32,7 @@ describe('generarHtml: el documento', () => {
     expect(html).toMatch(/Gasto total[\s\S]*?\$1,689,470\.67/);
     expect(html).toMatch(/<li[^>]*>\s*Compras domina el gasto\.\s*<\/li>/);
     expect(html).toMatch(/<li[^>]*>\s*Hay un día atípico\.\s*<\/li>/);
+    expect(html).not.toContain('Sin hallazgos');
   });
 
   it('con la lista de hallazgos vacía muestra el mensaje de ninguno y ningún elemento de lista', () => {
@@ -50,6 +51,12 @@ describe('generarHtml: el documento', () => {
     expect(compras).toContain('data-dominante="true"');
     expect(comida).not.toContain('data-dominante="true"');
     expect(compras).toMatch(/\$814,000\.00[\s\S]*48\.2 %/);
+  });
+
+  it('la hoja destaca la fila dominante con fondo o peso', () => {
+    const html = generarHtml(contenidoDePrueba());
+    const hoja = html.slice(html.indexOf('<style>'), html.indexOf('</style>'));
+    expect(hoja).toMatch(/\[data-dominante="true"\]\s*\{[^}]*(background|font-weight)\s*:/);
   });
 
   it('cada gráfica es una imagen data: cuyo src decodificado es el SVG recibido y cuyo alt es la descripción', () => {

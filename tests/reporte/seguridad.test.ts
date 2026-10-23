@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { generarHtml, type ContenidoDelReporte } from '../../src/reporte';
-import { contenidoDePrueba, desescapar, imagenes } from './contenido-de-prueba';
+import { contenidoDePrueba, imagenes } from './contenido-de-prueba';
 
 const ATAQUE = '<script>alert(1)</script>';
 const ESCAPADO = '&lt;script&gt;alert(1)&lt;/script&gt;';
@@ -39,7 +39,6 @@ describe('generarHtml: los textos del CSV se muestran como texto', () => {
     const html = generarHtml(contenido);
     sinElementoScript(html);
     expect(contar(html, ESCAPADO)).toBe(1);
-    expect(desescapar(ESCAPADO)).toBe(ATAQUE);
   });
 
   it('escapa el marcado en el mensaje en lugar de gráfica', () => {
@@ -109,10 +108,14 @@ describe('generarHtml: impresión', () => {
   it('en @media print evita partir gráficas, KPIs y hallazgos, con fondo blanco y texto oscuro', () => {
     const estilos = hoja();
     const impresion = estilos.slice(estilos.indexOf('@media print'));
-    expect(impresion).toMatch(/background:\s*#fff/);
-    expect(impresion).toMatch(/color:\s*#(0|1)[0-9a-f]{5}\b/i);
+    const reglaDelBody = impresion.match(/body\s*\{([^}]*)\}/)?.[1] ?? '';
+    expect(reglaDelBody).toMatch(/background:\s*#fff/);
+    expect(reglaDelBody).toMatch(/color:\s*#(0|1)[0-9a-f]{5}/i);
+    const selectoresSinCorte = [...impresion.matchAll(/([^{}]+)\{([^}]*)\}/g)]
+      .filter(([, , cuerpo]) => /break-inside:\s*avoid/.test(cuerpo ?? ''))
+      .flatMap(([, selectores]) => (selectores ?? '').split(',').map((s) => s.trim()));
     for (const clase of ['seccion-grafica', 'kpis', 'hallazgo']) {
-      expect(impresion).toMatch(new RegExp(`\\.${clase}[^{]*\\{[^}]*break-inside:\\s*avoid`));
+      expect(selectoresSinCorte).toContain(`.${clase}`);
     }
   });
 
