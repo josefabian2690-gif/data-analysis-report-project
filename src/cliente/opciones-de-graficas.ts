@@ -4,6 +4,7 @@ import type { Comparacion } from '../dominio/comparacion';
 import { formatearFecha, formatearMonto, formatearProporcion } from '../dominio/formato';
 import type { Metricas } from '../dominio/metricas';
 import { mapaDeGasto } from '../graficas/mapa';
+import { porCategoria } from '../graficas/por-categoria';
 import { porComparacion } from '../graficas/por-comparacion';
 import { porCuenta } from '../graficas/por-cuenta';
 import { porDia } from '../graficas/por-dia';
@@ -88,4 +89,15 @@ export function opcionDelMapa(metricas: Metricas): EChartsOption {
     graficas.mapa.detalle(zona, formatearConteo(puntos.length)),
   );
   return conDescripcion(mapaDeGasto(metricas, graficas.mapa.ejes), graficas.mapa.nombre, entradas);
+}
+
+export function opcionDeCategorias(metricas: Metricas): EChartsOption {
+  const entradas = metricas.gastoPorCategoria.map(({ categoria, monto, proporcion }) =>
+    textos.categorias.detalleDeCategoria(
+      categoria,
+      formatearMonto(monto),
+      formatearProporcion(proporcion),
+    ),
+  );
+  return conDescripcion(porCategoria(metricas), textos.categorias.nombreGrafica, entradas);
 }
