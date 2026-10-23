@@ -190,7 +190,7 @@ describe('el contenido del reporte sigue al filtro (R-10)', () => {
   });
 });
 
-describe('los hallazgos del reporte usan los umbrales vigentes (R-12, R-16)', () => {
+describe('los hallazgos del reporte usan los umbrales vigentes (R-16)', () => {
   it('con el umbral de categoría dominante en 0.5 no trae ese hallazgo y sí los demás', () => {
     const porDefecto = armar(semilla1).hallazgos.frases;
     const frases = armar(semilla1, {}, { ...UMBRALES_POR_DEFECTO, categoriaDominante: 0.5 })
