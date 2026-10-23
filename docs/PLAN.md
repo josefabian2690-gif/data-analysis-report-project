@@ -62,6 +62,7 @@ Los ocho flujos son MVP; el orden lo fija la tabla de fases.
 
 ## Pendientes
 
+- Decidido el 2026-10-22 (formato de exportación de la fase 5): el reporte es un solo archivo HTML estático, con las gráficas como SVG ya dibujado, sin JavaScript y sin ninguna petición de red; se imprime a PDF desde el navegador. Trae el tablero del mes tal como está filtrado: encabezado con los filtros, KPIs, hallazgos con los umbrales vigentes, gasto por categoría, las cinco gráficas del periodo y el mapa. No trae la tabla de transacciones ni la comparación de meses, ni gráficas interactivas.
 - Decidido el 2026-10-21: el mapa de la fase 4 dibuja solo puntos coloreados por zona, sin contorno de CDMX/México ni GeoJSON. El contorno queda como posible mejora futura, fuera de la fase 4.
 - Decidido el 2026-10-21: los umbrales de los hallazgos (R-16) se ajustan desde la pantalla, no solo desde la configuración, y los ajustados se conservan en el navegador (`localStorage`): sobreviven a recargar la página y a reiniciar, solo en ese navegador; no se guardan en el servidor.
 - Decidido el 2026-10-15: se commitean 3 fixtures del generador de ~2 000 filas cada uno (~250 KB), con semillas distintas y de meses distintos. Sirven a los tests y a la demo del historial de la fase 3.

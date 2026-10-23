@@ -8,8 +8,8 @@ Un solo proyecto TypeScript. El dominio es puro y lo comparten el cliente (naveg
 |---|---|---|---|
 | `dominio` | Código puro, sin I/O: esquema de `Transaccion`, parseo del CSV desde un string, validación, filtros, métricas, hallazgos y comparación de meses | `src/dominio/` | `papaparse` |
 | `graficas` | Construye las opciones de ECharts a partir de `Metricas` o `Comparacion`. Puro | `src/graficas/` | `dominio` |
-| `reporte` | Genera el HTML autocontenido del reporte como string (ECharts y datos en línea). Puro; la descarga la hace el navegador | `src/reporte/` | `dominio`, `graficas` |
-| `cliente` | UI en React: carga, filtros, pestañas, tabla, mapa, hallazgos, comparación y botón de exportar. Llama a la API del historial | `src/cliente/` | `dominio`, `graficas`, `reporte`, React, ECharts, TanStack Table |
+| `reporte` | Genera el HTML autocontenido del reporte como string, estático y sin JavaScript, a partir de un contenido ya redactado y de las gráficas ya dibujadas en SVG. Puro; la descarga la hace el navegador | `src/reporte/` | `dominio`, `graficas` |
+| `cliente` | UI en React: carga, filtros, pestañas, tabla, mapa, hallazgos, comparación y botón de exportar, con el armado del contenido del reporte y el dibujo de sus gráficas en SVG. Llama a la API del historial | `src/cliente/` | `dominio`, `graficas`, `reporte`, React, ECharts, TanStack Table |
 | `servidor` | Node: sirve el bundle, expone la API del historial y guarda los meses en archivos. Escucha solo en 127.0.0.1 y abre el navegador | `src/servidor/` | `dominio`, `node:*`, `open` |
 | `generador` | El generador de Python existente, movido sin cambios de lógica, más `fixtures.sh` | `generador/` | Faker (nada de `src/`) |
 
@@ -36,8 +36,10 @@ De las gráficas y el reporte:
 
 ```ts
 graficas.porCategoria(m: Metricas): EChartsOption   // y una función por gráfica
-reporte.generarHtml(m: Metricas, h: Hallazgo[], figuras: EChartsOption[]): string
+reporte.generarHtml(contenido: ContenidoDelReporte): string
 ```
+
+`ContenidoDelReporte` se define en `src/reporte/` y lo arma el cliente: trae los textos ya redactados en es-MX (los textos visibles viven solo en el catálogo del cliente, que `reporte` no puede importar) y el SVG de cada gráfica, dibujado por el cliente con ECharts. `reporte` compone, escapa y da estilo; no redacta ni formatea.
 
 **API del historial.** Es JSON y se valida con el esquema del dominio en los dos extremos:
 
@@ -60,10 +62,10 @@ reporte.generarHtml(m: Metricas, h: Hallazgo[], figuras: EChartsOption[]): strin
 |---|---|---|---|
 | `dominio` | Cada regla R-xx de `DOMINIO.md`, con el nombre `R-xx` en el test. Test de semillas: `hallazgos()` sobre cada fixture coincide con su `esperado.json` en categoría dominante, zona favorita y destino de viaje | Vitest, funciones puras | `tests/dominio/` |
 | `graficas` | Las opciones tienen las series y los ejes esperados para unas métricas conocidas | Vitest | `tests/graficas/` |
-| `reporte` | El HTML contiene los KPIs y las gráficas, y **ninguna** referencia `http(s)://` a recursos externos | Vitest | `tests/reporte/` |
+| `reporte` | El HTML contiene los KPIs y las gráficas, escapa los textos que vienen del CSV, declara una política de seguridad de contenido que bloquea la red, y **ningún** `src`, `href`, `url(` ni `@import` apunta a `http(s)://` | Vitest | `tests/reporte/` |
 | `servidor` | API contra un historial temporal: crear, 409, reemplazar, listar, borrar, escritura atómica, que escuche solo en 127.0.0.1 | Vitest + `node:http` | `tests/servidor/` |
 | `cliente` | Componentes: filtros, estado vacío, filas inválidas, confirmación al reemplazar | Vitest + Testing Library + jsdom | `tests/cliente/` |
-| Sistema | Flujo de punta a punta: `npm start`, cargar el fixture, comprobar KPIs y hallazgos, guardar, reiniciar y verificar que persiste. Falla si alguna petición sale de 127.0.0.1 | Playwright | `tests/sistema/` |
+| Sistema | Flujo de punta a punta: `npm start`, cargar el fixture, comprobar KPIs y hallazgos, guardar, reiniciar y verificar que persiste. Exportar el reporte, abrirlo sin conexión e imprimirlo a PDF. Falla si alguna petición sale de 127.0.0.1 | Playwright | `tests/sistema/` |
 
 Hay dos tipos de **fixtures** en `tests/fixtures/`:
 - **Del generador:** CSVs generados con semillas fijas, cada uno con su `*.esperado.json` (la respuesta de `-v`). Se regeneran con `generador/fixtures.sh`, el único paso que requiere Python.
