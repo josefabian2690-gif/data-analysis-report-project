@@ -18,7 +18,7 @@
 
 | # | Grupo (change · tareas) | Rama | Estado |
 |---|---|---|---|
-| — | fase-5-exportar-reporte · 1.1–1.2 | `feat/fase-5-report-html` | pendiente |
+| #45 | fase-5-exportar-reporte · 1.1–1.2 | `feat/fase-5-report-html` | mergeada (`30d9281`) — 0 mecánicas · 1 ronda · 0 por corrección; pasada final trivial |
 | — | fase-5-exportar-reporte · 2.1–2.3 | `feat/fase-5-report-content` | pendiente |
 | — | fase-5-exportar-reporte · 3.1–3.2 | `feat/fase-5-export-button` | pendiente |
 
@@ -29,7 +29,10 @@
 - D-TM3 (Team Manager): contrato 3 (a), `generarHtml(contenido)` con el contenido ya redactado por el cliente. Descartadas: catálogo de textos en `reporte`; `textos` como argumento.
 - D-TM4 (Team Manager): 4 (a), el reporte sigue al filtro y a los umbrales vigentes y lo dice en el encabezado. Descartada: siempre el mes completo con umbrales por defecto.
 - D-TM5 (Team Manager): 5 (a), el mapa del reporte con el encuadre inicial de la página (ciudad principal). Descartada: todos los puntos.
-
+- #45: los títulos de sección y las cabeceras de la tabla viajan en `ContenidoDelReporte` (la capa no tiene texto fijo); «sin filtros» es una línea más de `encabezado.filtros`. Descartado: títulos fijos en `src/reporte/` (contra D2).
+- #45: NO BLOQUEA 4 de la pasada 1 (patrones `//`, `srcset`, `xlink:href` en el test de URLs) aceptado sin acción: la CSP de D4 lo bloquea en el navegador. Descartado: ampliar el test.
+- `graft build` tras el merge no se corre: el grafo vive en el checkout principal, que sigue en `master` antiguo y no se cambia de rama; los encargos leen el código del worktree (igual que en la fase 4).
+- Nota de mecánica: en la pasada 1 de #45 el crítico corrió `npx --no-install eslint` (lo declaró y no lo contó como evidencia); se le recordó la regla.
 ## Deuda
 
 - —
