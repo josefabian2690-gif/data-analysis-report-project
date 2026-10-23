@@ -52,6 +52,8 @@ describe('botón de exportar el reporte', () => {
     const html = descarga.descargas[0]?.html ?? '';
     expect(html).toContain(TOTAL_DE_COMPRAS);
     expect(html).not.toContain(TOTAL_DEL_MES);
+    expect(html).toContain(textos.reporte.filtro(textos.filtros.categorias, 'Compras'));
+    expect(html).not.toContain(textos.reporte.sinFiltros);
   });
 
   it('con el umbral de la categoría dominante en 50 el reporte no trae ese hallazgo', async () => {
@@ -69,6 +71,7 @@ describe('botón de exportar el reporte', () => {
     const [conUmbralPorDefecto, conUmbralAjustado] = descarga.descargas;
     expect(conUmbralPorDefecto?.html).toContain(marcaDeHallazgo('categoriaDominante'));
     expect(conUmbralAjustado?.html).not.toContain(marcaDeHallazgo('categoriaDominante'));
+    expect(conUmbralAjustado?.html).toContain(marcaDeHallazgo('zonaFavorita'));
   });
 
   it('con un filtro que deja 0 filas no hay botón', async () => {
