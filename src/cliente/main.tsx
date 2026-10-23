@@ -2,6 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
 import type { Almacen } from './almacen-de-umbrales';
+import { descargarEnElNavegador } from './descargar';
 import { crearHistorial } from './historial';
 import { textos } from './textos';
 import './estilos.css';
@@ -26,6 +27,6 @@ function almacenDelNavegador(): Almacen | undefined {
 
 createRoot(raiz).render(
   <StrictMode>
-    <App historial={historial} almacen={almacenDelNavegador()} />
+    <App historial={historial} almacen={almacenDelNavegador()} descargar={descargarEnElNavegador} />
   </StrictMode>,
 );
