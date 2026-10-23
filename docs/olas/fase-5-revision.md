@@ -5,7 +5,7 @@ Verificado el 2026-10-22 contra `master` @ `fa71e7a` (fases 0 a 4 mergeadas y ar
 ## 1. Veredicto
 
 - `fase-5-exportar-reporte`: propuesto en este pre-vuelo; valida con `--strict`.
-- Ola entera: **no lista** hasta que el usuario cierre las decisiones 1 y 2 (alcance) y mergee la PR de documentos; el Team Manager cierra la 3 a la 5. Todo lo demás está escrito con la opción recomendada: si el usuario la confirma, la ola queda lista sin tocar el change y el brief (`docs/olas/fase-5-brief.md`) vale tal cual.
+- Ola entera: **no lista** hasta que el usuario cierre las decisiones 1 y 2 (alcance) y mergee la PR de documentos (#44); el Team Manager cierra la 3 a la 5. Todo lo demás está escrito con la opción recomendada: si el usuario la confirma, la ola queda lista sin tocar el change y el brief (`docs/olas/fase-5-brief.md`) vale tal cual.
 - Lo más importante: el contrato de `reporte` de `docs/ARQUITECTURA.md` no se puede cumplir tal cual (textos visibles solo en el cliente; opciones de ECharts con funciones). El change lo sustituye por `generarHtml(contenido)`.
 
 ## 2. La ola

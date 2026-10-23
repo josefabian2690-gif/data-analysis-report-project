@@ -2,7 +2,7 @@
 
 Eres el **project manager** de la Ola fase-5 de tablero-gastos. Tu procedimiento es el skill `desarrollo-autonomo-pm` (entra por §1) y tus reglas son `CLAUDE.md`. Este brief delimita la misión; lo que no esté aquí lo decide el skill, y lo que el skill no decida lo escalas al Team Manager.
 
-> **Condición de arranque.** Este brief asume las opciones recomendadas de `docs/olas/fase-5-revision.md` §7: formato estático con SVG (1a), contenido sin tabla ni comparación (2a), `generarHtml(contenido)` (3a), reporte que sigue al filtro y a los umbrales (4a), mapa con el encuadre de la página (5a). El Team Manager te lanza solo con esas decisiones cerradas y con la PR de documentos de la fase 5 mergeada en `master`. Si alguna cambió, el change se actualizó por `openspec-update-change` antes de lanzarte y este brief también.
+> **Condición de arranque.** Este brief asume las opciones recomendadas de `docs/olas/fase-5-revision.md` §7: formato estático con SVG (1a), contenido sin tabla ni comparación (2a), `generarHtml(contenido)` (3a), reporte que sigue al filtro y a los umbrales (4a), mapa con el encuadre de la página (5a). El Team Manager te lanza solo con esas decisiones cerradas y con la PR de documentos de la fase 5 (#44) mergeada en `master`. Si alguna cambió, el change se actualizó por `openspec-update-change` antes de lanzarte y este brief también.
 
 ## 1. La ola
 
@@ -40,7 +40,7 @@ Eres el **project manager** de la Ola fase-5 de tablero-gastos. Tu procedimiento
 - El reporte no lleva `<script>` ni referencia ningún recurso fuera de sí mismo; la CSP es la de `design.md` D4.
 - `src/reporte/` no redacta ni formatea: compone, escapa y da estilo. Los textos visibles solo en `src/cliente/textos.ts` (`design.md` D2). `reporte` no importa `echarts` (la tabla de capas de `docs/ARQUITECTURA.md` no se lo da): el SVG lo dibuja el cliente.
 - Contratos:
-  - `generarHtml(contenido: ContenidoDelReporte): string` sustituye al de `docs/ARQUITECTURA.md` anterior (lo corrige la PR de documentos de la fase 5).
+  - `generarHtml(contenido: ContenidoDelReporte): string` sustituye al de `docs/ARQUITECTURA.md` anterior (lo corrige la #44).
   - `metricas`, `hallazgos`, `filtrar` y la API del historial no cambian.
 - Ninguna dependencia nueva.
 - Cifras de las pruebas con fixtures: literales, las de `design.md` *Context*.
