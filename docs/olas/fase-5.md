@@ -19,7 +19,7 @@
 | # | Grupo (change · tareas) | Rama | Estado |
 |---|---|---|---|
 | #45 | fase-5-exportar-reporte · 1.1–1.2 | `feat/fase-5-report-html` | mergeada (`30d9281`) — 0 mecánicas · 1 ronda · 0 por corrección; pasada final trivial |
-| — | fase-5-exportar-reporte · 2.1–2.3 | `feat/fase-5-report-content` | pendiente |
+| #46 | fase-5-exportar-reporte · 2.1–2.3 | `feat/fase-5-report-content` | mergeada (`5f582e3`) — 0 mecánicas · 1 ronda · 0 por corrección; pasada final trivial |
 | — | fase-5-exportar-reporte · 3.1–3.2 | `feat/fase-5-export-button` | pendiente |
 
 ## Decisiones del PM
@@ -32,6 +32,10 @@
 - #45: los títulos de sección y las cabeceras de la tabla viajan en `ContenidoDelReporte` (la capa no tiene texto fijo); «sin filtros» es una línea más de `encabezado.filtros`. Descartado: títulos fijos en `src/reporte/` (contra D2).
 - #45: NO BLOQUEA 4 de la pasada 1 (patrones `//`, `srcset`, `xlink:href` en el test de URLs) aceptado sin acción: la CSP de D4 lo bloquea en el navegador. Descartado: ampliar el test.
 - `graft build` tras el merge no se corre: el grafo vive en el checkout principal, que sigue en `master` antiguo y no se cambia de rama; los encargos leen el código del worktree (igual que en la fase 4).
+- #46: `dibujarComoSvg` fija `animation: false` sobre la opción (en SSR ECharts no la apaga solo: con animación el SVG trae `@keyframes`). La mutación de la tarea («sin barras») se observó como «con `@keyframes`»; el test la protege así.
+- #46: tres KPIs de la semilla 1 (ticket promedio `$844.74`, mediana `$586.37`, gasto promedio por día `$54,499.05`) no están en el `esperado.json` ni en las specs: literales calculados desde el CSV fuera de la app por el implementador y recalculados por el crítico. Descartado: compararlos con la misma función (tautológico).
+- #46: el implementador escribió `dibujarComoSvg` antes que sus tests para explorar el SVG; el crítico corrió las mutaciones y cada test muerde. Se anota como desvío de TDD, sin efecto en la protección.
+- #46: el tamaño del HTML de la semilla 1 sin filtros es 682 555 bytes (el SVG del mapa, 404 KB); aceptado (`design.md`, *Risks*).
 - Nota de mecánica: en la pasada 1 de #45 el crítico corrió `npx --no-install eslint` (lo declaró y no lo contó como evidencia); se le recordó la regla.
 ## Deuda
 
