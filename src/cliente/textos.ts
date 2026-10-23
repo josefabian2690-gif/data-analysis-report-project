@@ -177,6 +177,7 @@ export const textos = {
   },
   reporte: {
     titulo: 'Reporte de gastos',
+    exportar: 'Exportar reporte',
     periodo: (desde: string, hasta: string) => `Del ${desde} al ${hasta}`,
     sinFiltros: 'Sin filtros',
     filtro: (nombre: string, valor: string) => `${nombre}: ${valor}`,

@@ -5,6 +5,7 @@ import type { Almacen } from './almacen-de-umbrales';
 import { AvisoDeGuardado } from './AvisoDeGuardado';
 import { leerArchivo, type EstadoDeCarga } from './cargar';
 import { Confirmacion } from './Confirmacion';
+import type { Descargar } from './descargar';
 import { cambiaElHistorial, guardarMes, type EstadoDeGuardado } from './guardado';
 import type { Historial } from './historial';
 import { HistorialDeMeses } from './HistorialDeMeses';
@@ -40,7 +41,15 @@ function pantallaDe(carga: EstadoDeCarga, eleccion: number): Pantalla {
     : { tipo: 'tablero', resultado, eleccion, guardado: 'guardando' };
 }
 
-export function App({ historial, almacen }: { historial: Historial; almacen?: Almacen }) {
+export function App({
+  historial,
+  almacen,
+  descargar,
+}: {
+  historial: Historial;
+  almacen?: Almacen;
+  descargar?: Descargar;
+}) {
   const ajusteDeUmbrales = usarUmbrales(almacen);
   const [pantalla, setPantalla] = useState<Pantalla>(INICIAL);
   const [vista, setVista] = useState<Vista>('tablero');
@@ -145,6 +154,7 @@ export function App({ historial, almacen }: { historial: Historial; almacen?: Al
             key={pantalla.eleccion}
             resultado={pantalla.resultado}
             ajuste={ajusteDeUmbrales}
+            descargar={descargar}
           />
         )}
       </div>
